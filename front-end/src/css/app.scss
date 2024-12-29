@@ -1,0 +1,31 @@
+// app global css in SCSS form
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+.font-purple {
+  color: $primary !important;
+}
+
+.font-purple-hover {
+  color: $primary !important;
+}
+
+.font-purple-hover:hover {
+  color: $primary !important;
+  opacity: 0.85;
+}
+
+.bg-purple {
+  background: $primary !important;
+}
+
+.bg-gray{
+  background: #edf2f4 !important;
+}
+
+.inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.hvh-100{
+  height: 100vh !important
+}
