@@ -1,20 +1,27 @@
+import { AuthUserUseCase } from "./application/usecases/auth/auth-user/auth-user.usescase";
 import { CreateUserUseCase } from "./application/usecases/user/create-user/create-user.usecase";
 import { ApiExpress } from "./infra/api/express/api.express";
+import { AuthUserRoute } from "./infra/api/express/routes/auth/auth-user.express.route";
 import { CreateUserRoute } from "./infra/api/express/routes/user/create-user.express.route";
 import { UserRepositoryPrisma } from "./infra/repositories/user.repository.prisma";
 import { BcryptHashService } from "./infra/service/bcrypt-hash.service";
+import { JwtServiceImpl } from "./infra/service/jwt-impl.service";
 import { prisma } from "./package/prisma/prisma";
 
 function main() {
     const userRepository = UserRepositoryPrisma.create(prisma)
 
     const hashService = new BcryptHashService()
-    const CreateUserUsecase = CreateUserUseCase.create(userRepository, hashService)
+    const createUserUseCase = CreateUserUseCase.create(userRepository, hashService)
 
-    const createUserRoute = CreateUserRoute.create(CreateUserUsecase)
+    const jwtService = new JwtServiceImpl()
+    const authUserUseCase = AuthUserUseCase.create(userRepository, hashService, jwtService)
+
+    const createUserRoute = CreateUserRoute.create(createUserUseCase)
+    const authUserRoute = AuthUserRoute.create(authUserUseCase)
 
     const port = 8000
-    const api = ApiExpress.create([createUserRoute])
+    const api = ApiExpress.create([createUserRoute, authUserRoute])
     api.start(port)
 }
 
