@@ -1,7 +1,8 @@
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 import { UserGateway } from "../../domain/gateway/user.gateway";
 import { User } from "../../domain/entities/user";
 import { UserNotFoundException } from "../../application/exceptions/user-not-found.exception";
+import { UserAlreadyExist } from "../../application/exceptions/user-already-exist.exception";
 
 export class UserRepositoryPrisma implements UserGateway {
     private constructor(private readonly prismaClient: PrismaClient) {}
@@ -11,17 +12,28 @@ export class UserRepositoryPrisma implements UserGateway {
     }
 
     public async save(user: User): Promise<void> {
-        const data = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            created_at: user.created_at
-        }
+        try {
+            const data = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                created_at: user.created_at
+            }
+    
+            await this.prismaClient.user.create({
+                data: data
+            })
+        } catch (error) {
+            if(error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2002') {
+                const userAlreadyExistError = new UserAlreadyExist()
+                console.error(userAlreadyExistError)
+                throw userAlreadyExistError
+            }
 
-        await this.prismaClient.user.create({
-            data: data
-        })
+            console.error(error);
+            throw new Error("Error on user repository prisma.")
+        }
     }
 
     public async findByEmail(email: string): Promise<User> {
@@ -46,9 +58,12 @@ export class UserRepositoryPrisma implements UserGateway {
     
             return user
         } catch (error) {
+            if (!(error instanceof UserNotFoundException)) { 
+                error = new Error("Error on user repository prisma.")
+            }
+
             console.error(error);
-            throw new Error("Erro on user repository prisma.")
+            throw error;
         }
-        
     }
 }

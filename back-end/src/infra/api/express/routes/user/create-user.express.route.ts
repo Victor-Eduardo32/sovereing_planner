@@ -1,4 +1,4 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { CreateUserInputDto, CreateUserOutputDto, CreateUserUseCase } from "../../../../../application/usecases/user/create-user/create-user.usecase"
 import { HttpMethod, Route } from "../route"
 
@@ -22,20 +22,24 @@ export class CreateUserRoute implements Route {
     }
 
     public getHandler() {
-        return async (request: Request, response: Response) => {
-            const { name, email, password } = request.body
-
-            const input: CreateUserInputDto = {
-                name,
-                email,
-                password
+        return async (request: Request, response: Response, next: NextFunction) => {
+            try {
+                const { name, email, password } = request.body
+    
+                const input: CreateUserInputDto = {
+                    name,
+                    email,
+                    password
+                }
+    
+                const output: CreateUserOutputDto = await this.createUserService.execute(input)
+    
+                const responseBody = this.present(output)
+    
+                response.status(201).json(responseBody).send()
+            } catch (error) {
+                next(error)
             }
-
-            const output: CreateUserOutputDto = await this.createUserService.execute(input)
-
-            const responseBody = this.present(output)
-
-            response.status(201).json(responseBody).send()
         }
     }
 

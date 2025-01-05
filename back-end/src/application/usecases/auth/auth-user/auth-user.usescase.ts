@@ -1,6 +1,7 @@
 import { UserGateway } from "../../../../domain/gateway/user.gateway"
 import { HashService } from "../../../../domain/services/hash.service"
 import { JwtService } from "../../../../domain/services/jwt.service"
+import { UserNotFoundException } from "../../../exceptions/user-not-found.exception"
 import { UseCase } from "../../usecase"
 
 export type AuthUserInputDto = {
@@ -24,14 +25,23 @@ export class AuthUserUseCase implements UseCase<AuthUserInputDto, AuthUserOutput
     }
 
     public async execute({ email, password }: AuthUserInputDto): Promise<AuthUserOutputDto> {
-        const aUser = await this.userGateway.findByEmail(email)
+        try {
+            const aUser = await this.userGateway.findByEmail(email)
         
-        if(!aUser || !aUser.comparePassword(password, this.hashService)) {
-            throw new Error('Invalid credentials');
+            if(!aUser || !aUser.comparePassword(password, this.hashService)) {
+                throw new Error('Invalid credentials');
+            }
+    
+            const token = this.jwtService.generateToken({ id: aUser.id, email: aUser.email })
+    
+            return { token } 
+        } catch (error) {
+            if (!(error instanceof UserNotFoundException)) { 
+                error = new Error("Error on processing AuthUserUseCase.")
+            }
+
+            console.error(error)
+            throw error
         }
-
-        const token = this.jwtService.generateToken({ id: aUser.id, email: aUser.email })
-
-        return { token }
     }
 }

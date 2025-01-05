@@ -34,13 +34,12 @@ export class FindByEmailUseCase implements UseCase<FindByEmailInputDto, FindByEm
     
             return output 
         } catch (error) {
-            if(error instanceof UserNotFoundException) {
-                console.error(error.message)
-                throw new Error(error.message)
-            } 
+            if (!(error instanceof UserNotFoundException)) { 
+                error = new Error("Error on processing FindByEmailUseCase.")
+            }
 
             console.error(error)
-            throw new Error("Error on processing use case.")
+            throw error
         }
         
     }

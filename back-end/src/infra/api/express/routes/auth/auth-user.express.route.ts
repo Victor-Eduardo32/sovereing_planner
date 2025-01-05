@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthUserOutputDto, AuthUserUseCase } from "../../../../../application/usecases/auth/auth-user/auth-user.usescase";
 import { HttpMethod, Route } from "../route";
 
@@ -22,14 +22,18 @@ export class AuthUserRoute implements Route {
     }
 
     public getHandler() {
-        return async (request: Request, response: Response) => {
-            const { email, password } = request.body
+        return async (request: Request, response: Response, next: NextFunction) => {
+            try {
+                const { email, password } = request.body
 
-            const output = await this.authUserService.execute({ email, password })
+                const output = await this.authUserService.execute({ email, password })
 
-            const responseBody = this.present(output)
+                const responseBody = this.present(output)
 
-            response.status(201).json(responseBody).send()
+                response.status(201).json(responseBody).send()
+            } catch (error) {   
+                next(error)
+            }
         }
     }
 

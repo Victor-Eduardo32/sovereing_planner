@@ -1,6 +1,7 @@
 import express, { Express } from "express"
 import { Route } from "./routes/route"
 import { Api } from "../api"
+import { errorHandler } from "./middleware/error-handler"
 
 export class ApiExpress implements Api {
     private app: Express
@@ -9,6 +10,7 @@ export class ApiExpress implements Api {
         this.app = express()
         this.app.use(express.json())
         this.addRoutes(routes)
+        this.app.use(errorHandler)
     }
 
     public static create(routes: Route[]){
