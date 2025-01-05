@@ -23,7 +23,7 @@ export class User {
     }
 
     public async comparePassword(password: string, hashService: HashService): Promise<boolean> {
-        return await hashService.compare(this.props.password, password)
+        return await hashService.compare(password, this.props.password)
     }
 
     public get id() {

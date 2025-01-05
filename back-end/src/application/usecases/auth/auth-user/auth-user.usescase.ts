@@ -27,9 +27,11 @@ export class AuthUserUseCase implements UseCase<AuthUserInputDto, AuthUserOutput
     public async execute({ email, password }: AuthUserInputDto): Promise<AuthUserOutputDto> {
         try {
             const aUser = await this.userGateway.findByEmail(email)
+            
+            const verifyToken = await aUser.comparePassword(password, this.hashService);
         
-            if(!aUser || !aUser.comparePassword(password, this.hashService)) {
-                throw new Error('Invalid credentials');
+            if(!aUser || !verifyToken) {
+                throw new UserNotFoundException()
             }
     
             const token = this.jwtService.generateToken({ id: aUser.id, email: aUser.email })
