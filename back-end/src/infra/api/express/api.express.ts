@@ -2,6 +2,7 @@ import express, { Express } from "express"
 import { Route } from "./routes/route"
 import { Api } from "../api"
 import { errorHandler } from "./middleware/error-handler"
+import { corsMiddleware } from "./middleware/cors"
 
 export class ApiExpress implements Api {
     private app: Express
@@ -9,6 +10,7 @@ export class ApiExpress implements Api {
     private constructor(routes: Route[]) {
         this.app = express()
         this.app.use(express.json())
+        this.app.use(corsMiddleware)
         this.addRoutes(routes)
         this.app.use(errorHandler)
     }
