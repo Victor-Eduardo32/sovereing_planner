@@ -10,14 +10,14 @@ export class AuthUserRoute implements Route {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
-        private readonly authUserService: AuthUserUseCase
+        private readonly authUserService: AuthUserUseCase,
     ){}
 
     public static create(authUserService: AuthUserUseCase) {
         return new AuthUserRoute(
             "/oauth/token",
             HttpMethod.POST,
-            authUserService
+            authUserService,
         )
     }
 
@@ -28,7 +28,7 @@ export class AuthUserRoute implements Route {
 
                 const output = await this.authUserService.execute({ email, password })
 
-                const responseBody = this.present(output)
+                const responseBody = this.present(output);
 
                 response.status(201).json(responseBody).send()
             } catch (error) {   
