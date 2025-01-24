@@ -2,15 +2,17 @@ import express, { Express } from "express"
 import { Route } from "./routes/route"
 import { Api } from "../api"
 import { errorHandler } from "./middleware/error-handler"
-import { corsMiddleware } from "./middleware/cors"
+import { getMiddlewares } from "./middleware/main"
 
 export class ApiExpress implements Api {
     private app: Express
 
     private constructor(routes: Route[]) {
         this.app = express()
-        this.app.use(express.json())
-        this.app.use(corsMiddleware)
+        const middlewares = getMiddlewares();
+        middlewares.forEach(middleware => {
+            this.app.use(middleware)
+        })
         this.addRoutes(routes)
         this.app.use(errorHandler)
     }
