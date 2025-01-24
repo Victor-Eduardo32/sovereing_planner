@@ -30,6 +30,12 @@ export class AuthUserRoute implements Route {
 
                 const responseBody = this.present(output);
 
+                response.cookie('authToken', responseBody.token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict'
+                })
+
                 response.status(201).json(responseBody).send()
             } catch (error) {   
                 next(error)
