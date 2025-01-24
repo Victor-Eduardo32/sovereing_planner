@@ -1,3 +1,4 @@
+import { User } from "../../../../domain/entities/user"
 import { UserGateway } from "../../../../domain/gateway/user.gateway"
 import { HashService } from "../../../../domain/services/hash.service"
 import { JwtService } from "../../../../domain/services/jwt.service"
@@ -11,6 +12,12 @@ export type AuthUserInputDto = {
 }
 
 export type AuthUserOutputDto = {
+    user: {
+        id: string,
+        name: string,
+        email: string,
+        created_at: Date
+    },
     token: string
 }
 
@@ -41,8 +48,10 @@ export class AuthUserUseCase implements UseCase<AuthUserInputDto, AuthUserOutput
             const expirationTime = this.jwtService.getExpirationTime(token)
             
             await this.sessionService.execute({ user_id: aUser.id, token: token, ended_at: expirationTime })
+
+            const output = this.presentOutput(aUser, token)
     
-            return { token } 
+            return output
         } catch (error) {
             if (!(error instanceof UserNotFoundException)) { 
                 error = new Error("Error on processing AuthUserUseCase.")
@@ -51,5 +60,19 @@ export class AuthUserUseCase implements UseCase<AuthUserInputDto, AuthUserOutput
             console.error(error)
             throw error
         }
+    }
+
+    private presentOutput(user: User, token: string): AuthUserOutputDto {
+        const output =  {
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                created_at: user.created_at
+            },
+            token: token
+        }
+
+        return output
     }
 }
