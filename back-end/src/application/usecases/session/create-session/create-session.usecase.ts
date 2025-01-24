@@ -1,6 +1,6 @@
-import { Session } from "../../../domain/entities/session"
-import { SessionGateway } from "../../../domain/gateway/session.gateway"
-import { UseCase } from "../usecase"
+import { Session } from "../../../../domain/entities/session"
+import { SessionGateway } from "../../../../domain/gateway/session.gateway" 
+import { UseCase } from "../../usecase" 
 
 export type CreateSessionInputDto = {
     user_id: string,

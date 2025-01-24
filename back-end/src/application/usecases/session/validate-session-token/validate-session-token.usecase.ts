@@ -1,6 +1,6 @@
-import { SessionGateway } from "../../../domain/gateway/session.gateway"
-import { JwtService } from "../../../domain/services/jwt.service"
-import { UseCase } from "../usecase"
+import { SessionGateway } from "../../../../domain/gateway/session.gateway"
+import { JwtService } from "../../../../domain/services/jwt.service"
+import { UseCase } from "../../usecase"
 
 export type ValidateSessionTokenInputDto = {
     token: string

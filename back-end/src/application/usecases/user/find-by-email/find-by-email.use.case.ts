@@ -1,6 +1,5 @@
 import { User } from "../../../../domain/entities/user";
 import { UserGateway } from "../../../../domain/gateway/user.gateway";
-import { HttpMethod } from "../../../../infra/api/express/routes/route";
 import { UserNotFoundException } from "../../../exceptions/user-not-found.exception";
 import { UseCase } from "../../usecase";
 
