@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { LogoutUserUseCase } from "../../../../../application/usecases/auth/auth-user/logout-ser.usecase";
+import { LogoutUserUseCase } from "../../../../../application/usecases/auth/logout-user/logout-user.usecase";
 import { HttpMethod, Route } from "../route";
 
 export class LogoutUserRoute implements Route {
