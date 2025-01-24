@@ -27,6 +27,7 @@ export class JwtServiceImpl implements JwtService {
 
             return decoded as JwtPayload
         } catch (error) {
+            console.error(error)
             return null
         }
     }
@@ -34,7 +35,7 @@ export class JwtServiceImpl implements JwtService {
     public getExpirationTime(token: string): Date | undefined {
         const decodedToken = this.verifyToken(token)
 
-        if(decodedToken && typeof decodedToken !== 'string') {
+        if(decodedToken) {
             const expirationTimeStamp = (decodedToken as JwtPayload & { exp?: number }).exp
             if(expirationTimeStamp) {
                 return new Date(expirationTimeStamp * 1000)
