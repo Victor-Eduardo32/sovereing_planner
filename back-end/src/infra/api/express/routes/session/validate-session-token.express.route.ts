@@ -6,7 +6,7 @@ export type ValidateTokenExpirationResponseDto = {
     valid: boolean
 }
 
-export class ValidateTokenExpirationTimeRoute implements Route {
+export class ValidateSessionTokenRoute implements Route {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
@@ -14,7 +14,7 @@ export class ValidateTokenExpirationTimeRoute implements Route {
     ){}
 
     public static create(validateSessionTokenUsecase: ValidateSessionTokenUseCase) {
-        return new ValidateTokenExpirationTimeRoute(
+        return new ValidateSessionTokenRoute(
             '/validate-token',
             HttpMethod.POST,
             validateSessionTokenUsecase        
