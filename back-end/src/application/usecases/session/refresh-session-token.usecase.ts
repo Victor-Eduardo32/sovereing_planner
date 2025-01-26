@@ -25,9 +25,10 @@ export class RefreshSessionTokenUseCase implements UseCase<RefreshSessionTokenIn
         try {
             const newToken = this.jwtService.refreshToken(token)
             const { id } = this.jwtService.verifyToken(newToken) as UserDecoded
+            const user_id = id
             const expirationTime = this.jwtService.getExpirationTime(newToken)
 
-            await this.sessionService.execute({ user_id: id, token: newToken, ended_at: expirationTime })
+            await this.sessionService.execute({ user_id: user_id, token: newToken, ended_at: expirationTime })
             
             return { newToken }
         } catch (error) {
