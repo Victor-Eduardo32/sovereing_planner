@@ -1,8 +1,8 @@
-import { User } from "../../../../domain/entities/user"
-import { UserGateway } from "../../../../domain/gateway/user.gateway"
-import { HashService } from "../../../../domain/services/hash.service"
-import { UserAlreadyExist } from "../../../exceptions/user-already-exist.exception"
-import { UseCase } from "../../usecase"
+import { User } from "../../../domain/entities/user"
+import { UserGateway } from "../../../domain/gateway/user.gateway"
+import { HashService } from "../../../domain/services/hash.service"
+import { UserAlreadyExist } from "../../exceptions/user-already-exist.exception"
+import { UseCase } from "../usecase"
 
 export type CreateUserInputDto = {
     name: string,

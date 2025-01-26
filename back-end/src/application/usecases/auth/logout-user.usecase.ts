@@ -1,4 +1,4 @@
-import { UseCase } from "../../usecase";
+import { UseCase } from "../usecase" 
 
 export type LogoutUserInputDto = null
 

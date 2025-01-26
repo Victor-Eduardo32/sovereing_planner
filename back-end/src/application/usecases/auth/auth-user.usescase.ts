@@ -1,10 +1,10 @@
-import { User } from "../../../../domain/entities/user"
-import { UserGateway } from "../../../../domain/gateway/user.gateway"
-import { HashService } from "../../../../domain/services/hash.service"
-import { JwtService } from "../../../../domain/services/jwt.service"
-import { UserNotFoundException } from "../../../exceptions/user-not-found.exception"
-import { CreateSessionUseCase } from "../../session/create-session/create-session.usecase" 
-import { UseCase } from "../../usecase"
+import { User } from "../../../domain/entities/user"
+import { UserGateway } from "../../../domain/gateway/user.gateway"
+import { HashService } from "../../../domain/services/hash.service"
+import { JwtService } from "../../../domain/services/jwt.service"
+import { UserNotFoundException } from "../../exceptions/user-not-found.exception"
+import { CreateSessionUseCase } from "../session/create-session.usecase"
+import { UseCase } from "../usecase"
 
 export type AuthUserInputDto = {
     email: string,

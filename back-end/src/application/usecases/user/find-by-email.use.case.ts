@@ -1,7 +1,7 @@
-import { User } from "../../../../domain/entities/user";
-import { UserGateway } from "../../../../domain/gateway/user.gateway";
-import { UserNotFoundException } from "../../../exceptions/user-not-found.exception";
-import { UseCase } from "../../usecase";
+import { User } from "../../../domain/entities/user";
+import { UserGateway } from "../../../domain/gateway/user.gateway";
+import { UserNotFoundException } from "../../exceptions/user-not-found.exception";
+import { UseCase } from "../usecase";
 
 export type FindByEmailInputDto = {
     email: string

@@ -1,9 +1,9 @@
-import { AuthUserUseCase } from "./application/usecases/auth/auth-user/auth-user.usescase";
-import { LogoutUserUseCase } from "./application/usecases/auth/logout-user/logout-user.usecase";
-import { CreateSessionUseCase } from "./application/usecases/session/create-session/create-session.usecase"; 
-import { RefreshSessionTokenUseCase } from "./application/usecases/session/refresh-session-token/refresh-session-token";
-import { ValidateSessionTokenUseCase } from "./application/usecases/session/validate-session-token/validate-session-token.usecase"; 
-import { CreateUserUseCase } from "./application/usecases/user/create-user/create-user.usecase";
+import { AuthUserUseCase } from "./application/usecases/auth/auth-user.usescase";
+import { LogoutUserUseCase } from "./application/usecases/auth/logout-user.usecase";
+import { CreateSessionUseCase } from "./application/usecases/session/create-session.usecase"; 
+import { RefreshSessionTokenUseCase } from "./application/usecases/session/refresh-session-token";
+import { ValidateSessionTokenUseCase } from "./application/usecases/session/validate-session-token.usecase"; 
+import { CreateUserUseCase } from "./application/usecases/user/create-user.usecase";
 import { ApiExpress } from "./infra/api/express/api.express";
 import { AuthUserRoute } from "./infra/api/express/routes/auth/auth-user.express.route";
 import { LogoutUserRoute } from "./infra/api/express/routes/auth/logout-user.express.route";

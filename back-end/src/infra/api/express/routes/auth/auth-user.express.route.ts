@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AuthUserOutputDto, AuthUserUseCase } from "../../../../../application/usecases/auth/auth-user/auth-user.usescase";
+import { AuthUserOutputDto, AuthUserUseCase } from "../../../../../application/usecases/auth/auth-user.usescase";
 import { HttpMethod, Route } from "../route";
 
 export type AuthUserResponseDto = {

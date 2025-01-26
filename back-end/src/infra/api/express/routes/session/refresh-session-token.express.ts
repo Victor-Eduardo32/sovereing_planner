@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { RefreshSessionTokenOutputDto, RefreshSessionTokenUseCase } from "../../../../../application/usecases/session/refresh-session-token/refresh-session-token";
+import { RefreshSessionTokenOutputDto, RefreshSessionTokenUseCase } from "../../../../../application/usecases/session/refresh-session-token";
 import { HttpMethod, Route } from "../route";
 
 export type RefreshSessionTokenResponseDto = {

@@ -1,7 +1,7 @@
-import { JwtService } from "../../../../domain/services/jwt.service";
-import { UserDecoded } from "../../../../domain/types/userDecoded";
-import { UseCase } from "../../usecase";
-import { CreateSessionUseCase } from "../create-session/create-session.usecase";
+import { JwtService } from "../../../domain/services/jwt.service";
+import { UserDecoded } from "../../../domain/types/userDecoded";
+import { UseCase } from "../usecase";
+import { CreateSessionUseCase } from "./create-session.usecase";
 
 export type RefreshSessionTokenInputDto = {
     token: string

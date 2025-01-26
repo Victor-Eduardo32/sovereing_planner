@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { ValidateSessionTokenOutputDto, ValidateSessionTokenUseCase } from "../../../../../application/usecases/session/validate-session-token/validate-session-token.usecase"
+import { ValidateSessionTokenOutputDto, ValidateSessionTokenUseCase } from "../../../../../application/usecases/session/validate-session-token.usecase"
 import { HttpMethod, Route } from "../route"
 
 export type ValidateTokenExpirationResponseDto = {
