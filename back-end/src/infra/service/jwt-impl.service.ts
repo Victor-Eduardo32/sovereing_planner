@@ -19,7 +19,7 @@ export class JwtServiceImpl implements JwtService {
 
     public verifyToken(token: string): JwtPayload | null {
         try {
-            const decoded = jwt.verify(token, this.secret)
+            const decoded = jwt.verify(token, this.secret, { ignoreExpiration: true })
 
             if(typeof decoded === 'string') {
                 return null
@@ -43,5 +43,15 @@ export class JwtServiceImpl implements JwtService {
         }
 
         return undefined
+    }
+
+    public refreshToken(token: string): string {
+        const decodedToken = this.verifyToken(token)
+
+        const { id, email } = decodedToken as JwtPayload & { id: string, email: string }
+
+        const newToken = this.generateToken({ id, email })
+
+        return newToken
     }
 }

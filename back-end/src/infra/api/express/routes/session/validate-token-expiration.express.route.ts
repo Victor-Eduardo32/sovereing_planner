@@ -32,8 +32,8 @@ export class ValidateTokenExpirationTimeRoute implements Route {
 
                 response.status(200).send(responseBody)
             } catch (error) {
-                console.error('Erro na validação do token:', error);
                 response.status(401).send({ valid: false })
+                next(error)
             }
         }   
     }
