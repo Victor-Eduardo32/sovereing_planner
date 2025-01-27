@@ -20,7 +20,9 @@ export class LogoutUserRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
-                await this.logoutUserService.execute(null)
+                const token = request.cookies.authToken
+
+                await this.logoutUserService.execute({ token })
                 response.clearCookie('authToken')
                 response.status(200).send('Logout successful')
             } catch (error) {

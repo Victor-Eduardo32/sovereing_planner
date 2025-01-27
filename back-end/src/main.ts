@@ -2,6 +2,7 @@ import { AuthUserUseCase } from "./application/usecases/auth/auth-user.usescase"
 import { LogoutUserUseCase } from "./application/usecases/auth/logout-user.usecase";
 import { CreateSessionUseCase } from "./application/usecases/session/create-session.usecase"; 
 import { RefreshSessionTokenUseCase } from "./application/usecases/session/refresh-session-token.usecase";
+import { UpdateSessionDataUseCase } from "./application/usecases/session/update-session-data.usecase";
 import { ValidateSessionTokenUseCase } from "./application/usecases/session/validate-session-token.usecase"; 
 import { CreateUserUseCase } from "./application/usecases/user/create-user.usecase";
 import { ApiExpress } from "./infra/api/express/api.express";
@@ -25,10 +26,11 @@ function main() {
 
     const createUserUseCase = CreateUserUseCase.create(userRepository, hashService)
     const createSessionUseCase = CreateSessionUseCase.create(sessionRepository)
+    const updateSessionDataUseCase = UpdateSessionDataUseCase.create(sessionRepository, jwtService)
     const validateSessionToken = ValidateSessionTokenUseCase.create(sessionRepository, jwtService)
     const refreshSessionTokenUseCase = RefreshSessionTokenUseCase.create(createSessionUseCase, jwtService)
     const authUserUseCase = AuthUserUseCase.create(userRepository, hashService, jwtService, createSessionUseCase)
-    const logoutUserUseCase = LogoutUserUseCase.create()
+    const logoutUserUseCase = LogoutUserUseCase.create(updateSessionDataUseCase)
 
     const createUserRoute = CreateUserRoute.create(createUserUseCase)
     const authUserRoute = AuthUserRoute.create(authUserUseCase)

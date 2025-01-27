@@ -12,6 +12,10 @@ export class Session {
         })
     }
 
+    public static with(props: SessionProps) {
+        return new Session(props)
+    }
+
     public get id() {
         return this.props.id
     }
