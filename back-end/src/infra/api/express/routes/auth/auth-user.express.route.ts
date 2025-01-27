@@ -3,6 +3,12 @@ import { AuthUserOutputDto, AuthUserUseCase } from "../../../../../application/u
 import { HttpMethod, Route } from "../route";
 
 export type AuthUserResponseDto = {
+    user: {
+        id: string,
+        name: string,
+        email: string,
+        created_at: Date
+    },
     token: string
 }
 
@@ -15,7 +21,7 @@ export class AuthUserRoute implements Route {
 
     public static create(authUserService: AuthUserUseCase) {
         return new AuthUserRoute(
-            "/oauth/token",
+            "/oauth",
             HttpMethod.POST,
             authUserService,
         )
@@ -52,8 +58,16 @@ export class AuthUserRoute implements Route {
     }
 
     private present(input: AuthUserOutputDto): AuthUserResponseDto {
-        const token = {token: input.token}
+        const output =  {
+            user: {
+                id: input.user.id,
+                name: input.user.name,
+                email: input.user.email,
+                created_at: input.user.created_at
+            },
+            token: input.token
+        }
 
-        return token
+        return output
     }
 }
