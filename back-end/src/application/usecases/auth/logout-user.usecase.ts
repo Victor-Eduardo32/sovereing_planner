@@ -9,15 +9,15 @@ export type LogoutUserOutputDto = null
 
 export class LogoutUserUseCase implements UseCase<LogoutUserInputDto, LogoutUserOutputDto> {
     private constructor(
-        private readonly UpdateSessionDataService: UpdateSessionDataUseCase
+        private readonly UpdateSessionDataUseCase: UpdateSessionDataUseCase
     ){}
 
-    public static create(UpdateSessionDataService: UpdateSessionDataUseCase) {
-        return new LogoutUserUseCase(UpdateSessionDataService)
+    public static create(UpdateSessionDataUseCase: UpdateSessionDataUseCase) {
+        return new LogoutUserUseCase(UpdateSessionDataUseCase)
     }
 
     public async execute({ token }: LogoutUserInputDto): Promise<LogoutUserOutputDto> {
-        await this.UpdateSessionDataService.execute({ token })
+        await this.UpdateSessionDataUseCase.execute({ token })
         
         return null
     }

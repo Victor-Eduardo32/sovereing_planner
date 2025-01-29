@@ -26,11 +26,11 @@ export class AuthUserUseCase implements UseCase<AuthUserInputDto, AuthUserOutput
         private readonly userGateway: UserGateway,
         private readonly hashService: HashService,
         private readonly jwtService: JwtService,
-        private readonly sessionService: CreateSessionUseCase
+        private readonly createSessionUseCase: CreateSessionUseCase
     ){}
 
-    public static create(userGateway: UserGateway, hashService: HashService, jwtService: JwtService, sessionService: CreateSessionUseCase) {
-        return new AuthUserUseCase(userGateway, hashService, jwtService, sessionService)
+    public static create(userGateway: UserGateway, hashService: HashService, jwtService: JwtService, createSessionUseCase: CreateSessionUseCase) {
+        return new AuthUserUseCase(userGateway, hashService, jwtService, createSessionUseCase)
     }
 
     public async execute({ email, password }: AuthUserInputDto): Promise<AuthUserOutputDto> {
@@ -47,7 +47,7 @@ export class AuthUserUseCase implements UseCase<AuthUserInputDto, AuthUserOutput
 
             const expirationTime = this.jwtService.getExpirationTime(token)
             
-            await this.sessionService.execute({ user_id: aUser.id, token: token, ended_at: expirationTime })
+            await this.createSessionUseCase.execute({ user_id: aUser.id, token: token, ended_at: expirationTime })
 
             const output = this.presentOutput(aUser, token)
     

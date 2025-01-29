@@ -13,12 +13,12 @@ export type RefreshSessionTokenOutputDto = {
 
 export class RefreshSessionTokenUseCase implements UseCase<RefreshSessionTokenInputDto, RefreshSessionTokenOutputDto> {
     private constructor(
-        private readonly sessionService: CreateSessionUseCase,
+        private readonly sessionUseCase: CreateSessionUseCase,
         private readonly jwtService: JwtService
     ){}
 
-    public static create(sessionService: CreateSessionUseCase, jwtService: JwtService) {
-        return new RefreshSessionTokenUseCase(sessionService, jwtService);
+    public static create(sessionUseCase: CreateSessionUseCase, jwtService: JwtService) {
+        return new RefreshSessionTokenUseCase(sessionUseCase, jwtService);
     }
 
     public async execute({ token }: RefreshSessionTokenInputDto): Promise<RefreshSessionTokenOutputDto> {
@@ -28,7 +28,7 @@ export class RefreshSessionTokenUseCase implements UseCase<RefreshSessionTokenIn
             const user_id = id
             const expirationTime = this.jwtService.getExpirationTime(newToken)
 
-            await this.sessionService.execute({ user_id: user_id, token: newToken, ended_at: expirationTime })
+            await this.sessionUseCase.execute({ user_id: user_id, token: newToken, ended_at: expirationTime })
             
             return { newToken }
         } catch (error) {
