@@ -1,6 +1,5 @@
 import { boot } from 'quasar/wrappers';
 import axiosApi, { AxiosInstance } from 'axios';
-import { Cookies } from 'quasar';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -16,14 +15,6 @@ declare module '@vue/runtime-core' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const axios = axiosApi.create({ baseURL: 'http://localhost:8000', withCredentials: true });
-
-axios.interceptors.request.use(config => {
-  const token = Cookies.get('XSRF-TOKEN');
-  if (token) {
-      config.headers['X-XSRF-TOKEN'] = token;
-  }
-  return config;
-});
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

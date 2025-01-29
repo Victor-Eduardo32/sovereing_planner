@@ -1,18 +1,13 @@
-import { Cookies } from 'quasar';
-import { useUserStore } from 'src/stores/UserStore';
-import { computed } from 'vue';
+import { useAuthStore } from 'src/stores/AuthStore';
 import { useRouter } from 'vue-router';
 
 export function useRedirect() {
   const router = useRouter();
-  const user = computed(() => {
-    return useUserStore();
-  });
+  const authStore = useAuthStore()
 
   const redirectToDashboard = async (): Promise<void> => {
-    if (!user.value.getUserData.id) await user.value.getUser();
-    if (Cookies.get('XSRF-TOKEN') && user.value.getUserData.id) {
-      router.push('/user');
+    if (authStore.isAuthenticated) {
+      router.push('/dashboard');
     }
   };
 

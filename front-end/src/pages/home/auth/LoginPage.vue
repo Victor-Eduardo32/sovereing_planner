@@ -1,35 +1,34 @@
 <script lang="ts" setup>
 import { useLoading } from 'src/composables/useLoading';
 import { useRedirect } from 'src/composables/useRedirect';
-import { useUserStore } from 'src/stores/UserStore';
-import { LoginForm } from 'src/types/components/user/types';
+import { useAuthStore } from 'src/stores/AuthStore';
+import { LoginForm } from 'src/types/components/auth/types';
 import { computed, onBeforeMount, ref } from 'vue';
 
-const user = computed(() => {
-  return useUserStore();
-});
+const authStore = useAuthStore()
+
+const errorMessage = computed(() => authStore.errorMessage)
 
 const { redirectToDashboard } = useRedirect();
 const { loading, endLoading } = useLoading();
 
-const data = ref<LoginForm>({
-  email: '',
-  password: '',
-});
-
 const remember = ref<boolean>(false);
-const isPwd = ref<boolean>(false);
+const isPasswordVisible = ref<boolean>(false);
 const isLoading = ref<boolean>(true);
 
+const loginForm = ref<LoginForm>({
+  email: '',
+  password: '',
+  remember: remember.value
+});
+
 const login = async (): Promise<void> => {
-  await user.value.formLogin(data.value);
-  await user.value.getUser();
+  await authStore.login(loginForm.value)
   await redirectToDashboard();
 };
 
 onBeforeMount(async () => {
   await loading();
-  await user.value.getXSRFToken();
   await redirectToDashboard();
   await endLoading();
   isLoading.value = false;
@@ -55,19 +54,20 @@ onBeforeMount(async () => {
               >
             </p>
           </div>
-          <p class="incorrect-data">{{ user.error_message }}</p>
+          <p class="incorrect-data">{{ errorMessage }}</p>
           <div class="q-ma-none">
             <span class="text-bold">Email Address</span>
             <q-input
               class="q-mt-sm"
               type="email"
-              v-model="data.email"
+              v-model="loginForm.email"
               outlined
               placeholder="you@example.com"
               :dense="false"
               :rules="[
                 (val) => (val && val.length > 0) || 'Please type something',
               ]"
+              autocomplete="username"
             />
           </div>
 
@@ -81,9 +81,9 @@ onBeforeMount(async () => {
             </div>
 
             <q-input
-              :type="isPwd ? 'password' : 'text'"
+              :type="isPasswordVisible ? 'text' : 'password'"
               outlined
-              v-model="data.password"
+              v-model="loginForm.password"
               class="q-mt-sm"
               placeholder="Enter 8 caracters or more"
               :dense="false"
@@ -92,12 +92,13 @@ onBeforeMount(async () => {
                   (val && val.length >= 8) ||
                   'Please, enter 8 caracters or more',
               ]"
+              autocomplete="current-password"
             >
               <template v-slot:append>
                 <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwd"
+                  @click="isPasswordVisible = !isPasswordVisible"
                 />
               </template>
             </q-input>
@@ -123,20 +124,12 @@ onBeforeMount(async () => {
 
         <div class="login-options justify-center flex no-wrap q-mb-md">
           <q-btn
-            class="google-login flex no-wrap justify-center items-center rounded-borders q-mr-xs"
+            class="google-login flex no-wrap justify-center items-center rounded-borders"
           >
             <q-avatar>
               <img src="src/assets/google.svg" />
             </q-avatar>
             <span class="q-ml-xs text-bold">Google</span>
-          </q-btn>
-          <q-btn
-            class="facebook-login flex no-wrap justify-center items-center rounded-borders q-ml-xs"
-          >
-            <q-avatar>
-              <img src="src/assets/facebook.svg" />
-            </q-avatar>
-            <span class="q-ml-xs text-bold">Facebook</span>
           </q-btn>
         </div>
       </div>
@@ -189,18 +182,6 @@ onBeforeMount(async () => {
     .q-avatar {
       width: 35px;
       height: 35px;
-    }
-  }
-
-  .facebook-login {
-    color: $facebook;
-    border: 2px solid $facebook;
-    width: 150px;
-    font-size: 12px;
-
-    .q-avatar {
-      width: 25px;
-      height: 25px;
     }
   }
 

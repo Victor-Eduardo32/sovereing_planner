@@ -7,8 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import { computed } from 'vue';
-import { useUserStore } from 'src/stores/UserStore';
+import { useAuthStore } from 'src/stores/AuthStore';
 
 /*
  * If not building with SSR mode, you can
@@ -34,11 +33,13 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  Router.beforeEach((to) => {
-    const userStore = computed(() => { return useUserStore() })
-    if (to.meta.requiresAuth && !userStore.value.getUserData.id) {
-      return {
-        path: '/login'
+  Router.beforeEach(async (to) => {
+    const authStore = useAuthStore()
+    if(to.path.startsWith('/dashboard')) {
+      await authStore.validateTokenExpirationTime()
+
+      if(!authStore.isAuthenticated) {
+        Router.push('/login')
       }
     }
   })

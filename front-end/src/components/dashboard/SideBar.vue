@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import { useUserStore } from 'src/stores/UserStore';
-import { computed, ref } from 'vue';
+import { useAuthStore } from 'src/stores/AuthStore';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const user = computed(() => {
-  return useUserStore();
-})
-const router = useRouter();
+const router = useRouter()
+const authStore = useAuthStore()
 
 const logout = async (): Promise<void> => {
-  await user.value.logout();
-  router.push('/');
+  await authStore.logout();
+  router.push('/login')
 }
 
 interface MenuItem {
@@ -36,11 +34,11 @@ const menuList = ref<MenuItem[]>([
     children: [
       {
         name: 'General',
-        url: '/user',
+        url: '/dashboard',
       },
       {
         name: 'List',
-        url: '/user/tasks/list',
+        url: '/dashboard/tasks/list',
       },
     ],
   },
@@ -51,7 +49,7 @@ const menuList = ref<MenuItem[]>([
     children: [
       {
         name: 'General',
-        url: '/user',
+        url: '/dashboard',
       },
       {
         name: 'Expenses',
@@ -59,7 +57,7 @@ const menuList = ref<MenuItem[]>([
       },
       {
         name: 'Savings',
-        url: '/user',
+        url: '/dashboard',
       },
     ],
   },

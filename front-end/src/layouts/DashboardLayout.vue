@@ -1,12 +1,7 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import SideBar from 'components/dashboard/SideBar.vue';
 import TopBar from 'components/dashboard/TopBar.vue';
-import { useUserStore } from 'src/stores/UserStore';
-
-const user = computed(() => {
-  return useUserStore();
-})
 
 const drawer = ref<boolean>(false);
 const win_width = ref<number>(window.innerWidth);
@@ -16,8 +11,6 @@ const verifyWindowWidth = (): void => {
 }
 
 onBeforeMount(async () => {
-  await user.value.getXSRFToken();
-  await user.value.getUser();
   window.addEventListener('resize', verifyWindowWidth);
 });
 

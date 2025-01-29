@@ -11,16 +11,16 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'login',
-        component: () => import('pages/home/user/LoginPage.vue')
+        component: () => import('pages/home/auth/LoginPage.vue')
       },
       {
         path: 'register',
-        component: () => import('pages/home/user/RegisterPage.vue')
+        component: () => import('pages/home/auth/RegisterPage.vue')
       }
     ],
   },
   {
-    path: '/user',
+    path: '/dashboard',
     component: () => import('layouts/DashboardLayout.vue'),
     meta: { requiresAuth: true },
     children: [

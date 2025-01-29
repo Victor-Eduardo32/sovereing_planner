@@ -1,39 +1,39 @@
 <script lang="ts" setup>
 import { useLoading } from 'src/composables/useLoading';
 import { useRedirect } from 'src/composables/useRedirect';
-import { useUserStore } from 'src/stores/UserStore';
-import { RegisterForm } from 'src/types/components/user/types';
-import { computed, onBeforeMount, ref } from 'vue';
+import { useAuthStore } from 'src/stores/AuthStore';
+import { RegisterForm } from 'src/types/components/auth/types';
+import { onBeforeMount, ref, watch } from 'vue';
 
-const user = computed(() => {
-  return useUserStore();
-});
+const authStore = useAuthStore()
 
 const { redirectToDashboard } = useRedirect();
 const { loading, endLoading } = useLoading();
 
-// const differentPass = ref<string>('As senhas não batem');
-
-const data = ref<RegisterForm>({
+const registerForm = ref<RegisterForm>({
   name: '',
   email: '',
-  password: '',
-  password_confirmation: '',
+  password: ''
 });
 
-const isPwd = ref<boolean>(false);
+const passwordConfirmation = ref<string>('');
+const differentPass = ref<string>('')
+const isPasswordVisible = ref<boolean>(false);
 const isLoading = ref<boolean>(true);
 
 const register = async (): Promise<void> => {
-  if (data.value.password === data.value.password_confirmation) {
-    await user.value.formRegister(data.value);
+  if (registerForm.value.password === passwordConfirmation.value) {
+    await authStore.register(registerForm.value)
     await redirectToDashboard();
   }
 };
 
+watch([() => registerForm.value.password, () => passwordConfirmation.value], () => {
+  differentPass.value = registerForm.value.password !== passwordConfirmation.value ? 'Password are not the same' : ''
+})
+
 onBeforeMount(async () => {
   await loading();
-  await user.value.getXSRFToken();
   await redirectToDashboard();
   await endLoading();
   isLoading.value = false;
@@ -65,13 +65,14 @@ onBeforeMount(async () => {
             <q-input
               class="q-mt-sm"
               type="text"
-              v-model="data.name"
+              v-model="registerForm.name"
               outlined
               placeholder="Your name"
               :dense="false"
               :rules="[
                 (val) => (val && val.length > 0) || 'Please type something',
               ]"
+              autocomplete="username"
             />
           </div>
 
@@ -80,13 +81,14 @@ onBeforeMount(async () => {
             <q-input
               class="q-mt-sm"
               type="email"
-              v-model="data.email"
+              v-model="registerForm.email"
               outlined
               placeholder="you@example.com"
               :dense="false"
               :rules="[
                 (val) => (val && val.length > 0) || 'Please type something',
               ]"
+              autocomplete="username"
             />
           </div>
 
@@ -94,44 +96,59 @@ onBeforeMount(async () => {
             <span class="text-bold">Password</span>
 
             <q-input
-              type="password"
+              :type="isPasswordVisible ? 'text' : 'password'"
               outlined
-              v-model="data.password"
+              v-model="registerForm.password"
               class="q-mt-sm"
               placeholder="Enter 8 caracters or more"
-              :name="isPwd ? 'visibility_off' : 'visibility'"
+              :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
               :dense="false"
               :rules="[
                 (val) =>
-                  (val && val.length > 8) ||
-                  'Please, enter 8 caracters or more',
-                (val) =>
-                  val === data.password_confirmation ||
-                  'Passwords are not the same',
+                  (val && val.length >= 8) ||
+                  'Please, enter 8 caracters or more'
               ]"
-            />
+              autocomplete="new-password"
+            >
+            <template v-slot:append>
+                <q-icon
+                  :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPasswordVisible = !isPasswordVisible"
+                />
+              </template>
+            </q-input>
           </div>
 
-          <div class="q-ma-none">
+          <div class="q-ma-none q-mb-sm">
             <span class="text-bold">Confirm Password</span>
 
             <q-input
-              type="password"
+              :type="isPasswordVisible ? 'text' : 'password'"
               outlined
-              v-model="data.password_confirmation"
+              v-model="passwordConfirmation"
               class="q-mt-sm"
               placeholder="Enter your password again"
-              :name="isPwd ? 'visibility_off' : 'visibility'"
+              :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
               :dense="false"
               :rules="[
                 (val) =>
-                  (val && val.length > 8) ||
+                  (val && val.length >= 8) ||
                   'Please, enter 8 caracters or more',
                 (val) =>
-                  (val && val === data.password) ||
-                  'Passwords are not the same',
+                  (val && differentPass.length <= 0) ||
+                  differentPass
               ]"
-            />
+              autocomplete="new-password"
+            >
+            <template v-slot:append>
+                <q-icon
+                  :name="isPasswordVisible ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPasswordVisible = !isPasswordVisible"
+                />
+              </template>
+            </q-input>
           </div>
 
           <q-btn
@@ -156,14 +173,6 @@ onBeforeMount(async () => {
               <img src="src/assets/google.svg" />
             </q-avatar>
             <span class="q-ml-xs text-bold">Google</span>
-          </q-btn>
-          <q-btn
-            class="facebook-login flex no-wrap justify-center items-center rounded-borders q-ml-xs"
-          >
-            <q-avatar>
-              <img src="src/assets/facebook.svg" />
-            </q-avatar>
-            <span class="q-ml-xs text-bold">Facebook</span>
           </q-btn>
         </div>
       </div>
@@ -190,6 +199,10 @@ onBeforeMount(async () => {
 
     @media (max-width: 1023px) {
       padding-top: 30px;
+
+      h5 {
+        margin-top: 48px;
+      }
     }
   }
 
@@ -213,17 +226,9 @@ onBeforeMount(async () => {
         width: 35px;
         height: 35px;
       }
-    }
 
-    .facebook-login {
-      color: $facebook;
-      border: 2px solid $facebook;
-      width: 150px;
-      font-size: 12px;
-
-      .q-avatar {
-        width: 25px;
-        height: 25px;
+      @media (max-width: 1023px) {
+        margin-bottom: 24px;
       }
     }
   }
