@@ -27,7 +27,7 @@ function main() {
     const createUserUseCase = CreateUserUseCase.create(userRepository, hashService)
     const createSessionUseCase = CreateSessionUseCase.create(sessionRepository)
     const updateSessionDataUseCase = UpdateSessionDataUseCase.create(sessionRepository, jwtService)
-    const validateSessionToken = ValidateSessionTokenUseCase.create(sessionRepository, jwtService)
+    const validateSessionToken = ValidateSessionTokenUseCase.create(jwtService)
     const refreshSessionTokenUseCase = RefreshSessionTokenUseCase.create(createSessionUseCase, jwtService)
     const authUserUseCase = AuthUserUseCase.create(userRepository, hashService, jwtService, createSessionUseCase)
     const logoutUserUseCase = LogoutUserUseCase.create(updateSessionDataUseCase)

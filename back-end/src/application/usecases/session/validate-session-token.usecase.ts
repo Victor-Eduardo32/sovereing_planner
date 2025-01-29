@@ -12,12 +12,11 @@ export type ValidateSessionTokenOutputDto = {
 
 export class ValidateSessionTokenUseCase implements UseCase<ValidateSessionTokenInputDto, ValidateSessionTokenOutputDto> {
     private constructor(
-        private readonly sessionGateway: SessionGateway, 
         private readonly jwtService: JwtService
     ){}
 
-    public static create(sessionGateway: SessionGateway, jwtService: JwtService) {
-        return new ValidateSessionTokenUseCase(sessionGateway, jwtService)
+    public static create(jwtService: JwtService) {
+        return new ValidateSessionTokenUseCase(jwtService)
     }
 
     public async execute({ token }: ValidateSessionTokenInputDto): Promise<ValidateSessionTokenOutputDto> {
