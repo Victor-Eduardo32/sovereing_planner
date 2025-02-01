@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { useTasksStore } from 'src/stores/TasksStore';
+// import { useTasksStore } from 'src/stores/TasksStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
-import { TaskCheck, TaskList, TaskStateUpdate } from 'src/types/components/tasks/types';
-import { computed, ref, watch } from 'vue';
+import { TaskCheck, TaskList} from 'src/types/components/tasks/types';
+import { ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
-const useTasks = computed(() => {
-  return useTasksStore();
-});
+// const useTasks = computed(() => {
+//   return useTasksStore();
+// });
 
 const checkboxStates = ref<TaskCheck>({
   toDo: [],
@@ -25,7 +25,7 @@ const checkFalse = ref<number>(0);
 const emit = defineEmits(['edit-task']);
 
 const verifyTasks = (tasks: TaskList, stateTask: number): boolean => {
-  return tasks.tasks.some((task) => task.state_task >= stateTask);
+  return tasks.tasks.some((task) => task.state >= stateTask);
 };
 
 // Armazena os ids que são necessário estar marcados caso estejam em um state acima do qual está sendo exibido
@@ -33,17 +33,17 @@ const checkTask = async (tasksList: TaskList[]): Promise<void> => {
   tasksList.forEach((tasks) => {
     tasks.tasks.forEach((task) => {
       if (task.id != null) {
-        if (task.state_task >= 2) {
+        if (task.state >= 2) {
           checkboxStates.value.toDo.push(task.id);
           checkedTasks.value.toDo = checkboxStates.value.toDo;
         }
 
-        if (task.state_task >= 3) {
+        if (task.state >= 3) {
           checkboxStates.value.inProgress.push(task.id);
           checkedTasks.value.inProgress = checkboxStates.value.inProgress;
         }
 
-        if (task.state_task >= 4) {
+        if (task.state >= 4) {
           checkboxStates.value.completed.push(task.id);
           checkedTasks.value.completed = checkboxStates.value.completed;
         }
@@ -83,13 +83,13 @@ const updateTaskState = (
     }
   }
 
-  const data: TaskStateUpdate = {
-    id: checkTrue.value != undefined ? checkTrue.value : checkFalse.value,
-    actionState: checkTrue.value != undefined ? true : false,
-    state: state === 'toDo' ? 1 : state === 'inProgress' ? 2 : 3
-  };
+  // const data: TaskStateUpdate = {
+  //   id: checkTrue.value != undefined ? checkTrue.value : checkFalse.value,
+  //   actionState: checkTrue.value != undefined ? true : false,
+  //   state: state === 'toDo' ? 1 : state === 'inProgress' ? 2 : 3
+  // };
 
-  useTasks.value.updateTaskState(data);
+  // useTasks.value.updateTaskState(data);
 
   checkedTasks.value[state] = checkboxStates.value[state];
 };
@@ -121,7 +121,7 @@ watch(
         "
       >
         <div class="flex justify-between items-center">
-          <span class="text-weight-medium">{{ task_list.title_task_list }}</span>
+          <span class="text-weight-medium">{{ task_list.title }}</span>
           <q-btn
             class="btn-actions"
             flat
@@ -143,7 +143,7 @@ watch(
 
                   <q-item-section>Edit</q-item-section>
                 </q-item>
-                <q-item
+                <!-- <q-item
                   clickable
                   v-close-popup
                   @click.stop="useTasks.destroyTaskList(task_list.id!)"
@@ -153,7 +153,7 @@ watch(
                   </q-item-section>
 
                   <q-item-section>Delete</q-item-section>
-                </q-item>
+                </q-item> -->
               </q-list>
             </q-menu>
           </q-btn>
@@ -162,18 +162,18 @@ watch(
           class="q-my-sm text-wrap"
           style="word-wrap: break-word; color: #637381"
         >
-          {{ task_list.description_task_list }}
+          {{ task_list.description }}
         </p>
         <div
           class="check-group"
           v-for="(task, index) in task_list.tasks"
           :key="index"
         >
-          <template v-if="title == 'To Do' && task.state_task <= 4">
+          <template v-if="title == 'To Do' && task.state <= 4">
             <q-checkbox
               v-model="checkboxStates.toDo"
               :val="task.id"
-              :label="task.name_task"
+              :label="task.name"
               color="primary"
               :class="{
                 'text-strike': checkboxStates.toDo.some(
@@ -183,11 +183,11 @@ watch(
               @click="updateTaskState('toDo', 'inProgress');"
             />
           </template>
-          <template v-if="title == 'In Progress' && task.state_task >= 2">
+          <template v-if="title == 'In Progress' && task.state >= 2">
             <q-checkbox
               v-model="checkboxStates.inProgress"
               :val="task.id"
-              :label="task.name_task"
+              :label="task.name"
               color="primary"
               :class="{
                 'text-strike': checkboxStates.inProgress.some(
@@ -197,11 +197,11 @@ watch(
               @click="updateTaskState('inProgress', 'completed')"
             />
           </template>
-          <template v-if="title == 'Completed' && task.state_task >= 3">
+          <template v-if="title == 'Completed' && task.state >= 3">
             <q-checkbox
               v-model="checkboxStates.completed"
               :val="task.id"
-              :label="task.name_task"
+              :label="task.name"
               color="primary"
               :class="{
                 'text-strike': checkboxStates.completed.some(

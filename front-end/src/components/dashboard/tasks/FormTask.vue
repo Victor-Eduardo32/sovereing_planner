@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useTasksStore } from 'src/stores/TasksStore';
 import { Task, TaskList } from 'src/types/components/tasks/types';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
   editTask: TaskList;
@@ -13,21 +13,19 @@ const editTask = ref<TaskList>(props.editTask);
 
 const emit = defineEmits(['close']);
 
-const userTasks = computed(() => {
-  return useTasksStore();
-});
+const userTasks = useTasksStore();
 
-const title_task_list = ref<string>(
-  editTask.value ? editTask.value.title_task_list : ''
+const title = ref<string>(
+  editTask.value ? editTask.value.title : ''
 );
-const description_task_list = ref<string>(
-  editTask.value ? editTask.value.description_task_list : ''
+const description = ref<string>(
+  editTask.value ? editTask.value.description : ''
 );
 const tasks = ref<Task[]>(editTask.value ? editTask.value.tasks : []);
 const new_task = ref<string>('');
 
 const addTask = async (): Promise<void> => {
-  tasks.value.push({ name_task: new_task.value, state_task: 1 });
+  tasks.value.push({ name: new_task.value, state: 1 });
   new_task.value = '';
 };
 
@@ -36,23 +34,23 @@ const removeTask = async (index: number): Promise<void> => {
 };
 
 const createTaskList = async (): Promise<void> => {
-  await userTasks.value.addTaskList({
-    title_task_list: title_task_list.value,
-    description_task_list: description_task_list.value,
+  await userTasks.addTaskList({
+    title: title.value,
+    description: description.value,
     tasks: tasks.value,
   });
   emit('close');
 };
 
-const updateTaskList = async (): Promise<void> => {
-  await userTasks.value.updateTaskList({
-    id: editTask.value.id,
-    title_task_list: title_task_list.value,
-    description_task_list: description_task_list.value,
-    tasks: tasks.value,
-  });
-  emit('close');
-};
+// const updateTaskList = async (): Promise<void> => {
+//   await userTasks.value.updateTaskList({
+//     id: editTask.value.id,
+//     title: title.value,
+//     description: description.value,
+//     tasks: tasks.value,
+//   });
+//   emit('close');
+// };
 </script>
 
 <template>
@@ -66,14 +64,14 @@ const updateTaskList = async (): Promise<void> => {
         <q-input
           class="input-form bg-white"
           outlined
-          v-model="title_task_list"
+          v-model="title"
           placeholder="Enter task title"
         />
       </div>
       <div class="q-mb-md">
         <p class="text-bold q-mb-sm">Task description</p>
         <q-input
-          v-model="description_task_list"
+          v-model="description"
           class="input-form bg-white"
           outlined
           type="textarea"
@@ -105,7 +103,7 @@ const updateTaskList = async (): Promise<void> => {
           :key="index"
         >
           <q-input
-            v-model="task.name_task"
+            v-model="task.name"
             class="input-form bg-white q-mr-sm"
             outlined
             readonly
@@ -155,7 +153,7 @@ const updateTaskList = async (): Promise<void> => {
         </q-file>
       </div>
       <div>
-        <q-btn
+        <!-- <q-btn
           v-if="editTask.id != undefined"
           class="add-task bg-purple text-white"
           icon="add"
@@ -164,9 +162,8 @@ const updateTaskList = async (): Promise<void> => {
           no-caps
           style="width: 100%"
           @click="updateTaskList"
-        />
+        /> -->
         <q-btn
-          v-else
           class="add-task bg-purple text-white"
           icon="add"
           type="submit"

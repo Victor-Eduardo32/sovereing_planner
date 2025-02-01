@@ -1,13 +1,13 @@
 export type Task = {
   id?: number,
-  name_task: string,
-  state_task: number
+  name: string,
+  state: number
 }
 
 export type TaskList = {
   id?: number,
-  title_task_list: string,
-  description_task_list: string,
+  title: string,
+  description: string,
   tasks: Task[]
 }
 

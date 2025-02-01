@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, onMounted, ref } from 'vue';
-import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
+// import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
 import FormTask from 'src/components/dashboard/tasks/FormTask.vue';
-import { useTasksStore } from 'src/stores/TasksStore';
+// import { useTasksStore } from 'src/stores/TasksStore';
 import { TaskList } from 'src/types/components/tasks/types';
 
-const useTasks = computed(() => {
-  return useTasksStore();
-});
+// const useTasks = computed(() => {
+//   return useTasksStore();
+// });
 
-const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
+// const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
 const add_task = ref<boolean>(false);
 const edit_task = ref<boolean>(false);
-const edit_taskList = ref<TaskList>({id: undefined, title_task_list: '', description_task_list: '', tasks:[]});
+const edit_taskList = ref<TaskList>({id: undefined, title: '', description: '', tasks:[]});
 const grid_layout = ref<boolean>(true);
 const list_layout = ref<boolean>(false);
 const win_width = ref<number>(window.innerWidth);
 
 onMounted(async () => {
-  await useTasks.value.setAllTasksList();
+  // await useTasks.value.setAllTasksList();
   await verifyWindowWidth();
   window.addEventListener('resize', verifyWindowWidth);
 });
@@ -36,16 +36,16 @@ const verifyWindowWidth = async (): Promise<void> => {
   }
 };
 
-const findTaskList = (id: number): void => {
-  const foundTaskList = useTasks.value.getAllTasksList.find((taskList) => taskList.id == id);
-  if (foundTaskList) {
-    edit_taskList.value = foundTaskList;
-    edit_task.value = true;
-  } else {
-    // Lidar com o caso em que o taskList não foi encontrado
-    console.error(`TaskList com id ${id} não encontrado.`);
-  }
-}
+// const findTaskList = (id: number): void => {
+//   const foundTaskList = useTasks.value.getAllTasksList.find((taskList) => taskList.id == id);
+//   if (foundTaskList) {
+//     edit_taskList.value = foundTaskList;
+//     edit_task.value = true;
+//   } else {
+//     // Lidar com o caso em que o taskList não foi encontrado
+//     console.error(`TaskList com id ${id} não encontrado.`);
+//   }
+// }
 </script>
 
 <template>
@@ -100,7 +100,7 @@ const findTaskList = (id: number): void => {
                     icon="add"
                     label="Add Task"
                     no-caps
-                    @click="(add_task = true), (edit_taskList = {id: undefined, title_task_list: '', description_task_list: '', tasks:[]})"
+                    @click="(add_task = true), (edit_taskList = {id: undefined, title: '', description: '', tasks:[]})"
                   />
                 </div>
               </div>
@@ -112,13 +112,13 @@ const findTaskList = (id: number): void => {
             class="flex justify-between"
             style="width: 100%"
           >
-            <task-file
+            <!-- <task-file
               :titles="titles"
               :tasks-list="useTasks.getAllTasksList"
               @edit-task="findTaskList"
               :grid-layout="grid_layout"
               :list-layout="list_layout"
-            />
+            /> -->
           </div>
         </div>
       </div>
