@@ -29,3 +29,28 @@ model Session {
   @@map("sessions")
   @@index([user_id])
 }
+
+model TaskList {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  tasks Task[]
+  
+  @@map("task_lists")
+}
+
+model Task {
+  id Int @id @default(autoincrement())
+  task_list_id Int
+  task_list TaskList @relation(fields: [task_list_id], references: [id])
+  name String
+  state Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  
+  @@map("tasks")
+  @@index([task_list_id])
+}
+
