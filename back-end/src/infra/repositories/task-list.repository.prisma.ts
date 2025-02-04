@@ -29,4 +29,26 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
             throw new Error("Error on task list repository prisma.")
         }
     }
+
+    public async update(taskList: TaskList): Promise<TaskList> {
+        try {
+            const data = {
+                title: taskList.title,
+                description: taskList.description,
+                updated_at: taskList.updated_at
+            }
+
+            const aTaskList = await this.prismaClient.taskList.update({
+                where: {
+                    id: taskList.id
+                },
+                data: data
+            }) as TaskList
+
+            return aTaskList
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on task list repository prisma.")
+        }
+    }
 }   

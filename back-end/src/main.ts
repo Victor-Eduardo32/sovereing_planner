@@ -5,7 +5,9 @@ import { RefreshSessionTokenUseCase } from "./application/usecases/session/refre
 import { UpdateSessionDataUseCase } from "./application/usecases/session/update-session-data.usecase";
 import { ValidateSessionTokenUseCase } from "./application/usecases/session/validate-session-token.usecase"; 
 import { CreateTaskListUseCase } from "./application/usecases/task-list/create-task-list.usecase";
+import { UpdateTaskListUseCase } from "./application/usecases/task-list/update-task-list.usecase";
 import { CreateTaskUseCase } from "./application/usecases/task/create-task.usecase";
+import { UpdateTaskUseCase } from "./application/usecases/task/update-task.usecase";
 import { CreateUserUseCase } from "./application/usecases/user/create-user.usecase";
 import { ApiExpress } from "./infra/api/express/api.express";
 import { AuthUserRoute } from "./infra/api/express/routes/auth/auth-user.express.route";
@@ -13,6 +15,7 @@ import { LogoutUserRoute } from "./infra/api/express/routes/auth/logout-user.exp
 import { RefreshSessionTokenRoute } from "./infra/api/express/routes/session/refresh-session-token.express.route";
 import { ValidateSessionTokenRoute } from "./infra/api/express/routes/session/validate-session-token.express.route";
 import { CreateTaskListRoute } from "./infra/api/express/routes/task-list/create-task-list.express.route";
+import { UpdateTaskListRoute } from "./infra/api/express/routes/task-list/update-task-list.express.route";
 import { CreateUserRoute } from "./infra/api/express/routes/user/create-user.express.route";
 import { SessionRepositoryPrisma } from "./infra/repositories/session.repository.prisma";
 import { TaskListRepositoryPrisma } from "./infra/repositories/task-list.repository.prisma";
@@ -39,7 +42,9 @@ function main() {
     const authUserUseCase = AuthUserUseCase.create(userRepository, hashService, jwtService, createSessionUseCase)
     const logoutUserUseCase = LogoutUserUseCase.create(updateSessionDataUseCase)
     const createTaskUseCase = CreateTaskUseCase.create(taskRepository)
+    const updateTaskUseCase = UpdateTaskUseCase.create(taskRepository)
     const createTaskListUseCase = CreateTaskListUseCase.create(taskListRepository, createTaskUseCase)
+    const updateTaskListUseCase = UpdateTaskListUseCase.create(taskListRepository, updateTaskUseCase)
 
     const createUserRoute = CreateUserRoute.create(createUserUseCase)
     const authUserRoute = AuthUserRoute.create(authUserUseCase)
@@ -47,6 +52,7 @@ function main() {
     const refreshSessionTokenRoute = RefreshSessionTokenRoute.create(refreshSessionTokenUseCase)
     const logoutUserRoute = LogoutUserRoute.create(logoutUserUseCase)
     const createTaskListRoute = CreateTaskListRoute.create(createTaskListUseCase)
+    const updateTaskListRoute = UpdateTaskListRoute.create(updateTaskListUseCase)
 
     const port = 8000
     const api = ApiExpress.create([
@@ -55,7 +61,8 @@ function main() {
         validateSessionTokenRoute, 
         refreshSessionTokenRoute, 
         logoutUserRoute, 
-        createTaskListRoute
+        createTaskListRoute,
+        updateTaskListRoute
     ])
     api.start(port)
 }
