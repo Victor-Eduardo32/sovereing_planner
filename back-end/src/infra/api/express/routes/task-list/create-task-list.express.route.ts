@@ -4,8 +4,11 @@ import { HttpMethod, Route } from "../route";
 import { Task } from "../../../../../domain/entities/task";
 
 export type CreateTaskListReponseDto = {
-    title: string, 
-    description: string, 
+    id: number,
+    title: string,
+    description: string,
+    created_at: Date,
+    updated_at: Date
     tasks: Task[]
 }
 
@@ -56,8 +59,11 @@ export class CreateTaskListRoute implements Route {
 
     private present(input: CreateTaskListOutputDto): CreateTaskListReponseDto {
         const response = {
+            id: input.id,
             title: input.title, 
             description: input.description, 
+            created_at: input.created_at,
+            updated_at: input.updated_at,
             tasks: input.tasks
         }
 

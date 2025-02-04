@@ -31,7 +31,10 @@ export class CreateTaskListUseCase implements UseCase<CreateTaskListInputDto, Cr
 
     public async execute({ title, description, tasks }: CreateTaskListInputDto): Promise<CreateTaskListOutputDto> {
         try {
-            const aTaskList = TaskList.create(title, description)
+            const created_at = new Date();
+            const updated_at = new Date();
+
+            const aTaskList = TaskList.create(title, description, created_at, updated_at)
 
             const taskList = await this.taskListGateway.save(aTaskList)
 

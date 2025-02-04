@@ -28,7 +28,10 @@ export class CreateTaskUseCase implements UseCase<CreateTaskInputDto, CreateTask
 
     public async execute({ name, state, task_list_id }: CreateTaskInputDto): Promise<CreateTaskOutputDto> {
         try {
-            const aTask = Task.create(task_list_id, name, state);
+            const created_at = new Date();
+            const updated_at = new Date();
+
+            const aTask = Task.create(task_list_id, name, state, created_at, updated_at);
 
             const task = await this.taskGateway.save(aTask)
 
