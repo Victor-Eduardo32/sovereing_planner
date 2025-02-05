@@ -6,6 +6,7 @@ import { UseCase } from "../usecase";
 
 export type UpdateTaskListInputDto = {
     id: number,
+    user_id: string,
     title: string,
     description: string,
     created_at: Date,
@@ -31,17 +32,18 @@ export class UpdateTaskListUseCase implements UseCase<UpdateTaskListInputDto, Up
         return new UpdateTaskListUseCase(taskListGateway, updateTaskUseCase)
     }
 
-    public async execute({ id, title, description, tasks, created_at }: UpdateTaskListInputDto): Promise<UpdateTaskListOutputDto> {
+    public async execute({ id, user_id, title, description, tasks, created_at }: UpdateTaskListInputDto): Promise<UpdateTaskListOutputDto> {
         try {
             const updated_at = new Date()
 
-            const aTaskList = TaskList.with({ id, title, description, created_at, updated_at })
+            const aTaskList = TaskList.with({ id, user_id, title, description, created_at, updated_at })
 
             const taskList = await this.taskListGateway.update(aTaskList)
 
             const tasksPromises = tasks.map(async (task) => {
                 return await this.updateTaskUseCase.execute({
                     id: task.id!,
+                    user_id: user_id,
                     name: task.name,
                     state: task.state,
                     task_list_id: taskList.id!,

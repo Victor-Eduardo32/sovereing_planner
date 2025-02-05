@@ -3,8 +3,9 @@ import { TaskListProps } from "../types/taskListProps";
 export class TaskList {
     private constructor(private props: TaskListProps){}
 
-    public static create(title: string, description: string, created_at: Date, updated_at: Date) {
+    public static create(user_id: string, title: string, description: string, created_at: Date, updated_at: Date) {
         return new TaskList({
+            user_id: user_id,
             title: title,
             description: description,
             created_at: created_at,
@@ -18,6 +19,10 @@ export class TaskList {
 
     public get id() {
         return this.props.id
+    }
+
+    public get user_id() {
+        return this.props.user_id
     }
 
     public get title() {

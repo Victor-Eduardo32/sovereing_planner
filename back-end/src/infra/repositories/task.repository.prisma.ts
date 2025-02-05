@@ -12,6 +12,7 @@ export class TaskRepositoryPrisma implements TaskGateway {
     public async save(task: Task): Promise<Task> {
         try {
             const data = {
+                user_id: task.user_id,
                 task_list_id: task.task_list_id,
                 name: task.name,
                 state: task.state,
@@ -33,6 +34,7 @@ export class TaskRepositoryPrisma implements TaskGateway {
     public async update(task: Task): Promise<Task> {
         try {
             const data = {
+                user_id: task.user_id,
                 task_list_id: task.task_list_id,
                 name: task.name,
                 state: task.state,

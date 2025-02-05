@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { TaskListGateway } from "../../domain/gateway/taskList.gateway";
 import { TaskList } from "../../domain/entities/taskList";
-import { title } from "process";
 
 export class TaskListRepositoryPrisma implements TaskListGateway {
     private constructor(private readonly prismaClient: PrismaClient){}
@@ -13,6 +12,7 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
     public async save(taskList: TaskList): Promise<TaskList> {
         try {
             const data = {
+                user_id: taskList.user_id,
                 title: taskList.title,
                 description: taskList.description,
                 created_at: taskList.created_at,

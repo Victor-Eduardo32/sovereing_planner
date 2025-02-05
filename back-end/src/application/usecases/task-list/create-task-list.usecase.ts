@@ -5,6 +5,7 @@ import { CreateTaskUseCase } from "../task/create-task.usecase";
 import { UseCase } from "../usecase";
 
 export type CreateTaskListInputDto = {
+    user_id: string,
     title: string,
     description: string,
     tasks: Task[]
@@ -29,17 +30,18 @@ export class CreateTaskListUseCase implements UseCase<CreateTaskListInputDto, Cr
         return new CreateTaskListUseCase(taskListGateway, createTaskUseCase)
     }
 
-    public async execute({ title, description, tasks }: CreateTaskListInputDto): Promise<CreateTaskListOutputDto> {
+    public async execute({ user_id, title, description, tasks }: CreateTaskListInputDto): Promise<CreateTaskListOutputDto> {
         try {
             const created_at = new Date();
             const updated_at = new Date();
 
-            const aTaskList = TaskList.create(title, description, created_at, updated_at)
+            const aTaskList = TaskList.create(user_id, title, description, created_at, updated_at)
 
             const taskList = await this.taskListGateway.save(aTaskList)
 
             const tasksPromises = tasks.map(async (task) => {
                 return await this.createTaskUseCase.execute({
+                    user_id: user_id,
                     name: task.name,
                     state: task.state,
                     task_list_id: taskList.id!
