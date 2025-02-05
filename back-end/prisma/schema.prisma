@@ -14,6 +14,8 @@ model User {
   password   String
   created_at DateTime @default(now())
   sessions Session[]
+  taskLists TaskList[]
+  tasks Task[]
 
   @@map("users")
 }
@@ -32,6 +34,8 @@ model Session {
 
 model TaskList {
   id Int @id @default(autoincrement())
+  user_id String 
+  user User @relation(fields: [user_id], references: [id])
   title String
   description String
   created_at DateTime @default(now())
@@ -39,10 +43,13 @@ model TaskList {
   tasks Task[]
   
   @@map("task_lists")
+  @@index([user_id])
 }
 
 model Task {
   id Int @id @default(autoincrement())
+  user_id String 
+  user User @relation(fields: [user_id], references: [id])
   task_list_id Int
   task_list TaskList @relation(fields: [task_list_id], references: [id])
   name String
@@ -51,6 +58,6 @@ model Task {
   updated_at DateTime @default(now())
   
   @@map("tasks")
-  @@index([task_list_id])
+  @@index([task_list_id, user_id])
 }
 
