@@ -16,6 +16,20 @@ declare module '@vue/runtime-core' {
 // for each client)
 const axios = axiosApi.create({ baseURL: 'http://localhost:8000', withCredentials: true });
 
+axios.interceptors.request.use(config => {
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : {};
+
+  if(user) {
+    console.log(user)
+    config.headers['user_id'] = user.id
+  }
+
+  return config
+}, error => {
+  return Promise.reject(error);
+})
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
