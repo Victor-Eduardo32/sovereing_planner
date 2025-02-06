@@ -30,10 +30,11 @@ export class UpdateTaskListRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
-                const { id, title, description, created_at, tasks } = request.body
+                const { id, user_id, title, description, created_at, tasks } = request.body
 
                 const input: UpdateTaskListInputDto = { 
                     id: id,
+                    user_id: user_id,
                     title: title, 
                     description: description, 
                     created_at: created_at,

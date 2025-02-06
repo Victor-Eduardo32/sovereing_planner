@@ -30,9 +30,10 @@ export class CreateTaskListRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
-                const { title, description, tasks } = request.body
+                const { title, user_id, description, tasks } = request.body
 
                 const input: CreateTaskListInputDto = { 
+                    user_id: user_id,
                     title: title, 
                     description: description, 
                     tasks: tasks 
