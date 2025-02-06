@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { HttpMethod, Route } from "../route";
 import { Task } from "../../../../../domain/entities/task";
 import { UpdateTaskListInputDto, UpdateTaskListOutputDto, UpdateTaskListUseCase } from "../../../../../application/usecases/task-list/update-task-list.usecase";
+import { getUserIdFromHeaders } from "../../../../../utils/requestHelpers";
 
 export type UpdateTaskListReponseDto = {
     id: number,
@@ -30,7 +31,8 @@ export class UpdateTaskListRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
-                const { id, user_id, title, description, created_at, tasks } = request.body
+                const user_id = getUserIdFromHeaders(request.headers)
+                const { id, title, description, created_at, tasks } = request.body
 
                 const input: UpdateTaskListInputDto = { 
                     id: id,

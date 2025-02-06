@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { CreateTaskListInputDto, CreateTaskListOutputDto, CreateTaskListUseCase } from "../../../../../application/usecases/task-list/create-task-list.usecase";
 import { HttpMethod, Route } from "../route";
 import { Task } from "../../../../../domain/entities/task";
+import { getUserIdFromHeaders } from "../../../../../utils/requestHelpers";
 
 export type CreateTaskListReponseDto = {
     id: number,
@@ -30,7 +31,8 @@ export class CreateTaskListRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
-                const { title, user_id, description, tasks } = request.body
+                const user_id = getUserIdFromHeaders(request.headers)
+                const { title, description, tasks } = request.body
 
                 const input: CreateTaskListInputDto = { 
                     user_id: user_id,
