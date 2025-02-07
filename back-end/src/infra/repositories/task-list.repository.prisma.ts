@@ -9,6 +9,27 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
         return new TaskListRepositoryPrisma(prismaClient)
     }
 
+    public async findAll(user_id: string): Promise<TaskList[]> {
+        const taskListsQuery =  await this.prismaClient.taskList.findMany({
+            where: {
+                user_id: user_id
+            }
+        })
+
+        const taskLists = taskListsQuery.map((taskList) => {
+            return TaskList.with({
+                id: taskList.id,
+                user_id: taskList.user_id,
+                title: taskList.title,
+                description: taskList.description,
+                created_at: taskList.created_at,
+                updated_at: taskList.updated_at
+            })
+        })
+
+        return taskLists
+    }
+
     public async save(taskList: TaskList): Promise<TaskList> {
         try {
             const data = {
