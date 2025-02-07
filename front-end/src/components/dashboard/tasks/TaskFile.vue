@@ -2,12 +2,14 @@
 // import { useTasksStore } from 'src/stores/TasksStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
 import { TaskCheck, TaskList} from 'src/types/components/tasks/types';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
-// const useTasks = computed(() => {
-//   return useTasksStore();
-// });
+// const useTasks = useTasksStore();
+
+onMounted(() => {
+  console.log(props)
+})
 
 const checkboxStates = ref<TaskCheck>({
   toDo: [],

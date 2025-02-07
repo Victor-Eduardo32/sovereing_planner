@@ -1,24 +1,24 @@
 <script lang="ts" setup>
 import { onBeforeMount, onMounted, ref } from 'vue';
-// import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
+import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
 import FormTask from 'src/components/dashboard/tasks/FormTask.vue';
-// import { useTasksStore } from 'src/stores/TasksStore';
+import { useTasksStore } from 'src/stores/TasksStore';
 import { TaskList } from 'src/types/components/tasks/types';
 
-// const useTasks = computed(() => {
-//   return useTasksStore();
-// });
+const useTasks = useTasksStore();
 
-// const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
+
+const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
 const add_task = ref<boolean>(false);
 const edit_task = ref<boolean>(false);
 const edit_taskList = ref<TaskList>({id: undefined, title: '', description: '', tasks:[]});
 const grid_layout = ref<boolean>(true);
 const list_layout = ref<boolean>(false);
 const win_width = ref<number>(window.innerWidth);
+const taskLists = useTasks.taskLists ? useTasks.taskLists : [];
 
 onMounted(async () => {
-  // await useTasks.value.setAllTasksList();
+  await useTasks.getAllTaskLists();
   await verifyWindowWidth();
   window.addEventListener('resize', verifyWindowWidth);
 });
@@ -112,13 +112,12 @@ const verifyWindowWidth = async (): Promise<void> => {
             class="flex justify-between"
             style="width: 100%"
           >
-            <!-- <task-file
+            <task-file
               :titles="titles"
-              :tasks-list="useTasks.getAllTasksList"
-              @edit-task="findTaskList"
+              :tasks-list="taskLists"
               :grid-layout="grid_layout"
               :list-layout="list_layout"
-            /> -->
+            />
           </div>
         </div>
       </div>

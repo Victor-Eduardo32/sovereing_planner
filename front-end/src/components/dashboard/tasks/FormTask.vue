@@ -42,15 +42,16 @@ const createTaskList = async (): Promise<void> => {
   emit('close');
 };
 
-// const updateTaskList = async (): Promise<void> => {
-//   await userTasks.value.updateTaskList({
-//     id: editTask.value.id,
-//     title: title.value,
-//     description: description.value,
-//     tasks: tasks.value,
-//   });
-//   emit('close');
-// };
+const updateTaskList = async (): Promise<void> => {
+  await userTasks.updateTaskList({
+    id: editTask.value.id,
+    title: title.value,
+    description: description.value,
+    created_at: editTask.value.created_at,
+    tasks: tasks.value,
+  });
+  emit('close');
+};
 </script>
 
 <template>
@@ -153,7 +154,7 @@ const createTaskList = async (): Promise<void> => {
         </q-file>
       </div>
       <div>
-        <!-- <q-btn
+        <q-btn
           v-if="editTask.id != undefined"
           class="add-task bg-purple text-white"
           icon="add"
@@ -162,7 +163,7 @@ const createTaskList = async (): Promise<void> => {
           no-caps
           style="width: 100%"
           @click="updateTaskList"
-        /> -->
+        />
         <q-btn
           class="add-task bg-purple text-white"
           icon="add"
