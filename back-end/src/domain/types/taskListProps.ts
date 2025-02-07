@@ -8,7 +8,3 @@ export type TaskListProps = {
     created_at: Date,
     updated_at: Date
 }
-
-export type TaskListPropsWithTasks = TaskListProps & {
-    tasks: TaskProps[]
-}
