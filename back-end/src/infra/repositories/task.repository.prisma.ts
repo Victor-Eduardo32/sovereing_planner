@@ -56,10 +56,7 @@ export class TaskRepositoryPrisma implements TaskGateway {
     public async update(task: Task): Promise<Task> {
         try {
             const data = {
-                user_id: task.user_id,
-                task_list_id: task.task_list_id,
                 name: task.name,
-                state: task.state,
                 updated_at: task.updated_at
             }
     
@@ -75,5 +72,35 @@ export class TaskRepositoryPrisma implements TaskGateway {
             console.error(error);
             throw new Error("Error on task repository prisma.")
         }
+    }
+
+    public async delete(id: number): Promise<void> {
+        try {
+            await this.prismaClient.task.delete({
+                where: {
+                    id: id
+                }
+            })
+
+            return 
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on task repository prisma.")
+        }
+    }
+
+    public async findTaskIdsByTaskListId(task_list_id: number): Promise<number[]> {
+        const taskIdsQuery = await this.prismaClient.task.findMany({
+            select: {
+                id: true
+            },
+            where: {
+                task_list_id: task_list_id
+            }
+        })
+
+        const taskIds = taskIdsQuery.map(taskId => taskId.id)
+
+        return taskIds
     }
 }
