@@ -1,7 +1,9 @@
 import { Task } from "../../../domain/entities/task";
 import { TaskList } from "../../../domain/entities/taskList";
 import { TaskListGateway } from "../../../domain/gateway/taskList.gateway";
-import { UpdateTaskUseCase } from "../task/update-task.usecase";
+import { CreateTaskUseCase } from "../task/create-task.usecase";
+import { DeleteTaskUseCase } from "../task/delete-task.usecase";
+import { FindTaskIdsByTaskListIdUseCase } from "../task/find-task-ids-by-task-list-id.usecase";
 import { UseCase } from "../usecase";
 
 export type UpdateTaskListInputDto = {
@@ -25,11 +27,13 @@ export type UpdateTaskListOutputDto = {
 export class UpdateTaskListUseCase implements UseCase<UpdateTaskListInputDto, UpdateTaskListOutputDto> {
     private constructor(
         private readonly taskListGateway: TaskListGateway,
-        private readonly updateTaskUseCase: UpdateTaskUseCase
+        private readonly createTaskUseCase: CreateTaskUseCase,
+        private readonly findTaskIdsByTaskListIdUseCase: FindTaskIdsByTaskListIdUseCase,
+        private readonly deleteTaskUseCase: DeleteTaskUseCase
     ){}
 
-    public static create(taskListGateway: TaskListGateway, updateTaskUseCase: UpdateTaskUseCase) {
-        return new UpdateTaskListUseCase(taskListGateway, updateTaskUseCase)
+    public static create(taskListGateway: TaskListGateway, createTaskUseCase: CreateTaskUseCase, findTaskIdsByTaskListIdUseCase: FindTaskIdsByTaskListIdUseCase, deleteTaskUseCase: DeleteTaskUseCase) {
+        return new UpdateTaskListUseCase(taskListGateway, createTaskUseCase, findTaskIdsByTaskListIdUseCase, deleteTaskUseCase)
     }
 
     public async execute({ id, user_id, title, description, tasks, created_at }: UpdateTaskListInputDto): Promise<UpdateTaskListOutputDto> {
@@ -40,18 +44,31 @@ export class UpdateTaskListUseCase implements UseCase<UpdateTaskListInputDto, Up
 
             const taskList = await this.taskListGateway.update(aTaskList)
 
+            const { ids: existingTaskIds  } = await this.findTaskIdsByTaskListIdUseCase.execute({ task_list_id: id })
+
             const tasksPromises = tasks.map(async (task) => {
-                return await this.updateTaskUseCase.execute({
-                    id: task.id!,
-                    user_id: user_id,
-                    name: task.name,
-                    state: task.state,
-                    task_list_id: taskList.id!,
-                    created_at: task.created_at
-                }) as Task
+                if(!task.id) {
+                    return await this.createTaskUseCase.execute({
+                        user_id: user_id,
+                        name: task.name,
+                        state: task.state,
+                        task_list_id: taskList.id!,
+                    }) as Task
+                }
+
+                return task
             })
 
             const aTasks = await Promise.all(tasksPromises)
+
+            const receivedTaskIds = aTasks.map(task => task.id)
+            const tasksToDelete = existingTaskIds.filter(id => !receivedTaskIds.includes(id))
+
+            const deleteTasksPromises = tasksToDelete.map(async (taskId) => {
+                await this.deleteTaskUseCase.execute({ id: taskId });
+            });
+
+            await Promise.all(deleteTasksPromises);
             
             const output = this.presentOutput(taskList, aTasks)
 

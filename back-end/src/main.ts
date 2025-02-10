@@ -8,8 +8,9 @@ import { CreateTaskListUseCase } from "./application/usecases/task-list/create-t
 import { FindAllTaskListUseCase } from "./application/usecases/task-list/find-all-task-list.usecase";
 import { UpdateTaskListUseCase } from "./application/usecases/task-list/update-task-list.usecase";
 import { CreateTaskUseCase } from "./application/usecases/task/create-task.usecase";
+import { DeleteTaskUseCase } from "./application/usecases/task/delete-task.usecase";
 import { FindAllTaskUseCase } from "./application/usecases/task/find-all-task.usecase";
-import { UpdateTaskUseCase } from "./application/usecases/task/update-task.usecase";
+import { FindTaskIdsByTaskListIdUseCase } from "./application/usecases/task/find-task-ids-by-task-list-id.usecase";
 import { CreateUserUseCase } from "./application/usecases/user/create-user.usecase";
 import { ApiExpress } from "./infra/api/express/api.express";
 import { AuthUserRoute } from "./infra/api/express/routes/auth/auth-user.express.route";
@@ -44,11 +45,14 @@ function main() {
     const refreshSessionTokenUseCase = RefreshSessionTokenUseCase.create(createSessionUseCase, jwtService)
     const authUserUseCase = AuthUserUseCase.create(userRepository, hashService, jwtService, createSessionUseCase)
     const logoutUserUseCase = LogoutUserUseCase.create(updateSessionDataUseCase)
+
     const createTaskUseCase = CreateTaskUseCase.create(taskRepository)
-    const updateTaskUseCase = UpdateTaskUseCase.create(taskRepository)
     const findAllTaskUseCase = FindAllTaskUseCase.create(taskRepository)
+    const findTaskIdsByTaskListIdUseCase = FindTaskIdsByTaskListIdUseCase.create(taskRepository)
+    const deleteTaskUseCase = DeleteTaskUseCase.create(taskRepository)
+
     const createTaskListUseCase = CreateTaskListUseCase.create(taskListRepository, createTaskUseCase)
-    const updateTaskListUseCase = UpdateTaskListUseCase.create(taskListRepository, updateTaskUseCase)
+    const updateTaskListUseCase = UpdateTaskListUseCase.create(taskListRepository, createTaskUseCase, findTaskIdsByTaskListIdUseCase, deleteTaskUseCase)
     const findAllTaskListUseCase = FindAllTaskListUseCase.create(taskListRepository, findAllTaskUseCase)
 
     const createUserRoute = CreateUserRoute.create(createUserUseCase)
