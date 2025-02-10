@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
 import FormTask from 'src/components/dashboard/tasks/FormTask.vue';
-import { useTasksStore } from 'src/stores/TasksStore';
+import { useTasksStore } from 'src/stores/TaskListStore';
 import { TaskList } from 'src/types/components/tasks/types';
 
 const useTasks = useTasksStore();
-
 
 const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
 const add_task = ref<boolean>(false);
@@ -15,7 +14,9 @@ const edit_taskList = ref<TaskList>({id: undefined, title: '', description: '', 
 const grid_layout = ref<boolean>(true);
 const list_layout = ref<boolean>(false);
 const win_width = ref<number>(window.innerWidth);
-const taskLists = useTasks.taskLists ? useTasks.taskLists : [];
+const taskLists = computed(() => {
+  return useTasks.taskLists ? useTasks.taskLists : []
+});
 
 onMounted(async () => {
   await useTasks.getAllTaskLists();
@@ -36,16 +37,17 @@ const verifyWindowWidth = async (): Promise<void> => {
   }
 };
 
-// const findTaskList = (id: number): void => {
-//   const foundTaskList = useTasks.value.getAllTasksList.find((taskList) => taskList.id == id);
-//   if (foundTaskList) {
-//     edit_taskList.value = foundTaskList;
-//     edit_task.value = true;
-//   } else {
-//     // Lidar com o caso em que o taskList não foi encontrado
-//     console.error(`TaskList com id ${id} não encontrado.`);
-//   }
-// }
+const findTaskList = (id: number): void => {
+  const foundTaskList = taskLists.value.find((taskList) => taskList.id == id);
+
+  if (!foundTaskList) {
+    console.error(`TaskList com id ${id} não encontrado.`);
+    return
+  }
+
+  edit_taskList.value = foundTaskList;
+  edit_task.value = true;
+}
 </script>
 
 <template>
@@ -98,7 +100,7 @@ const verifyWindowWidth = async (): Promise<void> => {
                   <q-btn
                     class="bg-purple text-white"
                     icon="add"
-                    label="Add Task"
+                    label="Add Task List"
                     no-caps
                     @click="(add_task = true), (edit_taskList = {id: undefined, title: '', description: '', tasks:[]})"
                   />
@@ -115,6 +117,7 @@ const verifyWindowWidth = async (): Promise<void> => {
             <task-file
               :titles="titles"
               :tasks-list="taskLists"
+              @edit-task="findTaskList"
               :grid-layout="grid_layout"
               :list-layout="list_layout"
             />

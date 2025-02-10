@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTasksStore } from 'src/stores/TasksStore';
+import { useTasksStore } from 'src/stores/TaskListStore';
 import { Task, TaskList } from 'src/types/components/tasks/types';
 import { ref } from 'vue';
 
@@ -21,10 +21,15 @@ const title = ref<string>(
 const description = ref<string>(
   editTask.value ? editTask.value.description : ''
 );
-const tasks = ref<Task[]>(editTask.value ? editTask.value.tasks : []);
+
+const tasks = ref<Task[]>(editTask.value ? JSON.parse(JSON.stringify(editTask.value.tasks)) : []);
 const new_task = ref<string>('');
 
 const addTask = async (): Promise<void> => {
+  if(new_task.value.length == 0) {
+    return
+  }
+
   tasks.value.push({ name: new_task.value, state: 1 });
   new_task.value = '';
 };
@@ -61,43 +66,26 @@ const updateTaskList = async (): Promise<void> => {
         <q-icon class="close-btn" name="close" @click="$emit('close')" />
       </div>
       <div class="q-mb-md">
-        <p class="text-bold q-mb-sm">Task title</p>
+        <p class="text-bold q-mb-sm">Task List Title</p>
         <q-input
           class="input-form bg-white"
           outlined
           v-model="title"
-          placeholder="Enter task title"
+          placeholder="Enter task list title"
         />
       </div>
       <div class="q-mb-md">
-        <p class="text-bold q-mb-sm">Task description</p>
+        <p class="text-bold q-mb-sm">Task List Description</p>
         <q-input
           v-model="description"
           class="input-form bg-white"
           outlined
           type="textarea"
-          placeholder="Enter task description"
+          placeholder="Enter task list description"
         />
       </div>
       <div class="q-mb-md">
-        <p class="text-bold q-mb-sm">Task list</p>
-        <div class="flex no-wrap" v-if="tasks.length < 5">
-          <q-input
-            v-model="new_task"
-            class="input-form bg-white q-mr-sm"
-            outlined
-            type="text"
-            style="width: 100%"
-            placeholder="Enter list text"
-          />
-          <q-btn
-            flat
-            class="btn-add-task bg-white font-purple"
-            square
-            icon="add"
-            @click="addTask"
-          />
-        </div>
+        <p class="text-bold q-mb-sm">Tasks</p>
         <div
           class="flex q-mt-sm no-wrap"
           v-for="(task, index) in tasks"
@@ -119,6 +107,23 @@ const updateTaskList = async (): Promise<void> => {
             icon="remove"
             style="color: #637381"
             @click="removeTask(index)"
+          />
+        </div>
+        <div class="flex q-mt-sm no-wrap" v-if="tasks.length < 5">
+          <q-input
+            v-model="new_task"
+            class="input-form bg-white q-mr-sm"
+            outlined
+            type="text"
+            style="width: 100%"
+            placeholder="Enter list text"
+          />
+          <q-btn
+            flat
+            class="btn-add-task bg-white font-purple"
+            square
+            icon="add"
+            @click="addTask"
           />
         </div>
       </div>
@@ -158,16 +163,17 @@ const updateTaskList = async (): Promise<void> => {
           v-if="editTask.id != undefined"
           class="add-task bg-purple text-white"
           icon="add"
-          type="submit"
+          type="button"
           label="Edit Task"
           no-caps
           style="width: 100%"
           @click="updateTaskList"
         />
         <q-btn
+          v-else
           class="add-task bg-purple text-white"
           icon="add"
-          type="submit"
+          type="button"
           label="Add Task"
           no-caps
           style="width: 100%"

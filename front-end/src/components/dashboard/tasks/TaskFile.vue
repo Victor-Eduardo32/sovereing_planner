@@ -2,14 +2,10 @@
 // import { useTasksStore } from 'src/stores/TasksStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
 import { TaskCheck, TaskList} from 'src/types/components/tasks/types';
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
 // const useTasks = useTasksStore();
-
-onMounted(() => {
-  console.log(props)
-})
 
 const checkboxStates = ref<TaskCheck>({
   toDo: [],
@@ -27,7 +23,7 @@ const checkFalse = ref<number>(0);
 const emit = defineEmits(['edit-task']);
 
 const verifyTasks = (tasks: TaskList, stateTask: number): boolean => {
-  return tasks.tasks.some((task) => task.state >= stateTask);
+  return tasks && tasks.tasks ? tasks.tasks.some((task) => task.state >= stateTask) : false;
 };
 
 // Armazena os ids que são necessário estar marcados caso estejam em um state acima do qual está sendo exibido
@@ -59,28 +55,20 @@ const updateTaskState = (
   state: 'toDo' | 'inProgress' | 'completed',
   nextState: 'inProgress' | 'completed' | null
 ): void => {
-  checkTrue.value = checkboxStates.value[state].filter(
-    (id) => !checkedTasks.value[state].includes(id)
-  )[0];
+  checkTrue.value = checkboxStates.value[state].filter((id) => !checkedTasks.value[state].includes(id))[0];
+
   if (checkTrue.value == undefined) {
-    checkFalse.value = checkedTasks.value[state].filter(
-      (id) => !checkboxStates.value[state].includes(id)
-    )[0];
-    checkboxStates.value.inProgress = checkboxStates.value.inProgress.filter(
-      (id) => id !== checkFalse.value
-    );
+    checkFalse.value = checkedTasks.value[state].filter((id) => !checkboxStates.value[state].includes(id))[0];
+
+    checkboxStates.value.inProgress = checkboxStates.value.inProgress.filter((id) => id !== checkFalse.value);
 
     if (nextState) {
-      checkboxStates.value[nextState] = checkboxStates.value[nextState].filter(
-        (id) => id !== checkFalse.value
-      );
+      checkboxStates.value[nextState] = checkboxStates.value[nextState].filter((id) => id !== checkFalse.value);
       checkedTasks.value[nextState] = checkboxStates.value[nextState];
     }
 
     if (state === 'inProgress' || state === 'toDo') {
-      checkboxStates.value.completed = checkboxStates.value.completed.filter(
-        (id) => id !== checkFalse.value
-      );
+      checkboxStates.value.completed = checkboxStates.value.completed.filter((id) => id !== checkFalse.value);
       checkedTasks.value.completed = checkboxStates.value.completed;
     }
   }
@@ -117,7 +105,7 @@ watch(
       <div
         class="options-task bg-white q-pa-md q-mt-sm"
         v-if="
-          (title == 'To Do' && verifyTasks(task_list, 1)) ||
+          (title == 'To Do' && (verifyTasks(task_list, 1) || task_list.tasks.length == 0)) ||
           (title == 'In Progress' && verifyTasks(task_list, 2)) ||
           (title == 'Completed' && verifyTasks(task_list, 3))
         "
