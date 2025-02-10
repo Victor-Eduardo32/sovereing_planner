@@ -3,7 +3,7 @@ import { axios } from 'src/boot/axios';
 import { TaskList } from 'src/types/components/tasks/types';
 import { ref } from 'vue';
 
-export const useTasksStore = defineStore('tasks', () => {
+export const useTaskListStore = defineStore('tasks', () => {
   const taskLists = ref<TaskList[]>([])
   const errorMessage = ref<string>('')
 

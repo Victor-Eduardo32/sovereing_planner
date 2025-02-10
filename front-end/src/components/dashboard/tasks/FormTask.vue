@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTasksStore } from 'src/stores/TaskListStore';
+import { useTaskListStore } from 'src/stores/TaskListStore';
 import { Task, TaskList } from 'src/types/components/tasks/types';
 import { ref } from 'vue';
 
@@ -13,7 +13,7 @@ const editTask = ref<TaskList>(props.editTask);
 
 const emit = defineEmits(['close']);
 
-const userTasks = useTasksStore();
+const userTasks = useTaskListStore();
 
 const title = ref<string>(
   editTask.value ? editTask.value.title : ''

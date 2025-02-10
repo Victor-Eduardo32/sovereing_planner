@@ -2,10 +2,10 @@
 import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
 import FormTask from 'src/components/dashboard/tasks/FormTask.vue';
-import { useTasksStore } from 'src/stores/TaskListStore';
 import { TaskList } from 'src/types/components/tasks/types';
+import { useTaskListStore } from 'src/stores/TaskListStore';
 
-const useTasks = useTasksStore();
+const useTasks = useTaskListStore();
 
 const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
 const add_task = ref<boolean>(false);

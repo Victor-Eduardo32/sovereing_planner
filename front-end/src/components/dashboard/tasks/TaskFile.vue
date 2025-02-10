@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-// import { useTasksStore } from 'src/stores/TasksStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
-import { TaskCheck, TaskList} from 'src/types/components/tasks/types';
+import { TaskCheck, TaskList } from 'src/types/components/tasks/types';
 import { ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
-// const useTasks = useTasksStore();
 
 const checkboxStates = ref<TaskCheck>({
   toDo: [],
@@ -79,7 +77,7 @@ const updateTaskState = (
   //   state: state === 'toDo' ? 1 : state === 'inProgress' ? 2 : 3
   // };
 
-  // useTasks.value.updateTaskState(data);
+  // useTasks.updateTaskState(data);
 
   checkedTasks.value[state] = checkboxStates.value[state];
 };
