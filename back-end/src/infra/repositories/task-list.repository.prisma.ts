@@ -72,4 +72,19 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
             throw new Error("Error on task list repository prisma.")
         }
     }
+
+    public async delete(id: number): Promise<void> {
+        try {
+            await this.prismaClient.taskList.delete({
+                where: {
+                    id: id
+                }
+            })
+    
+            return
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on task list repository prisma.")
+        }
+    }
 }   

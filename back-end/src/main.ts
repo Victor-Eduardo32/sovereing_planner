@@ -5,6 +5,7 @@ import { RefreshSessionTokenUseCase } from "./application/usecases/session/refre
 import { UpdateSessionDataUseCase } from "./application/usecases/session/update-session-data.usecase";
 import { ValidateSessionTokenUseCase } from "./application/usecases/session/validate-session-token.usecase"; 
 import { CreateTaskListUseCase } from "./application/usecases/task-list/create-task-list.usecase";
+import { DeleteTaskListUseCase } from "./application/usecases/task-list/delete-task-list.usecase";
 import { FindAllTaskListUseCase } from "./application/usecases/task-list/find-all-task-list.usecase";
 import { UpdateTaskListUseCase } from "./application/usecases/task-list/update-task-list.usecase";
 import { CreateTaskUseCase } from "./application/usecases/task/create-task.usecase";
@@ -19,6 +20,7 @@ import { LogoutUserRoute } from "./infra/api/express/routes/auth/logout-user.exp
 import { RefreshSessionTokenRoute } from "./infra/api/express/routes/session/refresh-session-token.express.route";
 import { ValidateSessionTokenRoute } from "./infra/api/express/routes/session/validate-session-token.express.route";
 import { CreateTaskListRoute } from "./infra/api/express/routes/task-list/create-task-list.express.route";
+import { DeleteTaskListRoute } from "./infra/api/express/routes/task-list/delete-task-list.express.route";
 import { FindAllTaskListRoute } from "./infra/api/express/routes/task-list/find-all-task-list.express.route";
 import { UpdateTaskListRoute } from "./infra/api/express/routes/task-list/update-task-list.express.route";
 import { UpdateTaskStateRoute } from "./infra/api/express/routes/task/update-task-state.express.route";
@@ -57,6 +59,7 @@ function main() {
     const createTaskListUseCase = CreateTaskListUseCase.create(taskListRepository, createTaskUseCase)
     const updateTaskListUseCase = UpdateTaskListUseCase.create(taskListRepository, createTaskUseCase, findTaskIdsByTaskListIdUseCase, deleteTaskUseCase)
     const findAllTaskListUseCase = FindAllTaskListUseCase.create(taskListRepository, findAllTaskUseCase)
+    const deleteTaskListUseCase = DeleteTaskListUseCase.create(taskListRepository)
 
     const createUserRoute = CreateUserRoute.create(createUserUseCase)
     const authUserRoute = AuthUserRoute.create(authUserUseCase)
@@ -66,6 +69,7 @@ function main() {
     const createTaskListRoute = CreateTaskListRoute.create(createTaskListUseCase)
     const updateTaskListRoute = UpdateTaskListRoute.create(updateTaskListUseCase)
     const findAllTaskListRoute = FindAllTaskListRoute.create(findAllTaskListUseCase)
+    const deleteTaskListRoute = DeleteTaskListRoute.create(deleteTaskListUseCase)
     const updateTaskStateRoute = UpdateTaskStateRoute.create(updateTaskStateUseCase)
 
     const port = 8000
@@ -78,6 +82,7 @@ function main() {
         createTaskListRoute,
         updateTaskListRoute,
         findAllTaskListRoute,
+        deleteTaskListRoute,
         updateTaskStateRoute
     ])
     api.start(port)
