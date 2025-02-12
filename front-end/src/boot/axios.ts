@@ -21,7 +21,6 @@ axios.interceptors.request.use(config => {
   const user = userString ? JSON.parse(userString) : {};
 
   if(user) {
-    console.log(user)
     config.headers['user_id'] = user.id
   }
 

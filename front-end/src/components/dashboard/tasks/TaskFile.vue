@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import { useTaskStore } from 'src/stores/TaskStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
-import { TaskCheck, TaskList } from 'src/types/components/tasks/types';
+import { TaskCheck, TaskList, TaskStateUpdate } from 'src/types/components/tasks/types';
 import { ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
+const useTasks = useTaskStore()
 
 const checkboxStates = ref<TaskCheck>({
   toDo: [],
@@ -51,7 +53,8 @@ const checkTask = async (tasksList: TaskList[]): Promise<void> => {
 // Ao ser chamado, compara as variárais checkboxStates e checkedTasks para saber se houve alguma diferença entre elas, caso sim, atualiza a task no qual foi marcada/desmarcada
 const updateTaskState = (
   state: 'toDo' | 'inProgress' | 'completed',
-  nextState: 'inProgress' | 'completed' | null
+  nextState: 'inProgress' | 'completed' | null,
+  taskList: TaskList
 ): void => {
   checkTrue.value = checkboxStates.value[state].filter((id) => !checkedTasks.value[state].includes(id))[0];
 
@@ -71,13 +74,13 @@ const updateTaskState = (
     }
   }
 
-  // const data: TaskStateUpdate = {
-  //   id: checkTrue.value != undefined ? checkTrue.value : checkFalse.value,
-  //   actionState: checkTrue.value != undefined ? true : false,
-  //   state: state === 'toDo' ? 1 : state === 'inProgress' ? 2 : 3
-  // };
+  const data: TaskStateUpdate = {
+    id: checkTrue.value ?? checkFalse.value,
+    actionState: checkTrue.value != undefined,
+    state: state === 'toDo' ? 1 : state === 'inProgress' ? 2 : 3
+  };
 
-  // useTasks.updateTaskState(data);
+  useTasks.updateTaskState(data, taskList);
 
   checkedTasks.value[state] = checkboxStates.value[state];
 };
@@ -168,7 +171,7 @@ watch(
                   (check) => check == task.id
                 ),
               }"
-              @click="updateTaskState('toDo', 'inProgress');"
+              @click="updateTaskState('toDo', 'inProgress', task_list);"
             />
           </template>
           <template v-if="title == 'In Progress' && task.state >= 2">
@@ -182,7 +185,7 @@ watch(
                   (check) => check == task.id
                 ),
               }"
-              @click="updateTaskState('inProgress', 'completed')"
+              @click="updateTaskState('inProgress', 'completed', task_list)"
             />
           </template>
           <template v-if="title == 'Completed' && task.state >= 3">
@@ -196,7 +199,7 @@ watch(
                   (check) => check == task.id
                 ),
               }"
-              @click="updateTaskState('completed', null)"
+              @click="updateTaskState('completed', null, task_list)"
             />
           </template>
         </div>
