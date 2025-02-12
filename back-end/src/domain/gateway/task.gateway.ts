@@ -6,4 +6,5 @@ export interface TaskGateway {
     save(task: Task): Promise<Task>
     update(task: Task): Promise<Task>
     delete(id: number): Promise<void>
+    updateState(id: number, state: number, updated_at: Date): Promise<Task>
 }

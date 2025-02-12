@@ -103,4 +103,25 @@ export class TaskRepositoryPrisma implements TaskGateway {
 
         return taskIds
     }
+
+    public async updateState(id: number, state: number, updated_at: Date): Promise<Task> {
+        try {
+            const data = {
+                state: state,
+                updated_at: updated_at
+            }
+
+            const task = await this.prismaClient.task.update({
+                where: {
+                    id: id
+                },
+                data: data
+            }) as Task
+
+            return task
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on task repository prisma.")
+        }
+    }
 }
