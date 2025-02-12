@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useTaskListStore } from 'src/stores/TaskListStore';
 import { useTaskStore } from 'src/stores/TaskStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
 import { TaskCheck, TaskList, TaskStateUpdate } from 'src/types/components/tasks/types';
@@ -6,6 +7,7 @@ import { ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
 const useTasks = useTaskStore()
+const useTaskLists = useTaskListStore()
 
 const checkboxStates = ref<TaskCheck>({
   toDo: [],
@@ -134,17 +136,17 @@ watch(
 
                   <q-item-section>Edit</q-item-section>
                 </q-item>
-                <!-- <q-item
+                <q-item
                   clickable
                   v-close-popup
-                  @click.stop="useTasks.destroyTaskList(task_list.id!)"
+                  @click.stop="useTaskLists.deleteTaskList(task_list.id!)"
                 >
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
 
                   <q-item-section>Delete</q-item-section>
-                </q-item> -->
+                </q-item>
               </q-list>
             </q-menu>
           </q-btn>

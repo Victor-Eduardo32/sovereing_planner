@@ -42,5 +42,15 @@ export const useTaskListStore = defineStore('taskLists', () => {
     }
   }
 
-  return { getAllTaskLists, addTaskList, updateTaskList, taskLists, errorMessage }
+  const deleteTaskList = async (taskListId: number) => {
+    await axios.delete('/task-list', {
+      data: {
+        id: taskListId
+      }
+    });
+
+    taskLists.value = taskLists.value.filter(taskList => taskList.id !== taskListId)
+  }
+
+  return {  taskLists, errorMessage, getAllTaskLists, addTaskList, updateTaskList, deleteTaskList }
 })
