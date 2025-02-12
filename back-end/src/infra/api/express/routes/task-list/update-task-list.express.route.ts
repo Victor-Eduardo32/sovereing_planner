@@ -47,7 +47,7 @@ export class UpdateTaskListRoute implements Route {
 
                 const responseBody = this.present(output);
 
-                response.send(responseBody).status(200)
+                response.status(200).json(responseBody).send()
             } catch (error) {
                 next(error)
             }
