@@ -25,6 +25,10 @@ const description = ref<string>(
 const tasks = ref<Task[]>(editTask.value ? JSON.parse(JSON.stringify(editTask.value.tasks)) : []);
 const new_task = ref<string>('');
 
+const verifyFormData = (title: string, description: string, tasks: Task[]): boolean => {
+  return !(title.length > 0 && description.length > 0 && tasks.length > 0)
+}
+
 const addTask = async (): Promise<void> => {
   if(new_task.value.length == 0) {
     return
@@ -167,6 +171,7 @@ const updateTaskList = async (): Promise<void> => {
           label="Edit Task"
           no-caps
           style="width: 100%"
+          :disable="verifyFormData(title, description, tasks)"
           @click="updateTaskList"
         />
         <q-btn
@@ -177,6 +182,7 @@ const updateTaskList = async (): Promise<void> => {
           label="Add Task"
           no-caps
           style="width: 100%"
+          :disable="verifyFormData(title, description, tasks)"
           @click="createTaskList"
         />
       </div>
