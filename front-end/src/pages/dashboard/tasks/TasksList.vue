@@ -7,7 +7,12 @@ import { useTaskListStore } from 'src/stores/TaskListStore';
 
 const useTasks = useTaskListStore();
 
-const titles = ref<string[]>(['To Do', 'In Progress', 'Completed']);
+const titles = ref([
+  { name: 'To Do', isOpen: true },
+  { name: 'In Progress', isOpen: true },
+  { name: 'Completed', isOpen: true }
+]);
+
 const add_task = ref<boolean>(false);
 const edit_task = ref<boolean>(false);
 const edit_taskList = ref<TaskList>({id: undefined, title: '', description: '', tasks:[]});
@@ -48,6 +53,13 @@ const findTaskList = (id: number): void => {
   edit_taskList.value = foundTaskList;
   edit_task.value = true;
 }
+
+const toggleTaskFileVisibility = (name: string) => {
+  const foundTitle = titles.value.find((taskList) => taskList.name == name);
+
+  if(foundTitle) foundTitle.isOpen = !foundTitle.isOpen;
+}
+
 </script>
 
 <template>
@@ -80,6 +92,7 @@ const findTaskList = (id: number): void => {
                     padding="xs"
                     color="primary"
                     icon="list"
+                    :disable="list_layout"
                     @click="(list_layout = true), (grid_layout = false)"
                   />
                   <q-btn
@@ -87,6 +100,7 @@ const findTaskList = (id: number): void => {
                     padding="xs"
                     color="primary"
                     icon="grid_view"
+                    :disable="grid_layout"
                     @click="(grid_layout = true), (list_layout = false)"
                   />
                 </div>
@@ -94,7 +108,7 @@ const findTaskList = (id: number): void => {
                   <q-btn
                     class="bg-purple text-white q-mr-sm"
                     icon="archive"
-                    label="Completed Tasks"
+                    label="Completed Task Lists"
                     no-caps
                   />
                   <q-btn
@@ -111,15 +125,16 @@ const findTaskList = (id: number): void => {
 
           <div
             :class="{ column: list_layout, flex: grid_layout }"
-            class="flex justify-between"
+            class="flex justify-between q-mt-lg "
             style="width: 100%"
           >
             <task-file
               :titles="titles"
               :tasks-list="taskLists"
-              @edit-task="findTaskList"
               :grid-layout="grid_layout"
               :list-layout="list_layout"
+              @edit-task="findTaskList"
+              @toggle-task-file="toggleTaskFileVisibility"
             />
           </div>
         </div>

@@ -22,11 +22,15 @@ const checkedTasks = ref<TaskCheck>({
 const checkTrue = ref<number>(0);
 const checkFalse = ref<number>(0);
 
-const emit = defineEmits(['edit-task']);
+const emit = defineEmits(['edit-task', 'toggle-task-file']);
 
-const verifyTasks = (tasks: TaskList, stateTask: number): boolean => {
-  return tasks && tasks.tasks ? tasks.tasks.some((task) => task.state >= stateTask) : false;
+const verifyTasks = (taskList: TaskList, stateTask: number): boolean => {
+  return taskList && taskList.tasks ? taskList.tasks.some((task) => task.state >= stateTask) : false;
 };
+
+const verifyCompletedTaskList = (TaskList: TaskList): boolean => {
+  return !TaskList.tasks.every(task => task.state == 4)
+}
 
 // Armazena os ids que são necessário estar marcados caso estejam em um state acima do qual está sendo exibido
 const checkTask = async (tasksList: TaskList[]): Promise<void> => {
@@ -103,14 +107,24 @@ watch(
     v-for="(title, index) in titles"
     :key="index"
   >
-    <h6 class="q-mt-lg q-mb-sm" style="font-size: 19px">{{ title }}</h6>
+    <div class="title flex items-center q-mb-sm bg-white rounded">
+      <h6 class="q-mt-none q-mb-none q-pl-sm" style="font-size: 19px; width: 92%;">{{ title.name }}</h6>
+      <q-icon
+        :class="{ 'rotate-arrow-icon': title.isOpen }"
+        class="cursor-pointer"
+        style="font-size: 25px; width: 8%;"
+        name="keyboard_arrow_right"
+        @click="$emit('toggle-task-file', title.name)"
+      />
+    </div>
+
     <template v-for="(task_list, index) in tasksList" :key="index">
       <div
-        class="options-task bg-white q-pa-md q-mt-sm"
+        class="options-task bg-white q-pa-md q-mt-sm q-mb-sm"
         v-if="
-          (title == 'To Do' && (verifyTasks(task_list, 1) || task_list.tasks.length == 0)) ||
-          (title == 'In Progress' && verifyTasks(task_list, 2)) ||
-          (title == 'Completed' && verifyTasks(task_list, 3))
+          ((title.name == 'To Do' && (verifyTasks(task_list, 1) || task_list.tasks.length == 0)) ||
+          (title.name == 'In Progress' && verifyTasks(task_list, 2)) ||
+          (title.name == 'Completed' && verifyTasks(task_list, 3))) && title.isOpen
         "
       >
         <div class="flex justify-between items-center">
@@ -162,7 +176,7 @@ watch(
           v-for="(task, index) in task_list.tasks"
           :key="index"
         >
-          <template v-if="title == 'To Do' && task.state <= 4">
+          <template v-if="title.name == 'To Do' && task.state <= 4">
             <q-checkbox
               v-model="checkboxStates.toDo"
               :val="task.id"
@@ -176,7 +190,7 @@ watch(
               @click="updateTaskState('toDo', 'inProgress', task_list);"
             />
           </template>
-          <template v-if="title == 'In Progress' && task.state >= 2">
+          <template v-if="title.name == 'In Progress' && task.state >= 2">
             <q-checkbox
               v-model="checkboxStates.inProgress"
               :val="task.id"
@@ -190,7 +204,7 @@ watch(
               @click="updateTaskState('inProgress', 'completed', task_list)"
             />
           </template>
-          <template v-if="title == 'Completed' && task.state >= 3">
+          <template v-if="title.name == 'Completed' && task.state >= 3">
             <q-checkbox
               v-model="checkboxStates.completed"
               :val="task.id"
@@ -207,10 +221,11 @@ watch(
         </div>
         <div class="flex justify-end">
           <q-btn
-            v-if="title == 'Completed'"
+            v-if="title.name == 'Completed'"
             class="bg-purple text-white"
             icon="check"
             label="Finish Task List"
+            :disable="verifyCompletedTaskList(task_list)"
             no-caps
           />
         </div>
@@ -229,6 +244,14 @@ watch(
 }
 
 .task-file {
+  .title {
+    box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
+  }
+
+  .rotate-arrow-icon {
+    transform: rotate(90deg);
+  }
+
   .options-task {
     box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
   }
