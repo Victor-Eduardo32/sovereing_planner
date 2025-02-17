@@ -14,6 +14,7 @@ export type FindAllTaskListOuputDto = {
         id: number,
         title: string,
         description: string,
+        priority_level: number,
         created_at: Date,
         updated_at: Date
         tasks: TaskProps[]
@@ -47,6 +48,7 @@ export class FindAllTaskListUseCase implements UseCase<FindAllTaskListInputDto, 
                     id: taskList.id!,
                     title: taskList.title,
                     description: taskList.description,
+                    priority_level: taskList.priority_level,
                     created_at: taskList.created_at,
                     updated_at: taskList.updated_at,
                     tasks: aTasks.filter((task) => task.task_list_id === taskList.id)

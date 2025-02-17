@@ -13,6 +13,9 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
         const taskListsQuery =  await this.prismaClient.taskList.findMany({
             where: {
                 user_id: user_id
+            },
+            orderBy: {
+                priority_level: 'desc'
             }
         })
 
@@ -22,6 +25,7 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
                 user_id: taskList.user_id,
                 title: taskList.title,
                 description: taskList.description,
+                priority_level: taskList.priority_level,
                 created_at: taskList.created_at,
                 updated_at: taskList.updated_at
             })
@@ -36,6 +40,7 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
                 user_id: taskList.user_id,
                 title: taskList.title,
                 description: taskList.description,
+                priority_level: taskList.priority_level,
                 created_at: taskList.created_at,
                 updated_at: taskList.updated_at
             }
@@ -56,6 +61,7 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
             const data = {
                 title: taskList.title,
                 description: taskList.description,
+                priority_level: taskList.priority_level,
                 updated_at: taskList.updated_at
             }
 

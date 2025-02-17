@@ -10,6 +10,7 @@ export type FindAllTaskListResponseDto = {
         id: number,
         title: string,
         description: string,
+        priority_level: number,
         created_at: Date,
         updated_at: Date
         tasks: TaskProps[]
@@ -66,6 +67,7 @@ export class FindAllTaskListRoute implements Route {
                     id: taskList.id,
                     title: taskList.title,
                     description: taskList.description,
+                    priority_level: taskList.priority_level,
                     created_at: taskList.created_at,
                     updated_at: taskList.updated_at,
                     tasks: taskList.tasks

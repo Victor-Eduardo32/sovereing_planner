@@ -8,6 +8,7 @@ export type CreateTaskListReponseDto = {
     id: number,
     title: string,
     description: string,
+    priority_level: number,
     created_at: Date,
     updated_at: Date
     tasks: Task[]
@@ -32,12 +33,13 @@ export class CreateTaskListRoute implements Route {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
                 const user_id = getUserIdFromHeaders(request.headers)
-                const { title, description, tasks } = request.body
+                const { title, description, priority_level, tasks } = request.body
 
                 const input: CreateTaskListInputDto = { 
                     user_id: user_id,
                     title: title, 
                     description: description, 
+                    priority_level: priority_level,
                     tasks: tasks 
                 }
 
@@ -64,7 +66,8 @@ export class CreateTaskListRoute implements Route {
         const response = {
             id: input.id,
             title: input.title, 
-            description: input.description, 
+            description: input.description,
+            priority_level: input.priority_level, 
             created_at: input.created_at,
             updated_at: input.updated_at,
             tasks: input.tasks

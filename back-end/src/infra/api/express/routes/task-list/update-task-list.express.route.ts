@@ -8,6 +8,7 @@ export type UpdateTaskListReponseDto = {
     id: number,
     title: string,
     description: string,
+    priority_level: number,
     created_at: Date,
     updated_at: Date
     tasks: Task[]
@@ -32,12 +33,13 @@ export class UpdateTaskListRoute implements Route {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
             try {
                 const user_id = getUserIdFromHeaders(request.headers)
-                const { id, title, description, created_at, tasks } = request.body
+                const { id, title, description, priority_level, created_at, tasks } = request.body
 
                 const input: UpdateTaskListInputDto = { 
                     id: id,
                     user_id: user_id,
                     title: title, 
+                    priority_level: priority_level,
                     description: description, 
                     created_at: created_at,
                     tasks: tasks 
@@ -67,6 +69,7 @@ export class UpdateTaskListRoute implements Route {
             id: input.id,
             title: input.title, 
             description: input.description, 
+            priority_level: input.priority_level,
             created_at: input.created_at,
             updated_at: input.updated_at,
             tasks: input.tasks

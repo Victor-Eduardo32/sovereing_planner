@@ -3,11 +3,12 @@ import { TaskListProps } from "../types/taskListProps";
 export class TaskList {
     private constructor(private props: TaskListProps){}
 
-    public static create(user_id: string, title: string, description: string, created_at: Date, updated_at: Date) {
+    public static create(user_id: string, title: string, description: string, priority_level: number, created_at: Date, updated_at: Date) {
         return new TaskList({
             user_id: user_id,
             title: title,
             description: description,
+            priority_level: priority_level,
             created_at: created_at,
             updated_at: updated_at
         })
@@ -31,6 +32,10 @@ export class TaskList {
 
     public get description() {
         return this.props.description
+    }
+
+    public get priority_level() {
+        return this.props.priority_level
     }
 
     public get created_at() {

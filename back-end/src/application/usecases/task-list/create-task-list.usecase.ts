@@ -8,6 +8,7 @@ export type CreateTaskListInputDto = {
     user_id: string,
     title: string,
     description: string,
+    priority_level: number,
     tasks: Task[]
 }
 
@@ -15,6 +16,7 @@ export type CreateTaskListOutputDto = {
     id: number,
     title: string,
     description: string,
+    priority_level: number,
     created_at: Date,
     updated_at: Date
     tasks: Task[]
@@ -30,12 +32,12 @@ export class CreateTaskListUseCase implements UseCase<CreateTaskListInputDto, Cr
         return new CreateTaskListUseCase(taskListGateway, createTaskUseCase)
     }
 
-    public async execute({ user_id, title, description, tasks }: CreateTaskListInputDto): Promise<CreateTaskListOutputDto> {
+    public async execute({ user_id, title, description, priority_level, tasks }: CreateTaskListInputDto): Promise<CreateTaskListOutputDto> {
         try {
             const created_at = new Date();
             const updated_at = new Date();
 
-            const aTaskList = TaskList.create(user_id, title, description, created_at, updated_at)
+            const aTaskList = TaskList.create(user_id, title, description, priority_level, created_at, updated_at)
 
             const taskList = await this.taskListGateway.save(aTaskList)
 
@@ -65,6 +67,7 @@ export class CreateTaskListUseCase implements UseCase<CreateTaskListInputDto, Cr
             id: taskList.id!,
             title: taskList.title,
             description: taskList.description,
+            priority_level: taskList.priority_level,
             created_at: taskList.created_at,
             updated_at: taskList.updated_at,
             tasks: tasks

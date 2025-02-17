@@ -11,6 +11,7 @@ export type UpdateTaskListInputDto = {
     user_id: string,
     title: string,
     description: string,
+    priority_level: number,
     created_at: Date,
     tasks: Task[]
 }
@@ -19,6 +20,7 @@ export type UpdateTaskListOutputDto = {
     id: number,
     title: string,
     description: string,
+    priority_level: number,
     created_at: Date,
     updated_at: Date
     tasks: Task[]
@@ -36,11 +38,11 @@ export class UpdateTaskListUseCase implements UseCase<UpdateTaskListInputDto, Up
         return new UpdateTaskListUseCase(taskListGateway, createTaskUseCase, findTaskIdsByTaskListIdUseCase, deleteTaskUseCase)
     }
 
-    public async execute({ id, user_id, title, description, tasks, created_at }: UpdateTaskListInputDto): Promise<UpdateTaskListOutputDto> {
+    public async execute({ id, user_id, title, description, priority_level, tasks, created_at }: UpdateTaskListInputDto): Promise<UpdateTaskListOutputDto> {
         try {
             const updated_at = new Date()
 
-            const aTaskList = TaskList.with({ id, user_id, title, description, created_at, updated_at })
+            const aTaskList = TaskList.with({ id, user_id, title, description, priority_level, created_at, updated_at })
 
             const taskList = await this.taskListGateway.update(aTaskList)
 
@@ -85,6 +87,7 @@ export class UpdateTaskListUseCase implements UseCase<UpdateTaskListInputDto, Up
             id: taskList.id!,
             title: taskList.title,
             description: taskList.description,
+            priority_level: taskList.priority_level,
             created_at: taskList.created_at,
             updated_at: taskList.updated_at,
             tasks: tasks
