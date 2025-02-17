@@ -2,7 +2,7 @@ import { TaskList } from './types'
 
 export type TaskFileProps = {
   titles: titlesData[],
-  tasksList: TaskList[],
+  taskLists: TaskList[],
   gridLayout: boolean,
   listLayout: boolean
 }

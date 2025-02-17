@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useTaskListComposable } from 'src/composables/useTaskList/useTaskListComposable';
 import { useTaskListStore } from 'src/stores/TaskListStore';
 import { Task, TaskList } from 'src/types/components/tasks/types';
 import { ref } from 'vue';
@@ -7,35 +8,41 @@ const props = defineProps<{
   editTask: TaskList;
 }>();
 
+const { verifyTaskListPriorityColor } = useTaskListComposable()
+
 const model = ref(null);
 
 const editTask = ref<TaskList>(props.editTask);
 
 const emit = defineEmits(['close']);
 
-const userTasks = useTaskListStore();
+const useTaskLists = useTaskListStore();
 
-const title = ref<string>(
+const taskListTitle = ref<string>(
   editTask.value ? editTask.value.title : ''
 );
-const description = ref<string>(
+const taskListDescription = ref<string>(
   editTask.value ? editTask.value.description : ''
 );
 
-const tasks = ref<Task[]>(editTask.value ? JSON.parse(JSON.stringify(editTask.value.tasks)) : []);
-const new_task = ref<string>('');
+const taskListPriority = ref<number>(
+  editTask.value ? editTask.value.priority_level : 1
+)
 
-const verifyFormData = (title: string, description: string, tasks: Task[]): boolean => {
-  return !(title.length > 0 && description.length > 0 && tasks.length > 0)
+const tasks = ref<Task[]>(editTask.value ? JSON.parse(JSON.stringify(editTask.value.tasks)) : []);
+const newTask = ref<string>('');
+
+const verifyFormData = (taskListTitle: string, taskListDescription: string, tasks: Task[]): boolean => {
+  return !(taskListTitle.length > 0 && taskListDescription.length > 0 && tasks.length > 0)
 }
 
 const addTask = async (): Promise<void> => {
-  if(new_task.value.length == 0) {
+  if(newTask.value.length == 0) {
     return
   }
 
-  tasks.value.push({ name: new_task.value, state: 1 });
-  new_task.value = '';
+  tasks.value.push({ name: newTask.value, state: 1 });
+  newTask.value = '';
 };
 
 const removeTask = async (index: number): Promise<void> => {
@@ -43,19 +50,21 @@ const removeTask = async (index: number): Promise<void> => {
 };
 
 const createTaskList = async (): Promise<void> => {
-  await userTasks.addTaskList({
-    title: title.value,
-    description: description.value,
+  await useTaskLists.addTaskList({
+    title: taskListTitle.value,
+    description: taskListDescription.value,
+    priority_level: taskListPriority.value,
     tasks: tasks.value,
   });
   emit('close');
 };
 
 const updateTaskList = async (): Promise<void> => {
-  await userTasks.updateTaskList({
+  await useTaskLists.updateTaskList({
     id: editTask.value.id,
-    title: title.value,
-    description: description.value,
+    title: taskListTitle.value,
+    description: taskListDescription.value,
+    priority_level: taskListPriority.value,
     created_at: editTask.value.created_at,
     tasks: tasks.value,
   });
@@ -74,14 +83,34 @@ const updateTaskList = async (): Promise<void> => {
         <q-input
           class="input-form bg-white"
           outlined
-          v-model="title"
+          v-model="taskListTitle"
           placeholder="Enter task list title"
         />
       </div>
       <div class="q-mb-md">
+        <p class="text-bold q-mb-sm">Task List Priority</p>
+        <q-select
+          class="input-form bg-white"
+          outlined
+          emit-value
+          map-options
+          v-model="taskListPriority"
+          placeholder="Enter task list title"
+          :options="[
+            { label: 'Low', value: 1 },
+            { label: 'Medium', value: 2 },
+            { label: 'Higth', value: 3 },
+          ]"
+        >
+          <template v-slot:prepend>
+            <q-icon :color="verifyTaskListPriorityColor(taskListPriority)" name="circle" style="font-size: 15px;" />
+          </template>
+        </q-select>
+      </div>
+      <div class="q-mb-md">
         <p class="text-bold q-mb-sm">Task List Description</p>
         <q-input
-          v-model="description"
+          v-model="taskListDescription"
           class="input-form bg-white"
           outlined
           type="textarea"
@@ -115,7 +144,7 @@ const updateTaskList = async (): Promise<void> => {
         </div>
         <div class="flex q-mt-sm no-wrap" v-if="tasks.length < 5">
           <q-input
-            v-model="new_task"
+            v-model="newTask"
             class="input-form bg-white q-mr-sm"
             outlined
             type="text"
@@ -171,7 +200,7 @@ const updateTaskList = async (): Promise<void> => {
           label="Edit Task"
           no-caps
           style="width: 100%"
-          :disable="verifyFormData(title, description, tasks)"
+          :disable="verifyFormData(taskListTitle, taskListDescription, tasks)"
           @click="updateTaskList"
         />
         <q-btn
@@ -182,7 +211,7 @@ const updateTaskList = async (): Promise<void> => {
           label="Add Task"
           no-caps
           style="width: 100%"
-          :disable="verifyFormData(title, description, tasks)"
+          :disable="verifyFormData(taskListTitle, taskListDescription, tasks)"
           @click="createTaskList"
         />
       </div>
@@ -264,6 +293,10 @@ const updateTaskList = async (): Promise<void> => {
 
       :deep(.q-field__control::after) {
         border: 1px dashed #e2e8f0;
+      }
+
+      :deep(.q-field__prepend) {
+        padding-right: 6px;
       }
     }
 

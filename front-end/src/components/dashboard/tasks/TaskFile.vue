@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useTaskListComposable } from 'src/composables/useTaskList/useTaskListComposable';
 import { useTaskListStore } from 'src/stores/TaskListStore';
 import { useTaskStore } from 'src/stores/TaskStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
@@ -9,16 +10,20 @@ const props = defineProps<TaskFileProps>();
 const useTasks = useTaskStore()
 const useTaskLists = useTaskListStore()
 
+const { verifyTaskListPriorityText, verifyTaskListPriorityColor } = useTaskListComposable()
+
 const checkboxStates = ref<TaskCheck>({
   toDo: [],
   inProgress: [],
   completed: [],
 });
+
 const checkedTasks = ref<TaskCheck>({
   toDo: [],
   inProgress: [],
   completed: [],
 });
+
 const checkTrue = ref<number>(0);
 const checkFalse = ref<number>(0);
 
@@ -28,14 +33,18 @@ const verifyTasks = (taskList: TaskList, stateTask: number): boolean => {
   return taskList && taskList.tasks ? taskList.tasks.some((task) => task.state >= stateTask) : false;
 };
 
-const verifyCompletedTaskList = (TaskList: TaskList): boolean => {
-  return !TaskList.tasks.every(task => task.state == 4)
+const verifyCompletedTaskList = (taskList: TaskList): boolean => {
+  return !taskList.tasks.every(task => task.state == 4)
+}
+
+const verifyTaskListPriorityOrder = (taskLists: TaskList[]): TaskList[] => {
+  return taskLists.sort((taskListA, taskListB) => taskListB.priority_level - taskListA.priority_level)
 }
 
 // Armazena os ids que são necessário estar marcados caso estejam em um state acima do qual está sendo exibido
-const checkTask = async (tasksList: TaskList[]): Promise<void> => {
-  tasksList.forEach((tasks) => {
-    tasks.tasks.forEach((task) => {
+const checkTask = async (taskLists: TaskList[]): Promise<void> => {
+  taskLists.forEach((taskList) => {
+    taskList.tasks.forEach((task) => {
       if (task.id != null) {
         if (task.state >= 2) {
           checkboxStates.value.toDo.push(task.id);
@@ -92,9 +101,9 @@ const updateTaskState = (
 };
 
 watch(
-  () => props.tasksList,
-  (newTasksList) => {
-    checkTask(newTasksList);
+  () => props.taskLists,
+  (newTaskLists) => {
+    checkTask(newTaskLists);
   },
   { immediate: true }
 );
@@ -118,23 +127,27 @@ watch(
       />
     </div>
 
-    <template v-for="(task_list, index) in tasksList" :key="index">
+    <template v-for="(taskList, index) in taskLists" :key="index">
       <div
         class="options-task bg-white q-pa-md q-mt-sm q-mb-sm"
         v-if="
-          ((title.name == 'To Do' && (verifyTasks(task_list, 1) || task_list.tasks.length == 0)) ||
-          (title.name == 'In Progress' && verifyTasks(task_list, 2)) ||
-          (title.name == 'Completed' && verifyTasks(task_list, 3))) && title.isOpen
+          ((title.name == 'To Do' && (verifyTasks(taskList, 1) || taskList.tasks.length == 0)) ||
+          (title.name == 'In Progress' && verifyTasks(taskList, 2)) ||
+          (title.name == 'Completed' && verifyTasks(taskList, 3))) && title.isOpen
+          && verifyTaskListPriorityOrder(taskLists)
         "
       >
         <div class="flex justify-between items-center">
-          <span class="text-weight-medium">{{ task_list.title }}</span>
+          <div style="width: 80%; word-break: break-all;">
+            <span class="text-weight-medium">{{ taskList.title }}</span>
+          </div>
+
           <q-btn
             class="btn-actions"
             flat
             icon="more_horiz"
             text-color="black"
-            style="color: #637381"
+            style="color: #637381; width: 20%;"
           >
             <q-menu
               class="no-shadow"
@@ -143,7 +156,7 @@ watch(
               style="border: 1px solid #e2e8f0"
             >
               <q-list style="min-width: 100px">
-                <q-item clickable v-close-popup @click="emit('edit-task', task_list.id)">
+                <q-item clickable v-close-popup @click="emit('edit-task', taskList.id)">
                   <q-item-section side>
                     <q-icon name="edit_note" />
                   </q-item-section>
@@ -153,7 +166,7 @@ watch(
                 <q-item
                   clickable
                   v-close-popup
-                  @click.stop="useTaskLists.deleteTaskList(task_list.id!)"
+                  @click.stop="useTaskLists.deleteTaskList(taskList.id!)"
                 >
                   <q-item-section side>
                     <q-icon name="delete" />
@@ -165,15 +178,27 @@ watch(
             </q-menu>
           </q-btn>
         </div>
+        <div
+          class="flex items-center q-my-sm text-wrap no-wrap"
+          style="width: 100%;"
+        >
+          <q-icon
+            class="q-mr-sm"
+            :color="verifyTaskListPriorityColor(taskList.priority_level)"
+            name="circle"
+            style="font-size: 15px;"
+          />
+          <span style="width: 95%;">{{ verifyTaskListPriorityText(taskList.priority_level) }}</span>
+      </div>
         <p
           class="q-my-sm text-wrap"
           style="word-wrap: break-word; color: #637381"
         >
-          {{ task_list.description }}
+          {{ taskList.description }}
         </p>
         <div
           class="check-group"
-          v-for="(task, index) in task_list.tasks"
+          v-for="(task, index) in taskList.tasks"
           :key="index"
         >
           <template v-if="title.name == 'To Do' && task.state <= 4">
@@ -187,7 +212,7 @@ watch(
                   (check) => check == task.id
                 ),
               }"
-              @click="updateTaskState('toDo', 'inProgress', task_list);"
+              @click="updateTaskState('toDo', 'inProgress', taskList);"
             />
           </template>
           <template v-if="title.name == 'In Progress' && task.state >= 2">
@@ -201,7 +226,7 @@ watch(
                   (check) => check == task.id
                 ),
               }"
-              @click="updateTaskState('inProgress', 'completed', task_list)"
+              @click="updateTaskState('inProgress', 'completed', taskList)"
             />
           </template>
           <template v-if="title.name == 'Completed' && task.state >= 3">
@@ -215,7 +240,7 @@ watch(
                   (check) => check == task.id
                 ),
               }"
-              @click="updateTaskState('completed', null, task_list)"
+              @click="updateTaskState('completed', null, taskList)"
             />
           </template>
         </div>
@@ -225,7 +250,7 @@ watch(
             class="bg-purple text-white"
             icon="check"
             label="Finish Task List"
-            :disable="verifyCompletedTaskList(task_list)"
+            :disable="verifyCompletedTaskList(taskList)"
             no-caps
           />
         </div>

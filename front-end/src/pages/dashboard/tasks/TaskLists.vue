@@ -13,12 +13,12 @@ const titles = ref([
   { name: 'Completed', isOpen: true }
 ]);
 
-const add_task = ref<boolean>(false);
-const edit_task = ref<boolean>(false);
-const edit_taskList = ref<TaskList>({id: undefined, title: '', description: '', tasks:[]});
-const grid_layout = ref<boolean>(true);
-const list_layout = ref<boolean>(false);
-const win_width = ref<number>(window.innerWidth);
+const addTask = ref<boolean>(false);
+const editTask = ref<boolean>(false);
+const editTaskList = ref<TaskList>({id: undefined, title: '', description: '', priority_level: 1, tasks:[]});
+const gridLayout = ref<boolean>(true);
+const listLayout = ref<boolean>(false);
+const winWidth = ref<number>(window.innerWidth);
 const taskLists = computed(() => {
   return useTasks.taskLists ? useTasks.taskLists : []
 });
@@ -34,11 +34,11 @@ onBeforeMount(() => {
 });
 
 const verifyWindowWidth = async (): Promise<void> => {
-  win_width.value = window.innerWidth;
+  winWidth.value = window.innerWidth;
 
-  if (win_width.value <= 1023) {
-    grid_layout.value = false;
-    list_layout.value = true;
+  if (winWidth.value <= 1023) {
+    gridLayout.value = false;
+    listLayout.value = true;
   }
 };
 
@@ -50,8 +50,8 @@ const findTaskList = (id: number): void => {
     return
   }
 
-  edit_taskList.value = foundTaskList;
-  edit_task.value = true;
+  editTaskList.value = foundTaskList;
+  editTask.value = true;
 }
 
 const toggleTaskFileVisibility = (name: string) => {
@@ -86,22 +86,22 @@ const toggleTaskFileVisibility = (name: string) => {
             >
               <h5 class="title-bar q-my-none text-bold">Tasks</h5>
               <div class="action-btns flex items-center">
-                <div class="layout-btns q-mr-md" v-if="win_width >= 1024">
+                <div class="layout-btns q-mr-md" v-if="winWidth >= 1024">
                   <q-btn
                     class="view-btn q-mr-xs"
                     padding="xs"
                     color="primary"
                     icon="list"
-                    :disable="list_layout"
-                    @click="(list_layout = true), (grid_layout = false)"
+                    :disable="listLayout"
+                    @click="(listLayout = true), (gridLayout = false)"
                   />
                   <q-btn
                     class="view-btn q-ml-xs"
                     padding="xs"
                     color="primary"
                     icon="grid_view"
-                    :disable="grid_layout"
-                    @click="(grid_layout = true), (list_layout = false)"
+                    :disable="gridLayout"
+                    @click="(gridLayout = true), (listLayout = false)"
                   />
                 </div>
                 <div class="tasks-btns">
@@ -116,7 +116,7 @@ const toggleTaskFileVisibility = (name: string) => {
                     icon="add"
                     label="Add Task List"
                     no-caps
-                    @click="(add_task = true), (edit_taskList = {id: undefined, title: '', description: '', tasks:[]})"
+                    @click="(addTask = true), (editTaskList = {id: undefined, title: '', description: '', priority_level: 1, tasks:[]})"
                   />
                 </div>
               </div>
@@ -124,15 +124,15 @@ const toggleTaskFileVisibility = (name: string) => {
           </div>
 
           <div
-            :class="{ column: list_layout, flex: grid_layout }"
+            :class="{ column: listLayout, flex: gridLayout }"
             class="flex justify-between q-mt-lg "
             style="width: 100%"
           >
             <task-file
               :titles="titles"
-              :tasks-list="taskLists"
-              :grid-layout="grid_layout"
-              :list-layout="list_layout"
+              :task-lists="taskLists"
+              :grid-layout="gridLayout"
+              :list-layout="listLayout"
               @edit-task="findTaskList"
               @toggle-task-file="toggleTaskFileVisibility"
             />
@@ -141,9 +141,9 @@ const toggleTaskFileVisibility = (name: string) => {
       </div>
     </q-scroll-area>
     <form-task
-      v-if="add_task || (edit_task && edit_taskList !== undefined)"
-      @close="(add_task = false), (edit_task = false)"
-      :edit-task="edit_taskList"
+      v-if="addTask || (editTask && editTaskList !== undefined)"
+      @close="(addTask = false), (editTask = false)"
+      :edit-task="editTaskList"
     />
   </div>
 </template>

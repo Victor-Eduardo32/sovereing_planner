@@ -52,5 +52,5 @@ export const useTaskListStore = defineStore('taskLists', () => {
     taskLists.value = taskLists.value.filter(taskList => taskList.id !== taskListId)
   }
 
-  return {  taskLists, errorMessage, getAllTaskLists, addTaskList, updateTaskList, deleteTaskList }
+  return { taskLists, errorMessage, getAllTaskLists, addTaskList, updateTaskList, deleteTaskList }
 })
