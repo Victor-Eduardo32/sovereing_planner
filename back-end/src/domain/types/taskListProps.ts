@@ -1,5 +1,3 @@
-import { TaskProps } from "./taskProps"
-
 export type TaskListProps = {
     id?: number,
     user_id: string,
