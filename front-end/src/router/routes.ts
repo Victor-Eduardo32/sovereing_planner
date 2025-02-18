@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'tasks/list',
-        component: () => import('pages/dashboard/tasks/TaskLists.vue')
+        component: () => import('pages/dashboard/tasks/task-list/TaskLists.vue')
       }
     ]
   },

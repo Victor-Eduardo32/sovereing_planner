@@ -147,7 +147,7 @@ watch(
             flat
             icon="more_horiz"
             text-color="black"
-            style="color: #637381; width: 20%;"
+            style="color: #637381; width: 5%;"
           >
             <q-menu
               class="no-shadow"

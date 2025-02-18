@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, onMounted, ref } from 'vue';
-import TaskFile from 'src/components/dashboard/tasks/TaskFile.vue';
-import FormTask from 'src/components/dashboard/tasks/FormTask.vue';
+import TaskListFile from 'src/components/dashboard/tasks/task-list/TaskListFile.vue';
+import FormTaskList from 'src/components/dashboard/tasks/task-list/FormTaskList.vue';
 import { TaskList } from 'src/types/components/tasks/types';
 import { useTaskListStore } from 'src/stores/TaskListStore';
 
@@ -128,7 +128,7 @@ const toggleTaskFileVisibility = (name: string) => {
             class="flex justify-between q-mt-lg "
             style="width: 100%"
           >
-            <task-file
+            <task-list-file
               :titles="titles"
               :task-lists="taskLists"
               :grid-layout="gridLayout"
@@ -140,7 +140,7 @@ const toggleTaskFileVisibility = (name: string) => {
         </div>
       </div>
     </q-scroll-area>
-    <form-task
+    <form-task-list
       v-if="addTask || (editTask && editTaskList !== undefined)"
       @close="(addTask = false), (editTask = false)"
       :edit-task="editTaskList"
