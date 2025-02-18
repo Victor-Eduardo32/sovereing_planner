@@ -32,7 +32,7 @@ export const useTaskListStore = defineStore('taskLists', () => {
       const response = await axios.put('/task-list', taskList)
       const index = taskLists.value.findIndex(list => list.id === response.data.id);
 
-      if(index !== 1) {
+      if(index !== -1) {
         taskLists.value[index] = response.data
       }
 
