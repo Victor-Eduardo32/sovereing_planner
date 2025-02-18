@@ -3,9 +3,8 @@ import { TaskProps } from "../types/taskProps"
 export class Task {
     private constructor(private props: TaskProps){}
     
-    public static create(user_id: string, task_list_id: number, name: string, state: number, created_at: Date, updated_at: Date) {
+    public static create(task_list_id: number, name: string, state: number, created_at: Date, updated_at: Date) {
         return new Task({
-            user_id: user_id,
             task_list_id: task_list_id,
             name: name,
             state: state,
@@ -20,10 +19,6 @@ export class Task {
 
     public get id() {
         return this.props.id
-    }
-
-    public get user_id() {
-        return this.props.user_id
     }
 
     public get task_list_id() {

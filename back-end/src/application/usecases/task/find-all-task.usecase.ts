@@ -3,13 +3,12 @@ import { TaskGateway } from "../../../domain/gateway/task.gateway";
 import { UseCase } from "../usecase";
 
 export type FindAllTaskInputDto = {
-    user_id: string
+    task_list_ids: number[]
 }
 
 export type FindAllTaskOutputDto = {
     tasks: {
         id: number,
-        user_id: string,
         task_list_id: number,
         name: string,
         state: number,
@@ -27,8 +26,8 @@ export class FindAllTaskUseCase implements UseCase<FindAllTaskInputDto, FindAllT
         return new FindAllTaskUseCase(taskGateway)
     }
 
-    public async execute({ user_id }: FindAllTaskInputDto): Promise<FindAllTaskOutputDto> {
-        const tasks = await this.taskGateway.findAll(user_id)
+    public async execute({ task_list_ids }: FindAllTaskInputDto): Promise<FindAllTaskOutputDto> {
+        const tasks = await this.taskGateway.findAll(task_list_ids)
 
         const output = this.presentOutput(tasks)
 
@@ -40,7 +39,6 @@ export class FindAllTaskUseCase implements UseCase<FindAllTaskInputDto, FindAllT
             tasks: tasks.map((task) => {
                 return {
                     id: task.id!,
-                    user_id: task.user_id,
                     task_list_id: task.task_list_id,
                     name: task.name,
                     state: task.state,

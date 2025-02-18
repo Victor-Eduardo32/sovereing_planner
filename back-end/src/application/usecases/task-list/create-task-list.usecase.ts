@@ -43,7 +43,6 @@ export class CreateTaskListUseCase implements UseCase<CreateTaskListInputDto, Cr
 
             const tasksPromises = tasks.map(async (task) => {
                 return await this.createTaskUseCase.execute({
-                    user_id: user_id,
                     name: task.name,
                     state: task.state,
                     task_list_id: taskList.id!

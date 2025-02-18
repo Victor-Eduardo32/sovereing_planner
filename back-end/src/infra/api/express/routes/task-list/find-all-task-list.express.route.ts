@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { FindAllTaskListOuputDto, FindAllTaskListUseCase } from "../../../../../application/usecases/task-list/find-all-task-list.usecase";
+import { FindAllTaskListInputDto, FindAllTaskListOuputDto, FindAllTaskListUseCase } from "../../../../../application/usecases/task-list/find-all-task-list.usecase";
 import { HttpMethod, Route } from "../route";
-import { FindAllTaskInputDto } from "../../../../../application/usecases/task/find-all-task.usecase";
 import { TaskProps } from "../../../../../domain/types/taskProps";
 import { getUserIdFromHeaders } from "../../../../../utils/requestHelpers";
 
@@ -37,7 +36,7 @@ export class FindAllTaskListRoute implements Route {
             try {
                 const user_id = getUserIdFromHeaders(request.headers)
 
-                const input: FindAllTaskInputDto = {
+                const input: FindAllTaskListInputDto = {
                     user_id: user_id
                 }
 

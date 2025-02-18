@@ -3,7 +3,6 @@ import { TaskGateway } from "../../../domain/gateway/task.gateway";
 import { UseCase } from "../usecase";
 
 export type CreateTaskInputDto = {
-    user_id: string,
     task_list_id: number,
     name: string,
     state: number
@@ -27,12 +26,12 @@ export class CreateTaskUseCase implements UseCase<CreateTaskInputDto, CreateTask
         return new CreateTaskUseCase(taskGateway)
     }
 
-    public async execute({ user_id, name, state, task_list_id }: CreateTaskInputDto): Promise<CreateTaskOutputDto> {
+    public async execute({ name, state, task_list_id }: CreateTaskInputDto): Promise<CreateTaskOutputDto> {
         try {
             const created_at = new Date();
             const updated_at = new Date();
 
-            const aTask = Task.create(user_id, task_list_id, name, state, created_at, updated_at);
+            const aTask = Task.create(task_list_id, name, state, created_at, updated_at);
 
             const task = await this.taskGateway.save(aTask)
 

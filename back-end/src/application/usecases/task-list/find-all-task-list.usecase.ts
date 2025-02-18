@@ -33,7 +33,12 @@ export class FindAllTaskListUseCase implements UseCase<FindAllTaskListInputDto, 
 
     public async execute({ user_id }: FindAllTaskListInputDto): Promise<FindAllTaskListOuputDto> {
         const aTaskLists = await this.taskListGateway.findAll(user_id)
-        const tasksOutput = await this.findAllTaskUseCase.execute({ user_id })
+
+        const taskListIds = aTaskLists.map(taskList => {
+            return taskList.id!
+        })
+
+        const tasksOutput = await this.findAllTaskUseCase.execute({ task_list_ids: taskListIds })
         const tasks = tasksOutput.tasks as Task[]
 
         const output = this.presentOutput(aTaskLists, tasks)
