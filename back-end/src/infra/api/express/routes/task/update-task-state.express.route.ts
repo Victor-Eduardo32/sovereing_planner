@@ -1,4 +1,4 @@
-import { UpdateTaskStateOutputDto, UpdateTaskStateUseCase } from "../../../../../application/usecases/task/update-state-task.usecase";
+import { UpdateTaskStateInputDto, UpdateTaskStateOutputDto, UpdateTaskStateUseCase } from "../../../../../application/usecases/task/update-state-task.usecase";
 import { HttpMethod, Route } from "../route";
 import { Request, Response, NextFunction } from "express";
 
@@ -29,7 +29,13 @@ export class UpdateTaskStateRoute implements Route {
     public getHandler() {
         return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
            try {
-                const { id,  actionState, state } = request.body
+                const { id, actionState, state } = request.body
+
+                const input: UpdateTaskStateInputDto = {
+                    id,
+                    actionState, 
+                    state
+                }
 
                 const output = await this.updateTaskStateUseCase.execute({ id, actionState, state })
                 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { LogoutUserUseCase } from "../../../../../application/usecases/auth/logout-user.usecase";
+import { LogoutUserInputDto, LogoutUserUseCase } from "../../../../../application/usecases/auth/logout-user.usecase";
 import { HttpMethod, Route } from "../route";
 
 export class LogoutUserRoute implements Route {
@@ -22,7 +22,11 @@ export class LogoutUserRoute implements Route {
             try {
                 const token = request.cookies.authToken
 
-                await this.logoutUserService.execute({ token })
+                const input: LogoutUserInputDto = {
+                    token
+                }
+
+                await this.logoutUserService.execute(input)
                 response.clearCookie('authToken')
                 response.status(200).send('Logout successful')
             } catch (error) {

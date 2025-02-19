@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { ValidateSessionTokenOutputDto, ValidateSessionTokenUseCase } from "../../../../../application/usecases/session/validate-session-token.usecase"
+import { ValidateSessionTokenInputDto, ValidateSessionTokenOutputDto, ValidateSessionTokenUseCase } from "../../../../../application/usecases/session/validate-session-token.usecase"
 import { HttpMethod, Route } from "../route"
 
 export type ValidateTokenExpirationResponseDto = {
@@ -26,7 +26,11 @@ export class ValidateSessionTokenRoute implements Route {
             try {
                 const token = request.cookies.authToken
 
-                const output = await this.validateSessionTokenUsecase.execute({ token })
+                const input: ValidateSessionTokenInputDto = {
+                    token
+                }
+
+                const output = await this.validateSessionTokenUsecase.execute(input)
 
                 const responseBody = this.present(output)
 

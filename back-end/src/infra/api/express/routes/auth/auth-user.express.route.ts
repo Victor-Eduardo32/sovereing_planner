@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AuthUserOutputDto, AuthUserUseCase } from "../../../../../application/usecases/auth/auth-user.usescase";
+import { AuthUserInputDto, AuthUserOutputDto, AuthUserUseCase } from "../../../../../application/usecases/auth/auth-user.usescase";
 import { HttpMethod, Route } from "../route";
 
 export type AuthUserResponseDto = {
@@ -32,7 +32,12 @@ export class AuthUserRoute implements Route {
             try {
                 const { email, password } = request.body
 
-                const output = await this.authUserService.execute({ email, password })
+                const input: AuthUserInputDto = {
+                    email,
+                    password
+                }
+
+                const output = await this.authUserService.execute(input)
 
                 const responseBody = this.present(output);
 

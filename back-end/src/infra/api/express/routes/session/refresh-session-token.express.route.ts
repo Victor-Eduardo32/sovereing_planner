@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { RefreshSessionTokenOutputDto, RefreshSessionTokenUseCase } from "../../../../../application/usecases/session/refresh-session-token.usecase";
+import { RefreshSessionTokenInputDto, RefreshSessionTokenOutputDto, RefreshSessionTokenUseCase } from "../../../../../application/usecases/session/refresh-session-token.usecase";
 import { HttpMethod, Route } from "../route";
 
 export type RefreshSessionTokenResponseDto = {
@@ -26,7 +26,11 @@ export class RefreshSessionTokenRoute implements Route {
             try {
                 const token = request.cookies.authToken
 
-                const output = await this.refreshSessionTokenUseCase.execute({ token })
+                const input: RefreshSessionTokenInputDto = {
+                    token
+                }
+
+                const output = await this.refreshSessionTokenUseCase.execute(input)
 
                 const responseBody = this.present(output)
 

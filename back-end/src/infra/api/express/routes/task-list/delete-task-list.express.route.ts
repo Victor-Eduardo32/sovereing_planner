@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { DeleteTaskListUseCase } from "../../../../../application/usecases/task-list/delete-task-list.usecase";
+import { DeleteTaskListInputDto, DeleteTaskListUseCase } from "../../../../../application/usecases/task-list/delete-task-list.usecase";
 import { HttpMethod, Route } from "../route";
 
 export class DeleteTaskListRoute implements Route {
@@ -22,7 +22,11 @@ export class DeleteTaskListRoute implements Route {
            try {
                 const { id } = request.body
 
-                await this.deleteTaskListUseCase.execute({ id })
+                const input: DeleteTaskListInputDto = {
+                    id
+                }
+
+                await this.deleteTaskListUseCase.execute(input)
 
                 response.status(200).send('Task List deletada com sucesso!')
            } catch (error) {
