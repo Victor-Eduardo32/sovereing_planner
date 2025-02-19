@@ -18,10 +18,15 @@ export class CreateSessionUseCase implements UseCase<CreateSessionInputDto, Crea
     }
 
     public async execute({ user_id, token, ended_at }: CreateSessionInputDto): Promise<CreateSessionOutputDto> {
-        const aSession = Session.create(user_id, token, ended_at)
+        try {
+            const aSession = Session.create(user_id, token, ended_at)
 
-        await this.sessionGateway.save(aSession)
+            await this.sessionGateway.save(aSession)
 
-        return null;
+            return null;
+        } catch (error) {
+            console.error(error)
+            throw Error('Error on processing CreateSessionUseCase')
+        }
     }
  }

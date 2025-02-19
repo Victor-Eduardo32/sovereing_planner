@@ -32,18 +32,23 @@ export class FindAllTaskListUseCase implements UseCase<FindAllTaskListInputDto, 
     }
 
     public async execute({ user_id }: FindAllTaskListInputDto): Promise<FindAllTaskListOuputDto> {
-        const aTaskLists = await this.taskListGateway.findAll(user_id)
+        try {
+            const aTaskLists = await this.taskListGateway.findAll(user_id)
 
-        const taskListIds = aTaskLists.map(taskList => {
-            return taskList.id!
-        })
+            const taskListIds = aTaskLists.map(taskList => {
+                return taskList.id!
+            })
 
-        const tasksOutput = await this.findAllTaskUseCase.execute({ task_list_ids: taskListIds })
-        const tasks = tasksOutput.tasks as Task[]
+            const tasksOutput = await this.findAllTaskUseCase.execute({ task_list_ids: taskListIds })
+            const tasks = tasksOutput.tasks as Task[]
 
-        const output = this.presentOutput(aTaskLists, tasks)
+            const output = this.presentOutput(aTaskLists, tasks)
 
-        return output
+            return output
+        } catch (error) {
+            console.error(error)
+            throw Error('Error on processing FindAllTaskListUseCase')
+        }
     }
 
     private presentOutput(aTaskLists: TaskList[], aTasks: Task[]): FindAllTaskListOuputDto {

@@ -19,11 +19,16 @@ export class FindTaskIdsByTaskListIdUseCase implements UseCase<FindTaskIdsByTask
     }
 
     public async execute({ task_list_id }: FindTaskIdsByTaskListIdInputDto): Promise<FindTaskIdsByTaskListIdOutputDto> {
-        const taskIds = await this.taskGateway.findTaskIdsByTaskListId(task_list_id)
+        try {
+            const taskIds = await this.taskGateway.findTaskIdsByTaskListId(task_list_id)
 
-        const output = this.presentOutput(taskIds) 
+            const output = this.presentOutput(taskIds) 
 
-        return output
+            return output
+        } catch (error) {
+            console.error(error)
+            throw Error('Error on processing FindTaskIdsByTaskListIdUseCase')
+        }
     }
 
     private presentOutput(taskIds: number[]): FindTaskIdsByTaskListIdOutputDto {

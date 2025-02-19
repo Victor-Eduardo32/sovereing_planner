@@ -17,8 +17,13 @@ export class LogoutUserUseCase implements UseCase<LogoutUserInputDto, LogoutUser
     }
 
     public async execute({ token }: LogoutUserInputDto): Promise<LogoutUserOutputDto> {
-        await this.UpdateSessionDataUseCase.execute({ token })
+        try {
+            await this.UpdateSessionDataUseCase.execute({ token })
         
-        return null
+            return null
+        } catch (error) {
+            console.error(error)
+            throw Error('Error on processing LogoutUserUseCase')
+        }
     }
 }

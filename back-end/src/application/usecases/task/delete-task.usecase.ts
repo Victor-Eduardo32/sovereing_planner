@@ -17,8 +17,13 @@ export class DeleteTaskUseCase implements UseCase<DeleteTaskInputDto, DeleteTask
     }
 
     public async execute({ id }: DeleteTaskInputDto): Promise<void> {
-        await this.taskGateway.delete(id)
+        try {
+            await this.taskGateway.delete(id)
 
-        return 
+            return 
+        } catch (error) {
+            console.error(error)
+            throw Error('Error on processing DeleteTaskUseCase')
+        }
     }
 }
