@@ -15,6 +15,7 @@ model User {
   created_at DateTime @default(now())
   sessions Session[]
   taskLists TaskList[]
+  completedTaskList CompletedTaskList[]
 
   @@map("users")
 }
@@ -57,4 +58,27 @@ model Task {
   
   @@map("tasks")
   @@index([task_list_id])
+}
+
+model CompletedTaskList {
+  id Int @id @default(autoincrement())
+  user_id String
+  user User @relation(fields: [user_id], references: [id])
+  title String
+  description String
+  ended_at DateTime @default(now())
+  CompletedTask CompletedTask[]
+
+  @@map("completed_task_lists")
+  @@index([user_id])
+}
+
+model CompletedTask {
+  id Int @id @default(autoincrement())
+  completed_task_list_id Int
+  completed_task_list CompletedTaskList @relation(fields: [completed_task_list_id], references: [id])
+  name String
+  
+  @@map("completed_tasks")
+  @@index([completed_task_list_id])
 }
