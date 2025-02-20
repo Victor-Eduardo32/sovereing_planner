@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { useTaskListComposable } from 'src/composables/useTaskList/useTaskListComposable';
+import { useCompletedTaskListStore } from 'src/stores/CompletedTaskListStore';
 import { useTaskListStore } from 'src/stores/TaskListStore';
 import { useTaskStore } from 'src/stores/TaskStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
-import { TaskCheck, TaskList, TaskStateUpdate } from 'src/types/components/tasks/types';
+import { CompletedTask, CompletedTaskList, TaskCheck, TaskList, TaskStateUpdate } from 'src/types/components/tasks/types';
 import { ref, watch } from 'vue';
 
 const props = defineProps<TaskFileProps>();
 const useTasks = useTaskStore()
 const useTaskLists = useTaskListStore()
+const useCompletedTaskLists = useCompletedTaskListStore()
 
 const { verifyTaskListPriorityText, verifyTaskListPriorityColor } = useTaskListComposable()
 
@@ -100,6 +102,23 @@ const updateTaskState = (
   checkedTasks.value[state] = checkboxStates.value[state];
 };
 
+const completeTaskList = (taskList: TaskList) => {
+  const completedTasks: CompletedTask[] = taskList.tasks.map(task => {
+    return {
+      name: task.name
+    }
+  })
+
+  const completedTaskList: CompletedTaskList = {
+    title: taskList.title,
+    description: taskList.description,
+    completed_tasks: completedTasks
+  }
+
+  useCompletedTaskLists.addCompletedTaskList(completedTaskList)
+  useTaskLists.deleteTaskList(taskList.id!)
+}
+
 watch(
   () => props.taskLists,
   (newTaskLists) => {
@@ -116,12 +135,12 @@ watch(
     v-for="(title, index) in titles"
     :key="index"
   >
-    <div class="title flex items-center q-mb-sm bg-white rounded">
-      <h6 class="q-mt-none q-mb-none q-pl-sm" style="font-size: 19px; width: 92%;">{{ title.name }}</h6>
+    <div class="title-container flex items-center q-mb-sm bg-white rounded">
+      <h6 class="title q-mt-none q-mb-none q-pl-sm" style="font-size: 19px;">{{ title.name }}</h6>
       <q-icon
         :class="{ 'rotate-arrow-icon': title.isOpen }"
-        class="cursor-pointer"
-        style="font-size: 25px; width: 8%;"
+        class=" open-task-list-btn cursor-pointer"
+        style="font-size: 25px;"
         name="keyboard_arrow_right"
         @click="$emit('toggle-task-file', title.name)"
       />
@@ -131,14 +150,14 @@ watch(
       <div
         class="options-task bg-white q-pa-md q-mt-sm q-mb-sm"
         v-if="
-          ((title.name == 'To Do' && (verifyTasks(taskList, 1) || taskList.tasks.length == 0)) ||
+          ((title.name == 'To Do' && (verifyTasks(taskList, 1))) ||
           (title.name == 'In Progress' && verifyTasks(taskList, 2)) ||
           (title.name == 'Completed' && verifyTasks(taskList, 3))) && title.isOpen
           && verifyTaskListPriorityOrder(taskLists)
         "
       >
         <div class="flex justify-between items-center">
-          <div style="width: 80%; word-break: break-all;">
+          <div style="width: 80%; word-break: normal;">
             <span class="text-weight-medium">{{ taskList.title }}</span>
           </div>
 
@@ -192,7 +211,7 @@ watch(
       </div>
         <p
           class="q-my-sm text-wrap"
-          style="word-wrap: break-word; color: #637381"
+          style="word-wrap: normal; color: #637381"
         >
           {{ taskList.description }}
         </p>
@@ -251,6 +270,7 @@ watch(
             icon="check"
             label="Finish Task List"
             :disable="verifyCompletedTaskList(taskList)"
+            @click="completeTaskList(taskList)"
             no-caps
           />
         </div>
@@ -262,14 +282,40 @@ watch(
 <style lang="scss" scoped>
 .grid-layout {
   width: 32%;
+
+  .title {
+    width: 92%;
+  }
+
+  .open-task-list-btn {
+    width: 8%;
+  }
 }
 
 .list-layout {
   width: 100%;
+
+  .title {
+    width: 96%;
+  }
+
+  .open-task-list-btn {
+    width: 4%;
+  }
+
+  @media (max-width: 1024px) {
+    .title {
+      width: 92%;
+    }
+
+    .open-task-list-btn {
+      width: 8%;
+    }
+  }
 }
 
 .task-file {
-  .title {
+  .title-container {
     box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
   }
 
@@ -283,7 +329,7 @@ watch(
 
   .check-group {
     margin-left: -8px;
-    word-break: break-all;
+    word-break: normal;
   }
 
   :deep(.btn-actions .q-focus-helper) {
