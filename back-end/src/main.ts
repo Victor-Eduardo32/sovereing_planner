@@ -1,5 +1,7 @@
 import { AuthUserUseCase } from "./application/usecases/auth/auth-user.usescase";
 import { LogoutUserUseCase } from "./application/usecases/auth/logout-user.usecase";
+import { CreateCompletedTaskListUseCase } from "./application/usecases/completed-task-list/create-completed-task-list.usecase";
+import { CreateCompletedTaskUseCase } from "./application/usecases/completed-task/create-completed-task.usecase";
 import { CreateSessionUseCase } from "./application/usecases/session/create-session.usecase"; 
 import { RefreshSessionTokenUseCase } from "./application/usecases/session/refresh-session-token.usecase";
 import { UpdateSessionDataUseCase } from "./application/usecases/session/update-session-data.usecase";
@@ -17,6 +19,7 @@ import { CreateUserUseCase } from "./application/usecases/user/create-user.useca
 import { ApiExpress } from "./infra/api/express/api.express";
 import { AuthUserRoute } from "./infra/api/express/routes/auth/auth-user.express.route";
 import { LogoutUserRoute } from "./infra/api/express/routes/auth/logout-user.express.route";
+import { CreateCompletedTaskListRoute } from "./infra/api/express/routes/completed-task-list/create-completed-task-list.express.route";
 import { RefreshSessionTokenRoute } from "./infra/api/express/routes/session/refresh-session-token.express.route";
 import { ValidateSessionTokenRoute } from "./infra/api/express/routes/session/validate-session-token.express.route";
 import { CreateTaskListRoute } from "./infra/api/express/routes/task-list/create-task-list.express.route";
@@ -25,6 +28,8 @@ import { FindAllTaskListRoute } from "./infra/api/express/routes/task-list/find-
 import { UpdateTaskListRoute } from "./infra/api/express/routes/task-list/update-task-list.express.route";
 import { UpdateTaskStateRoute } from "./infra/api/express/routes/task/update-task-state.express.route";
 import { CreateUserRoute } from "./infra/api/express/routes/user/create-user.express.route";
+import { CompletedTaskListRepositoryPrisma } from "./infra/repositories/completed-task-list.repository.prisma";
+import { CompletedTaskRepositoryPrisma } from "./infra/repositories/completed-task.repository.prisma";
 import { SessionRepositoryPrisma } from "./infra/repositories/session.repository.prisma";
 import { TaskListRepositoryPrisma } from "./infra/repositories/task-list.repository.prisma";
 import { TaskRepositoryPrisma } from "./infra/repositories/task.repository.prisma";
@@ -38,6 +43,8 @@ function main() {
     const sessionRepository = SessionRepositoryPrisma.create(prisma)
     const taskRepository = TaskRepositoryPrisma.create(prisma)
     const taskListRepository = TaskListRepositoryPrisma.create(prisma)
+    const completedTaskRepository = CompletedTaskRepositoryPrisma.create(prisma)
+    const completedTaskListRepository = CompletedTaskListRepositoryPrisma.create(prisma)
 
     const hashService = new BcryptHashService()
     const jwtService = new JwtServiceImpl()
@@ -61,6 +68,10 @@ function main() {
     const findAllTaskListUseCase = FindAllTaskListUseCase.create(taskListRepository, findAllTaskUseCase)
     const deleteTaskListUseCase = DeleteTaskListUseCase.create(taskListRepository)
 
+    const createCompletedTaskUseCase = CreateCompletedTaskUseCase.create(completedTaskRepository)
+
+    const createCompletedTaskListUseCase = CreateCompletedTaskListUseCase.create(completedTaskListRepository, createCompletedTaskUseCase)
+
     const createUserRoute = CreateUserRoute.create(createUserUseCase)
     const authUserRoute = AuthUserRoute.create(authUserUseCase)
     const validateSessionTokenRoute = ValidateSessionTokenRoute.create(validateSessionToken)
@@ -71,6 +82,7 @@ function main() {
     const findAllTaskListRoute = FindAllTaskListRoute.create(findAllTaskListUseCase)
     const deleteTaskListRoute = DeleteTaskListRoute.create(deleteTaskListUseCase)
     const updateTaskStateRoute = UpdateTaskStateRoute.create(updateTaskStateUseCase)
+    const createCompletedTaskListRoute = CreateCompletedTaskListRoute.create(createCompletedTaskListUseCase)
 
     const port = 8000
     const api = ApiExpress.create([
@@ -83,7 +95,8 @@ function main() {
         updateTaskListRoute,
         findAllTaskListRoute,
         deleteTaskListRoute,
-        updateTaskStateRoute
+        updateTaskStateRoute,
+        createCompletedTaskListRoute
     ])
     api.start(port)
 }
