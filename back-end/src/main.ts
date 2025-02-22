@@ -1,7 +1,9 @@
 import { AuthUserUseCase } from "./application/usecases/auth/auth-user.usescase";
 import { LogoutUserUseCase } from "./application/usecases/auth/logout-user.usecase";
 import { CreateCompletedTaskListUseCase } from "./application/usecases/completed-task-list/create-completed-task-list.usecase";
+import { FindAllCompletedTaskListUseCase } from "./application/usecases/completed-task-list/find-all-completed-task-list.usecase";
 import { CreateCompletedTaskUseCase } from "./application/usecases/completed-task/create-completed-task.usecase";
+import { FindAllCompletedTaskUseCase } from "./application/usecases/completed-task/find-all-completed-task.usecase";
 import { CreateSessionUseCase } from "./application/usecases/session/create-session.usecase"; 
 import { RefreshSessionTokenUseCase } from "./application/usecases/session/refresh-session-token.usecase";
 import { UpdateSessionDataUseCase } from "./application/usecases/session/update-session-data.usecase";
@@ -20,6 +22,7 @@ import { ApiExpress } from "./infra/api/express/api.express";
 import { AuthUserRoute } from "./infra/api/express/routes/auth/auth-user.express.route";
 import { LogoutUserRoute } from "./infra/api/express/routes/auth/logout-user.express.route";
 import { CreateCompletedTaskListRoute } from "./infra/api/express/routes/completed-task-list/create-completed-task-list.express.route";
+import { FindAllCompletedTaskListRoute } from "./infra/api/express/routes/completed-task-list/find-all-task-list.express.route";
 import { RefreshSessionTokenRoute } from "./infra/api/express/routes/session/refresh-session-token.express.route";
 import { ValidateSessionTokenRoute } from "./infra/api/express/routes/session/validate-session-token.express.route";
 import { CreateTaskListRoute } from "./infra/api/express/routes/task-list/create-task-list.express.route";
@@ -69,8 +72,10 @@ function main() {
     const deleteTaskListUseCase = DeleteTaskListUseCase.create(taskListRepository)
 
     const createCompletedTaskUseCase = CreateCompletedTaskUseCase.create(completedTaskRepository)
+    const findAllCompletedTaskUseCase = FindAllCompletedTaskUseCase.create(completedTaskRepository)
 
     const createCompletedTaskListUseCase = CreateCompletedTaskListUseCase.create(completedTaskListRepository, createCompletedTaskUseCase)
+    const findAllCompletedTaskListUseCase = FindAllCompletedTaskListUseCase.create(completedTaskListRepository, findAllCompletedTaskUseCase)
 
     const createUserRoute = CreateUserRoute.create(createUserUseCase)
     const authUserRoute = AuthUserRoute.create(authUserUseCase)
@@ -83,6 +88,7 @@ function main() {
     const deleteTaskListRoute = DeleteTaskListRoute.create(deleteTaskListUseCase)
     const updateTaskStateRoute = UpdateTaskStateRoute.create(updateTaskStateUseCase)
     const createCompletedTaskListRoute = CreateCompletedTaskListRoute.create(createCompletedTaskListUseCase)
+    const findAllCompletedTaskListRoute = FindAllCompletedTaskListRoute.create(findAllCompletedTaskListUseCase)
 
     const port = 8000
     const api = ApiExpress.create([
@@ -96,7 +102,8 @@ function main() {
         findAllTaskListRoute,
         deleteTaskListRoute,
         updateTaskStateRoute,
-        createCompletedTaskListRoute
+        createCompletedTaskListRoute,
+        findAllCompletedTaskListRoute
     ])
     api.start(port)
 }
