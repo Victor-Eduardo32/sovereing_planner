@@ -10,6 +10,10 @@ export class CompletedTask {
         })
     }
 
+    public static with(props: CompletedTaskProps) {
+        return new CompletedTask(props)
+    }
+
     public get id() {
         return this.props.id
     }
