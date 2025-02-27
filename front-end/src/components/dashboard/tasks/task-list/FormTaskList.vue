@@ -253,10 +253,6 @@ const updateTaskList = async (): Promise<void> => {
       border-radius: 0;
     }
 
-    :deep(.input-form .q-field__control::after) {
-      border: 1px solid #e2e8f0;
-    }
-
     :deep(.input-form textarea) {
       resize: none;
     }
