@@ -58,9 +58,9 @@ onMounted(async () => {
                 <q-breadcrumbs-el
                   class="cursor-pointer"
                   @click="$router.push('/dashboard/tasks/list')"
-                  label="Tasks List"
+                  label="Task List"
                 />
-                <q-breadcrumbs-el label="Completed Tasks List" />
+                <q-breadcrumbs-el label="Completed Task List" />
               </q-breadcrumbs>
             </div>
             <div

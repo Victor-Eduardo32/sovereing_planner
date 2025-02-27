@@ -77,7 +77,7 @@ const toggleTaskFileVisibility = (name: string) => {
               </h6>
               <q-breadcrumbs class="flex items-center" style="height: 100%">
                 <q-breadcrumbs-el label="Dashboard" />
-                <q-breadcrumbs-el label="Tasks List" />
+                <q-breadcrumbs-el label="Task List" />
               </q-breadcrumbs>
             </div>
             <div
