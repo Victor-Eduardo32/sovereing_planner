@@ -5,7 +5,7 @@ import FormTaskList from 'src/components/dashboard/tasks/task-list/FormTaskList.
 import { TaskList } from 'src/types/components/tasks/types';
 import { useTaskListStore } from 'src/stores/TaskListStore';
 
-const useTasks = useTaskListStore();
+const useTaskList = useTaskListStore();
 
 const titles = ref([
   { name: 'To Do', isOpen: true },
@@ -20,12 +20,12 @@ const gridLayout = ref<boolean>(true);
 const listLayout = ref<boolean>(false);
 const winWidth = ref<number>(window.innerWidth);
 const taskLists = computed(() => {
-  return useTasks.taskLists ? useTasks.taskLists : []
+  return useTaskList.taskLists ? useTaskList.taskLists : []
 });
 
 onMounted(async () => {
-  await useTasks.getAllTaskLists();
   await verifyWindowWidth();
+  await useTaskList.getAllTaskLists();
   window.addEventListener('resize', verifyWindowWidth);
 });
 
@@ -110,6 +110,7 @@ const toggleTaskFileVisibility = (name: string) => {
                     icon="archive"
                     label="Completed Task Lists"
                     no-caps
+                    @click="$router.push('/dashboard/tasks/list/completed')"
                   />
                   <q-btn
                     class="bg-purple text-white"
