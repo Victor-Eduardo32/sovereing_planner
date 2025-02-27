@@ -1,68 +1,68 @@
 # Sovereing Planner
-Uma ferramenta poderosa e flexível projetada para otimizar a organização e produtividade pessoal, permitindo o planejamento eficiente de tarefas, eventos e metas.
-## 🔥 Introdução
-O objetivo deste projeto é fornecer um planejador pessoal abrangente que centralize e simplifique o gerenciamento de atividades diárias e o controle financeiro pessoal. Ele facilita o acompanhamento de compromissos, tarefas, objetivos e finanças, garantindo uma organização pessoal mais eficiente e um controle financeiro mais preciso.
-## ⚙️ Pré-requisitos 
-- Ter o Node (versão 20 ou superior)
-- Ter o Postgres Server (versão 17 ou superior).
-- Ter o PgAdmin ou outro SGBD de sua preferência.
+A powerful and flexible tool designed to optimize personal organization and productivity, allowing efficient planning of tasks, events, and goals.
+## 🔥 Introduction
+The goal of this project is to provide a comprehensive personal planner that centralizes and simplifies the management of daily activities and personal financial control. It facilitates tracking appointments, tasks, goals, and finances, ensuring more efficient personal organization and more precise financial control.
+## ⚙️ Prerequisites
+- Node (version 20 or higher)
+- Postgres Server (version 17 or higher)
+- PgAdmin or another DBMS of your choice
 
-### ⚒️ Guia de Instalação 
+### ⚒️ Installation Guide
 
-Esse guia parte do presuposto que você já saiba previamente instalar todos os pré-requisitos anteriormente listados.
+This guide assumes that you already know how to install all the listed prerequisites.
 
-Instale as dependências do `node_modules` no front-end:
+Install the `node_modules` dependencies in the front-end:
 ```
 cd front-end
 npm i
 ```
-Instale as dependências do `node_modules` no back-end:
+Install the `node_modules` dependencies in the back-end:
 ```
 cd back-end
 npm i
 ```
 
-Em seguida, crie seu `.env` a partir do [`.env.example`](.env.example).
+Then, create you `.env` from the [`.env.example`](.env.example).
 
 ```
 cp .env.example .env
 ```
 
-Configure a seguinte variável de ambiente com os dados do seu PostgreSQL:
+Set the following environment variable with your PostgreSQL details:
 
 ```
 DATABASE_URL="postgresql://postgres:{PASSWORD}@localhost:5432/{DATABASE}?schema={SCHEMA_NAME}"
 ```
 
-Substitua `{PASSWORD}`, `{DATABASE}` e `{SCHEMA_NAME}` pelos valores apropriados na string de conexão. Caso esteja usando outro usuário de conexão, basta alterar o `postgres` para o que você comumente utiliza.
+Replace `{PASSWORD}`, `{DATABASE}`, and `{SCHEMA_NAME}` with the appropriate values in the connection string. If you are using a different connection user, change `postgres` to the one you commonly use.
 
-**Lembre-se:** Todos os dados a acima são referentes a sua configuração pessoal do postgres, por isso, certifique-se de que todos os dados estão corretos.
+**Remember:** All the above data refers to your personal postgres configuration, so make sure all the data is correct.
 
-Caso você ainda não possua uma `JWT_SECRET_KEY` em seu `.env`, é recomendável que defina algum valor ao campo. É possível utilizar sem definir um valor, entretando pode causar algumas bangunças em relação a autenticação.
+If you do not yet have a `JWT_SECRET_KEY` in your `.env`, it is recommended to set a value for the field. It is possible to use it without setting a value, but it may cause some issues with authentication.
 
-E caso seu banco de dados ainda esteja sem as tabelas, basta realizar as migrations:
+And if your database does not yet have the tables, just run the migrations:
 ```
 npx prisma migrate dev
 ```
 
-Caso não possua o banco de dados criado, ele irá criar automaticamente.
+If the database does not exist, it will be created automatically.
 
-Agora basta inicializar a api:
+Now just start the API:
 
 ```
 npm run dev
 ```
 
-Em seguida, inicialize o vue:
+Then, start the vue:
 
 ```
 cd front-end
 npx quasar dev
 ```
 
-e pronto, agora basta utilizar a aplicação normalmente em: [http://localhost:9000](http://localhost:9000).
+And that's it, you can now use the application normally at: [http://localhost:9000](http://localhost:9000).
 
-### 💾 Tecnologias Utilizadas
+### 💾 Technologies Used
 * [Node](https://nodejs.org/pt)
 * [Postgres](https://www.postgresql.org)
 * [Vue](https://vuejs.org)
