@@ -157,9 +157,7 @@ watch(
         "
       >
         <div class="flex justify-between items-center">
-          <div style="width: 80%; word-break: normal;">
-            <span class="text-weight-medium">{{ taskList.title }}</span>
-          </div>
+          <span  style="width: 80%; word-break: break-word;" class="text-weight-medium">{{ taskList.title }}</span>
 
           <q-btn
             class="btn-actions"
@@ -211,7 +209,7 @@ watch(
       </div>
         <p
           class="q-my-sm text-wrap"
-          style="word-wrap: normal; color: #637381"
+          style="word-break: break-word; color: #637381"
         >
           {{ taskList.description }}
         </p>
@@ -266,7 +264,7 @@ watch(
         <div class="flex justify-end">
           <q-btn
             v-if="title.name == 'Completed'"
-            class="bg-purple text-white"
+            class="bg-purple text-white q-mt-sm"
             icon="check"
             label="Finish Task List"
             :disable="verifyCompletedTaskList(taskList)"
@@ -329,7 +327,7 @@ watch(
 
   .check-group {
     margin-left: -8px;
-    word-break: normal;
+    word-break: break-word;
   }
 
   :deep(.btn-actions .q-focus-helper) {
