@@ -12,40 +12,50 @@ export class CompletedTaskListRepositoryPrisma implements CompletedTaskListGatew
     }
 
     public async findAll(user_id: string): Promise<CompletedTaskList[]> {
-        const completedTaskListsQuery = await this.prismaClient.completedTaskList.findMany({
-            where: {
-                user_id: user_id
-            }, 
-            orderBy: {
-                ended_at: 'desc'
-            }
-        })
+        try {
+            const completedTaskListsQuery = await this.prismaClient.completedTaskList.findMany({
+                where: {
+                    user_id: user_id
+                }, 
+                orderBy: {
+                    ended_at: 'desc'
+                }
+            })
+    
+            const completedTaskLists = completedTaskListsQuery.map(completedTaskList => {
+                return CompletedTaskList.with({
+                    id: completedTaskList.id,
+                    user_id: completedTaskList.user_id,
+                    title: completedTaskList.title,
+                    description: completedTaskList.description,
+                    ended_at: completedTaskList.ended_at
+                })
+            })
+    
+            return completedTaskLists
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on completed task list repository prisma.")
+        }
+    }
 
-        const completedTaskLists = completedTaskListsQuery.map(completedTaskList => {
-            return CompletedTaskList.with({
-                id: completedTaskList.id,
+    public async save(completedTaskList: CompletedTaskList): Promise<CompletedTaskList> {
+        try {
+            const data = {
                 user_id: completedTaskList.user_id,
                 title: completedTaskList.title,
                 description: completedTaskList.description,
                 ended_at: completedTaskList.ended_at
-            })
-        })
-
-        return completedTaskLists
-    }
-
-    public async save(completedTaskList: CompletedTaskList): Promise<CompletedTaskList> {
-        const data = {
-            user_id: completedTaskList.user_id,
-            title: completedTaskList.title,
-            description: completedTaskList.description,
-            ended_at: completedTaskList.ended_at
+            }
+    
+            const aCompletedTaskList = await this.prismaClient.completedTaskList.create({
+                data: data
+            }) as CompletedTaskList
+    
+            return aCompletedTaskList
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on completed task list repository prisma.")
         }
-
-        const aCompletedTaskList = await this.prismaClient.completedTaskList.create({
-            data: data
-        }) as CompletedTaskList
-
-        return aCompletedTaskList
     }
 }

@@ -10,26 +10,31 @@ export class TaskRepositoryPrisma implements TaskGateway {
     }
 
     public async findAll(task_list_ids: number[]): Promise<Task[]> {
-        const tasksQuery = await this.prismaClient.task.findMany({
-            where: {
-                task_list_id: {
-                    in: task_list_ids
+        try {
+            const tasksQuery = await this.prismaClient.task.findMany({
+                where: {
+                    task_list_id: {
+                        in: task_list_ids
+                    }
                 }
-            }
-        })
-
-        const tasks = tasksQuery.map((task) => {
-            return Task.with({
-                id: task.id,
-                task_list_id: task.task_list_id,
-                name: task.name,
-                state: task.state,
-                created_at: task.created_at,
-                updated_at: task.updated_at
             })
-        })
-
-        return tasks
+    
+            const tasks = tasksQuery.map((task) => {
+                return Task.with({
+                    id: task.id,
+                    task_list_id: task.task_list_id,
+                    name: task.name,
+                    state: task.state,
+                    created_at: task.created_at,
+                    updated_at: task.updated_at
+                })
+            })
+    
+            return tasks
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on task repository prisma.")
+        }
     }
 
     public async save(task: Task): Promise<Task> {
@@ -90,18 +95,23 @@ export class TaskRepositoryPrisma implements TaskGateway {
     }
 
     public async findTaskIdsByTaskListId(task_list_id: number): Promise<number[]> {
-        const taskIdsQuery = await this.prismaClient.task.findMany({
-            select: {
-                id: true
-            },
-            where: {
-                task_list_id: task_list_id
-            }
-        })
-
-        const taskIds = taskIdsQuery.map(taskId => taskId.id)
-
-        return taskIds
+        try {
+            const taskIdsQuery = await this.prismaClient.task.findMany({
+                select: {
+                    id: true
+                },
+                where: {
+                    task_list_id: task_list_id
+                }
+            })
+    
+            const taskIds = taskIdsQuery.map(taskId => taskId.id)
+    
+            return taskIds
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error on task repository prisma.")
+        }
     }
 
     public async updateState(id: number, state: number, updated_at: Date): Promise<Task> {
