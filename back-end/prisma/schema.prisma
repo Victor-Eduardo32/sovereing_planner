@@ -16,6 +16,7 @@ model User {
   sessions Session[]
   taskLists TaskList[]
   completedTaskList CompletedTaskList[]
+  Balance Balance[]
 
   @@map("users")
 }
@@ -81,4 +82,16 @@ model CompletedTask {
   
   @@map("completed_tasks")
   @@index([completed_task_list_id])
+}
+
+model Balance {
+  id Int @id @default(autoincrement())
+  user_id String
+  user User @relation(fields: [user_id], references: [id])
+  amount BigInt
+  currency String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  @@map("balances")
 }
