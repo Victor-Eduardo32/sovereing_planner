@@ -1,9 +1,12 @@
+-- CreateEnum
+CREATE TYPE "Currency" AS ENUM ('BRL', 'USD', 'EUR');
+
 -- CreateTable
 CREATE TABLE "balances" (
     "id" SERIAL NOT NULL,
     "user_id" TEXT NOT NULL,
     "amount" BIGINT NOT NULL,
-    "currency" TEXT NOT NULL,
+    "currency" "Currency" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
