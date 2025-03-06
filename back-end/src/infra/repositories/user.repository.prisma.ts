@@ -13,16 +13,8 @@ export class UserRepositoryPrisma implements UserGateway {
 
     public async save(user: User): Promise<void> {
         try {
-            const data = {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                password: user.password,
-                created_at: user.created_at
-            }
-    
             await this.prismaClient.user.create({
-                data: data
+                data: this.toPrismaData(user)
             })
         } catch (error) {
             if(error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2002') {
@@ -31,32 +23,24 @@ export class UserRepositoryPrisma implements UserGateway {
                 throw userAlreadyExistError
             }
 
-            console.error(error);
+            console.error("Error in save:", error);
             throw new Error("Error on user repository prisma.")
         }
     }
 
     public async findByEmail(email: string): Promise<User> {
         try {
-            const userRecord = await this.prismaClient.user.findUnique({
+            const prismaUser = await this.prismaClient.user.findUnique({
                 where: {
                     email: email
                 }
             })
 
-            if(!userRecord) {
+            if(!prismaUser) {
                 throw new UserNotFoundException()
             }
     
-            const user = User.with({
-                id: userRecord.id,
-                name: userRecord.name,
-                email: userRecord.email,
-                password: userRecord.password,
-                created_at: userRecord.created_at
-            })
-    
-            return user
+            return this.toDomainEntity(prismaUser)
         } catch (error) {
             if (!(error instanceof UserNotFoundException)) { 
                 error = new Error("Error on user repository prisma.")
@@ -64,6 +48,26 @@ export class UserRepositoryPrisma implements UserGateway {
 
             console.error(error);
             throw error;
+        }
+    }
+
+    private toDomainEntity(prismaUser: any): User {
+        return User.with({
+            id: prismaUser.id,
+            name: prismaUser.name,
+            email: prismaUser.email,
+            password: prismaUser.password,
+            created_at: prismaUser.created_at
+        })
+    }
+
+    private toPrismaData(user: User) {
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            created_at: user.created_at
         }
     }
 }

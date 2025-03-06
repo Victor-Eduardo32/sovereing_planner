@@ -13,18 +13,11 @@ export class SessionRepositoryPrisma implements SessionGateway {
 
     public async save(session: Session) {
         try {
-            const data = {
-                user_id: session.user_id,
-                token: session.token,
-                created_at: session.created_at,
-                ended_at: session.ended_at
-            }
-
             await this.prismaClient.session.create({
-                data: data
+                data: this.toPrismaData(session)
             })
         } catch (error) {
-            console.error(error);
+            console.error("Error in save:", error);
             throw new Error("Error on session repository prisma.")
         }
     }
@@ -40,36 +33,47 @@ export class SessionRepositoryPrisma implements SessionGateway {
                 }
             })
         } catch (error) {
-            console.error(error);
+            console.error("Error in update:", error);
             throw new Error("Error on session repository prisma.")
         }
     }
 
     public async findSession(user_id: string, token: string): Promise<Session> {
         try {
-            const sessionRecord = await this.prismaClient.session.findFirst({
+            const prismaSession = await this.prismaClient.session.findFirst({
                 where: {
                     user_id: user_id,
                     token: token
                 }
             })
 
-            if(!sessionRecord){
+            if(!prismaSession){
                 throw new Error("Error on session repository prisma.")
             }
 
-            const session = Session.with({
-                id: sessionRecord.id,
-                user_id: sessionRecord.user_id,
-                token: sessionRecord.token,
-                created_at: sessionRecord.created_at,
-                ended_at: sessionRecord.ended_at ?? undefined
-            })
-
-            return session
+            return this.toDomainEntity(prismaSession)
         } catch (error) {
-            console.error(error);
+            console.error("Error in findSession:", error);
             throw new Error("Error on session repository prisma.")
+        }
+    }
+
+    private toDomainEntity(prismaSession: any): Session {
+        return Session.with({
+            id: prismaSession.id,
+            user_id: prismaSession.user_id,
+            token: prismaSession.token,
+            created_at: prismaSession.created_at,
+            ended_at: prismaSession.ended_at ?? undefined
+        })
+    }
+
+    private toPrismaData(session: Session) {
+        return {
+            user_id: session.user_id,
+            token: session.token,
+            created_at: session.created_at,
+            ended_at: session.ended_at
         }
     }
 }

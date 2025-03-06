@@ -11,7 +11,7 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
 
     public async findAll(user_id: string): Promise<TaskList[]> {
         try {
-            const taskListsQuery =  await this.prismaClient.taskList.findMany({
+            const prismaTaskList =  await this.prismaClient.taskList.findMany({
                 where: {
                     user_id: user_id
                 },
@@ -20,66 +20,38 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
                 }
             })
     
-            const taskLists = taskListsQuery.map((taskList) => {
-                return TaskList.with({
-                    id: taskList.id,
-                    user_id: taskList.user_id,
-                    title: taskList.title,
-                    description: taskList.description,
-                    priority_level: taskList.priority_level,
-                    created_at: taskList.created_at,
-                    updated_at: taskList.updated_at
-                })
-            })
-    
-            return taskLists
+            return prismaTaskList.map((taskList) => this.toDomainEntity(taskList))
         } catch (error) {
-            console.error(error);
+            console.error("Error in findAll:", error);
             throw new Error("Error on task list repository prisma.")
         }
     }
 
     public async save(taskList: TaskList): Promise<TaskList> {
         try {
-            const data = {
-                user_id: taskList.user_id,
-                title: taskList.title,
-                description: taskList.description,
-                priority_level: taskList.priority_level,
-                created_at: taskList.created_at,
-                updated_at: taskList.updated_at
-            }
+            const prismaTaskList = await this.prismaClient.taskList.create({
+                data: this.toPrismaData(taskList)
+            })
 
-            const aTaskList = await this.prismaClient.taskList.create({
-                data: data
-            }) as TaskList
-
-            return aTaskList
+            return this.toDomainEntity(prismaTaskList)
         } catch (error) {
-            console.error(error);
+            console.error("Error in save:", error);
             throw new Error("Error on task list repository prisma.")
         }
     }
 
     public async update(taskList: TaskList): Promise<TaskList> {
         try {
-            const data = {
-                title: taskList.title,
-                description: taskList.description,
-                priority_level: taskList.priority_level,
-                updated_at: taskList.updated_at
-            }
-
-            const aTaskList = await this.prismaClient.taskList.update({
+            const prismaTaskList = await this.prismaClient.taskList.update({
                 where: {
                     id: taskList.id
                 },
-                data: data
-            }) as TaskList
+                data: this.toPrismaData(taskList)
+            })
 
-            return aTaskList
+            return this.toDomainEntity(prismaTaskList)
         } catch (error) {
-            console.error(error);
+            console.error("Error in update:", error);
             throw new Error("Error on task list repository prisma.")
         }
     }
@@ -91,11 +63,32 @@ export class TaskListRepositoryPrisma implements TaskListGateway {
                     id: id
                 }
             })
-    
-            return
         } catch (error) {
-            console.error(error);
+            console.error("Error in delete:", error);
             throw new Error("Error on task list repository prisma.")
+        }
+    }
+
+    private toDomainEntity(prismaTaskList: any): TaskList {
+        return TaskList.with({
+            id: prismaTaskList.id,
+            user_id: prismaTaskList.user_id,
+            title: prismaTaskList.title,
+            description: prismaTaskList.description,
+            priority_level: prismaTaskList.priority_level,
+            created_at: prismaTaskList.created_at,
+            updated_at: prismaTaskList.updated_at
+        })
+    }
+
+    private toPrismaData(taskList: TaskList) {
+        return {
+            user_id: taskList.user_id,
+            title: taskList.title,
+            description: taskList.description,
+            priority_level: taskList.priority_level,
+            created_at: taskList.created_at,
+            updated_at: taskList.updated_at
         }
     }
 }   

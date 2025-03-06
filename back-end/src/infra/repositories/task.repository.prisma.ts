@@ -11,7 +11,7 @@ export class TaskRepositoryPrisma implements TaskGateway {
 
     public async findAll(task_list_ids: number[]): Promise<Task[]> {
         try {
-            const tasksQuery = await this.prismaClient.task.findMany({
+            const prismaTasks = await this.prismaClient.task.findMany({
                 where: {
                     task_list_id: {
                         in: task_list_ids
@@ -19,62 +19,38 @@ export class TaskRepositoryPrisma implements TaskGateway {
                 }
             })
     
-            const tasks = tasksQuery.map((task) => {
-                return Task.with({
-                    id: task.id,
-                    task_list_id: task.task_list_id,
-                    name: task.name,
-                    state: task.state,
-                    created_at: task.created_at,
-                    updated_at: task.updated_at
-                })
-            })
-    
-            return tasks
+            return prismaTasks.map((task) => this.toDomainEntity(task))
         } catch (error) {
-            console.error(error);
+            console.error("Error in findAll:", error);
             throw new Error("Error on task repository prisma.")
         }
     }
 
     public async save(task: Task): Promise<Task> {
         try {
-            const data = {
-                task_list_id: task.task_list_id,
-                name: task.name,
-                state: task.state,
-                created_at: task.created_at,
-                updated_at: task.updated_at
-            }
+            const prismaTask = await this.prismaClient.task.create({
+                data: this.toPrismaData(task)
+            })
     
-            const aTask = await this.prismaClient.task.create({
-                data: data
-            }) as Task
-    
-            return aTask
+            return this.toDomainEntity(prismaTask)
         } catch (error) {
-            console.error(error);
+            console.error("Error in save:", error);
             throw new Error("Error on task repository prisma.")
         }
     }
 
     public async update(task: Task): Promise<Task> {
         try {
-            const data = {
-                name: task.name,
-                updated_at: task.updated_at
-            }
-    
-            const aTask = await this.prismaClient.task.update({
+            const prismaTask = await this.prismaClient.task.update({
                 where: {
                     id: task.id
                 },
-                data: data
+                data: this.toPrismaData(task)
             }) as Task
     
-            return aTask
+            return this.toDomainEntity(prismaTask)
         } catch (error) {
-            console.error(error);
+            console.error("Error in update:", error);
             throw new Error("Error on task repository prisma.")
         }
     }
@@ -86,17 +62,15 @@ export class TaskRepositoryPrisma implements TaskGateway {
                     id: id
                 }
             })
-
-            return 
         } catch (error) {
-            console.error(error);
+            console.error("Error in delete:", error);
             throw new Error("Error on task repository prisma.")
         }
     }
 
     public async findTaskIdsByTaskListId(task_list_id: number): Promise<number[]> {
         try {
-            const taskIdsQuery = await this.prismaClient.task.findMany({
+            const prismaTaskIds = await this.prismaClient.task.findMany({
                 select: {
                     id: true
                 },
@@ -105,33 +79,47 @@ export class TaskRepositoryPrisma implements TaskGateway {
                 }
             })
     
-            const taskIds = taskIdsQuery.map(taskId => taskId.id)
-    
-            return taskIds
+            return prismaTaskIds.map(taskId => taskId.id)
         } catch (error) {
-            console.error(error);
+            console.error("Error in findTaskIdsByTaskListId:", error);
             throw new Error("Error on task repository prisma.")
         }
     }
 
     public async updateState(id: number, state: number, updated_at: Date): Promise<Task> {
         try {
-            const data = {
-                state: state,
-                updated_at: updated_at
-            }
-
-            const task = await this.prismaClient.task.update({
+            const prismaTask = await this.prismaClient.task.update({
                 where: {
                     id: id
                 },
-                data: data
-            }) as Task
+                data: { state, updated_at }
+            })
 
-            return task
+            return this.toDomainEntity(prismaTask)
         } catch (error) {
-            console.error(error);
+            console.error("Error in updateState:", error);
             throw new Error("Error on task repository prisma.")
+        }
+    }
+
+    private toDomainEntity(prismaTask: any): Task {
+        return Task.with({
+            id: prismaTask.id,
+            task_list_id: prismaTask.task_list_id,
+            name: prismaTask.name,
+            state: prismaTask.state,
+            created_at: prismaTask.created_at,
+            updated_at: prismaTask.updated_at
+        })
+    }
+
+    private toPrismaData(task: Task) {
+        return {
+            task_list_id: task.task_list_id,
+            name: task.name,
+            state: task.state,
+            created_at: task.created_at,
+            updated_at: task.updated_at
         }
     }
 }
