@@ -1,9 +1,10 @@
+import { Currency } from "../enums/currency";
 import { BalanceProps } from "../types/balanceProps";
 
 export class Balance {
     private constructor(private props: BalanceProps){}
 
-    public static create(user_id: string, currency: string) {
+    public static create(user_id: string, currency: Currency) {
         return new Balance({
             user_id,
             amount: 0, 

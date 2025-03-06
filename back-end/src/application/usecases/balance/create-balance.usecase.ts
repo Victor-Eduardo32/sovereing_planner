@@ -1,10 +1,11 @@
 import { Balance } from "../../../domain/entities/balance";
+import { Currency } from "../../../domain/enums/currency";
 import { BalanceGateway } from "../../../domain/gateway/balance.gateway";
 import { UseCase } from "../usecase";
 
 export type CreateBalanceInputDto = {
     user_id: string,
-    currency: string
+    currency: Currency
 }
 
 export type CreateBalanceOutputDto = {

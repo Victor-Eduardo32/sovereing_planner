@@ -1,4 +1,5 @@
 import { Balance } from "../../../domain/entities/balance";
+import { Currency } from "../../../domain/enums/currency";
 import { BalanceGateway } from "../../../domain/gateway/balance.gateway";
 import { BalanceDistinctCurrency } from "../../exceptions/balance-distinct-currency.exception.";
 import { UseCase } from "../usecase";
@@ -14,7 +15,7 @@ export type UpdateBalanceInputDto = {
 export type UpdateBalanceOutputDto = {
     id?: number,
     amount: number,
-    currency: string,
+    currency: Currency,
     created_at: Date,
     updated_at: Date
 }
