@@ -23,7 +23,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
             return this.toDomainEntity(prismaBalance);
         } catch (error) {
             console.error("Error in findById:", error);
-            throw new Error("Error on balance task repository prisma.");
+            throw new Error("Error on balance repository prisma.");
         }
     }
 
@@ -36,7 +36,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
             return prismaBalances.map((balance) => this.toDomainEntity(balance));
         } catch (error) {
             console.error("Error in findAll:", error);
-            throw new Error("Error on balance task repository prisma.");
+            throw new Error("Error on balance repository prisma.");
         }
     }
 
@@ -49,7 +49,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
             return this.toDomainEntity(prismaBalance);
         } catch (error) {
             console.error("Error in save:", error);
-            throw new Error("Error on balance task repository prisma.");
+            throw new Error("Error on balance repository prisma.");
         }
     }
 
@@ -63,7 +63,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
             return this.toDomainEntity(prismaBalance);
         } catch (error) {
             console.error("Error in update:", error);
-            throw new Error("Error on balance task repository prisma.");
+            throw new Error("Error on balance repository prisma.");
         }
     }
 
