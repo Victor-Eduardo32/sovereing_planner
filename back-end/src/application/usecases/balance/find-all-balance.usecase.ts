@@ -9,6 +9,7 @@ export type FindAllBalanceInputDto = {
 export type FindAllBalanceOutputDto = {
     balances: {
         id: number,
+        name: string,
         amount: number
         currency: string,
         created_at: Date
@@ -41,6 +42,7 @@ export class FindAllBalanceUseCase implements UseCase<FindAllBalanceInputDto, Fi
             balances: balances.map(balance => {
                 return {
                     id: balance.id!,
+                    name: balance.name,
                     amount: balance.amount,
                     currency: balance.currency,
                     created_at: balance.created_at,

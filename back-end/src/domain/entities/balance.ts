@@ -4,9 +4,10 @@ import { BalanceProps } from "../types/balanceProps";
 export class Balance {
     private constructor(private props: BalanceProps){}
 
-    public static create(user_id: string, currency: Currency) {
+    public static create(user_id: string, name: string, currency: Currency) {
         return new Balance({
             user_id,
+            name,
             amount: 0, 
             currency,
             created_at: new Date(),
@@ -24,6 +25,10 @@ export class Balance {
 
     public get user_id() {
         return this.props.user_id
+    }
+
+    public get name() {
+        return this.props.name
     }
 
     public get amount() {

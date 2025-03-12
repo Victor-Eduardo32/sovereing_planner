@@ -14,6 +14,7 @@ export type UpdateBalanceInputDto = {
 
 export type UpdateBalanceOutputDto = {
     id?: number,
+    name: string,
     amount: number,
     currency: Currency,
     created_at: Date,
@@ -58,6 +59,7 @@ export class UpdateBalanceUseCase implements UseCase<UpdateBalanceInputDto, Upda
     private presentOutput(balance: Balance): UpdateBalanceOutputDto {
         const output = {
             id: balance.id,
+            name: balance.name,
             amount: balance.amount,
             currency: balance.currency,
             created_at: balance.created_at,

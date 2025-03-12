@@ -8,6 +8,7 @@ export type FindBalanceByIdInputDto = {
 
 export type FindBalanceByIdOutputDto = {
     id: number,
+    name: string,
     amount: number
     currency: string,
     created_at: Date
@@ -37,6 +38,7 @@ export class FindBalanceByIdUseCase implements UseCase<FindBalanceByIdInputDto, 
     private presentOutput(balance: Balance): FindBalanceByIdOutputDto {
         const output = {
             id: balance.id!,
+            name: balance.name,
             amount: balance.amount,
             currency: balance.currency,
             created_at: balance.created_at,

@@ -67,10 +67,22 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
         }
     }
 
+    public async delete(id: number): Promise<void> {
+        try {
+            await this.prismaClient.balance.delete({
+                where: { id: id }
+            })
+        } catch (error) {
+            console.error("Error in delete:", error);
+            throw new Error("Error on balance task repository prisma.");
+        }
+    }
+
     private toDomainEntity(prismaBalance: any): Balance {
         return Balance.with({
             id: prismaBalance.id,
             user_id: prismaBalance.user_id,
+            name: prismaBalance.name,
             amount: Number(prismaBalance.amount),
             currency: prismaBalance.currency as Currency,
             created_at: prismaBalance.created_at,
@@ -81,6 +93,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
     private toPrismaData(balance: Balance): any {
         return {
             user_id: balance.user_id,
+            name: balance.name,
             amount: balance.amount,
             currency: balance.currency,
             created_at: balance.created_at,

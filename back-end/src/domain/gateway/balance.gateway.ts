@@ -5,4 +5,5 @@ export interface BalanceGateway {
     findAll(user_id: string): Promise<Balance[]>
     save(balance: Balance): Promise<Balance>
     update(id: number, amount: number, update_at: Date): Promise<Balance>
+    delete(id: number): Promise<void>
 }

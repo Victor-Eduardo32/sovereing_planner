@@ -5,11 +5,13 @@ import { UseCase } from "../usecase";
 
 export type CreateBalanceInputDto = {
     user_id: string,
+    name: string,
     currency: Currency
 }
 
 export type CreateBalanceOutputDto = {
     id: number,
+    name: string,
     amount: number
     currency: string,
     created_at: Date
@@ -23,9 +25,9 @@ export class CreateBalanceUseCase implements UseCase<CreateBalanceInputDto, Crea
         return new CreateBalanceUseCase(balanceGateway)
     }
 
-    public async execute({ user_id, currency }: CreateBalanceInputDto): Promise<CreateBalanceOutputDto> {
+    public async execute({ user_id, name, currency }: CreateBalanceInputDto): Promise<CreateBalanceOutputDto> {
         try {
-            const aBalance = Balance.create(user_id, currency)
+            const aBalance = Balance.create(user_id, name, currency)
 
             const balance = await this.balanceGateway.save(aBalance)
 
@@ -41,6 +43,7 @@ export class CreateBalanceUseCase implements UseCase<CreateBalanceInputDto, Crea
     private presentOutput(balance: Balance): CreateBalanceOutputDto {
         const output = {
             id: balance.id!,
+            name: balance.name,
             amount: balance.amount,
             currency: balance.currency,
             created_at: balance.created_at,

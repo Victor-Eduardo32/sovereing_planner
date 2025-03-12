@@ -94,6 +94,7 @@ model Balance {
   id Int @id @default(autoincrement())
   user_id String
   user User @relation(fields: [user_id], references: [id])
+  name String
   amount BigInt
   currency Currency
   created_at DateTime @default(now())
