@@ -1,5 +1,6 @@
 import { AuthUserRoute } from "../infra/api/express/routes/auth/auth-user.express.route";
 import { LogoutUserRoute } from "../infra/api/express/routes/auth/logout-user.express.route";
+import { CreateBalanceRoute } from "../infra/api/express/routes/balance/create-balance.express.route";
 import { CreateCompletedTaskListRoute } from "../infra/api/express/routes/completed-task-list/create-completed-task-list.express.route";
 import { FindAllCompletedTaskListRoute } from "../infra/api/express/routes/completed-task-list/find-all-task-list.express.route";
 import { RefreshSessionTokenRoute } from "../infra/api/express/routes/session/refresh-session-token.express.route";
@@ -29,6 +30,8 @@ export const initializeRoutes = (useCases: any) => {
     const createCompletedTaskListRoute = CreateCompletedTaskListRoute.create(useCases.createCompletedTaskListUseCase);
     const findAllCompletedTaskListRoute = FindAllCompletedTaskListRoute.create(useCases.findAllCompletedTaskListUseCase);
 
+    const createBalanceRoute = CreateBalanceRoute.create(useCases.createBalanceUseCase);
+
     return [
         createUserRoute,
         authUserRoute,
@@ -42,5 +45,6 @@ export const initializeRoutes = (useCases: any) => {
         updateTaskStateRoute,
         createCompletedTaskListRoute,
         findAllCompletedTaskListRoute,
+        createBalanceRoute
     ];
 }

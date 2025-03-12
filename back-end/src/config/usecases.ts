@@ -1,5 +1,6 @@
 import { AuthUserUseCase } from "../application/usecases/auth/auth-user.usescase"
 import { LogoutUserUseCase } from "../application/usecases/auth/logout-user.usecase"
+import { CreateBalanceUseCase } from "../application/usecases/balance/create-balance.usecase"
 import { CreateCompletedTaskListUseCase } from "../application/usecases/completed-task-list/create-completed-task-list.usecase"
 import { FindAllCompletedTaskListUseCase } from "../application/usecases/completed-task-list/find-all-completed-task-list.usecase"
 import { CreateCompletedTaskUseCase } from "../application/usecases/completed-task/create-completed-task.usecase"
@@ -45,6 +46,8 @@ export const initializeUseCases = (repositories: any, services: any) => {
     const createCompletedTaskListUseCase = CreateCompletedTaskListUseCase.create(repositories.completedTaskListRepository, createCompletedTaskUseCase);
     const findAllCompletedTaskListUseCase = FindAllCompletedTaskListUseCase.create(repositories.completedTaskListRepository, findAllCompletedTaskUseCase);
 
+    const createBalanceUseCase = CreateBalanceUseCase.create(repositories.balanceRepository);
+
     return {
         createUserUseCase,
         createSessionUseCase,
@@ -66,5 +69,6 @@ export const initializeUseCases = (repositories: any, services: any) => {
         findAllCompletedTaskUseCase,
         createCompletedTaskListUseCase,
         findAllCompletedTaskListUseCase,
+        createBalanceUseCase
     };
 }
