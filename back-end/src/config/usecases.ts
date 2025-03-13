@@ -1,6 +1,7 @@
 import { AuthUserUseCase } from "../application/usecases/auth/auth-user.usescase"
 import { LogoutUserUseCase } from "../application/usecases/auth/logout-user.usecase"
 import { CreateBalanceUseCase } from "../application/usecases/balance/create-balance.usecase"
+import { DeleteBalanceUseCase } from "../application/usecases/balance/delete-balance.usecase"
 import { FindAllBalanceUseCase } from "../application/usecases/balance/find-all-balance.usecase"
 import { CreateCompletedTaskListUseCase } from "../application/usecases/completed-task-list/create-completed-task-list.usecase"
 import { FindAllCompletedTaskListUseCase } from "../application/usecases/completed-task-list/find-all-completed-task-list.usecase"
@@ -49,6 +50,7 @@ export const initializeUseCases = (repositories: any, services: any) => {
 
     const createBalanceUseCase = CreateBalanceUseCase.create(repositories.balanceRepository);
     const findAllBalanceUseCase = FindAllBalanceUseCase.create(repositories.balanceRepository);
+    const deleteBalanceUseCase = DeleteBalanceUseCase.create(repositories.balanceRepository);
 
     return {
         createUserUseCase,
@@ -72,6 +74,7 @@ export const initializeUseCases = (repositories: any, services: any) => {
         createCompletedTaskListUseCase,
         findAllCompletedTaskListUseCase,
         createBalanceUseCase,
-        findAllBalanceUseCase
+        findAllBalanceUseCase,
+        deleteBalanceUseCase
     };
 }

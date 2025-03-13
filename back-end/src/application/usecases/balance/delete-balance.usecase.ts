@@ -10,7 +10,7 @@ export type DeleteBalanceOutputDto = void
 export class DeleteBalanceUseCase implements UseCase<DeleteBalanceInputDto, DeleteBalanceOutputDto> {
     private constructor(private readonly balancegateway: BalanceGateway){}
 
-    public async create(balancegateway: BalanceGateway) {
+    public static create(balancegateway: BalanceGateway) {
         return new DeleteBalanceUseCase(balancegateway)
     }
 
