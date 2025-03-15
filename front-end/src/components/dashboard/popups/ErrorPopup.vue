@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ErrorPopup } from 'src/types/components/error/props';
+import { ErrorPopupProps } from 'src/types/components/popup/props';
 import { ref, watch } from 'vue';
 
-const props = defineProps<ErrorPopup>()
+const props = defineProps<ErrorPopupProps>()
 const dialog = ref<boolean>(false)
 const emit = defineEmits(['close'])
 
@@ -25,7 +25,7 @@ const onClose = () => {
     :backdrop-filter="'saturate(80%)'"
     @update:model-value="(value) => { if (!value) onClose(); }"
   >
-    <q-card>
+    <q-card style="width: 90%;">
       <q-card-section class="row items-center q-pb-none text-h6">
         Error
       </q-card-section>
