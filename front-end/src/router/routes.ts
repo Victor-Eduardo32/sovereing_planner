@@ -29,6 +29,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/dashboard/finance/Expenses.vue')
       },
       {
+        path: 'finance/balances',
+        component: () => import('pages/dashboard/finance/BalancesPage.vue')
+      },
+      {
+        path: 'finance/savings',
+        component: () => import('pages/dashboard/finance/SavingsPage.vue')
+      },
+      {
         path: 'tasks/list',
         component: () => import('pages/dashboard/tasks/task-list/TaskLists.vue')
       },
