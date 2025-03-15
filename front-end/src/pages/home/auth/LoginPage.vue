@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useLoading } from 'src/composables/useLoading';
 import { useRedirect } from 'src/composables/useRedirect';
-import { useAuthStore } from 'src/stores/AuthStore';
+import { useAuthStore } from 'src/stores/modules/AuthStore';
 import { LoginForm } from 'src/types/components/auth/types';
 import { computed, onBeforeMount, ref } from 'vue';
 

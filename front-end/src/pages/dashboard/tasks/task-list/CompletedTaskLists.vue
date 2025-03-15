@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import CompletedTaskListFile from 'src/components/dashboard/tasks/task-list/CompletedTaskListFile.vue';
-import { useCompletedTaskListStore } from 'src/stores/CompletedTaskListStore';
+import { useCompletedTaskListStore } from 'src/stores/modules/CompletedTaskListStore';
 import FormFilterCompletedTaskList from 'src/components/dashboard/tasks/task-list/FormFilterCompletedTaskList.vue';
 import { FilterDates } from 'src/types/components/filter/types';
-import ErrorPopup from 'src/components/dashboard/ErrorPopup.vue';
+import ErrorPopup from 'src/components/dashboard/popups/ErrorPopup.vue';
 
 const useCompletedTaskList = useCompletedTaskListStore()
 

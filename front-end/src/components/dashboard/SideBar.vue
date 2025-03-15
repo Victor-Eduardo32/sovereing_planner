@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAuthStore } from 'src/stores/AuthStore';
+import { useAuthStore } from 'src/stores/modules/AuthStore';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -52,12 +52,16 @@ const menuList = ref<MenuItem[]>([
         url: '/dashboard',
       },
       {
-        name: 'Expenses',
-        url: '/finance/expenses',
+        name: 'Balances',
+        url: '/dashboard/finance/balances',
       },
       {
         name: 'Savings',
-        url: '/dashboard',
+        url: '/dashboard/finance/savings',
+      },
+      {
+        name: 'Expenses',
+        url: '/dashboard/finance/expenses',
       },
     ],
   },

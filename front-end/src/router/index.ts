@@ -7,7 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import { useAuthStore } from 'src/stores/AuthStore';
+import { useAuthStore } from 'src/stores/modules/AuthStore';
 
 /*
  * If not building with SSR mode, you can

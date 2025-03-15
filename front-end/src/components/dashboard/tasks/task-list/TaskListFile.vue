@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useTaskListComposable } from 'src/composables/useTaskList/useTaskListComposable';
-import { useCompletedTaskListStore } from 'src/stores/CompletedTaskListStore';
-import { useTaskListStore } from 'src/stores/TaskListStore';
-import { useTaskStore } from 'src/stores/TaskStore';
+import { useCompletedTaskListStore } from 'src/stores/modules/CompletedTaskListStore';
+import { useTaskListStore } from 'src/stores/modules/TaskListStore';
+import { useTaskStore } from 'src/stores/modules/TaskStore';
 import { TaskFileProps } from 'src/types/components/tasks/props';
 import { CompletedTask, CompletedTaskList, TaskCheck, TaskList, TaskStateUpdate } from 'src/types/components/tasks/types';
 import { ref, watch } from 'vue';

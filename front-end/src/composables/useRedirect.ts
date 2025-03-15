@@ -1,4 +1,4 @@
-import { useAuthStore } from 'src/stores/AuthStore';
+import { useAuthStore } from 'src/stores/modules/AuthStore';
 import { useRouter } from 'vue-router';
 
 export function useRedirect() {

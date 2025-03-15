@@ -3,7 +3,7 @@ import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import TaskListFile from 'src/components/dashboard/tasks/task-list/TaskListFile.vue';
 import FormTaskList from 'src/components/dashboard/tasks/task-list/FormTaskList.vue';
 import { TaskList } from 'src/types/components/tasks/types';
-import { useTaskListStore } from 'src/stores/TaskListStore';
+import { useTaskListStore } from 'src/stores/modules/TaskListStore';
 
 const useTaskList = useTaskListStore();
 

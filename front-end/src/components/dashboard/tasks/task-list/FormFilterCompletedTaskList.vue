@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useCompletedTaskListStore } from 'src/stores/CompletedTaskListStore';
+import { useCompletedTaskListStore } from 'src/stores/modules/CompletedTaskListStore';
 import { endOfDay } from 'src/utils/DateFormat';
 import { ref } from 'vue';
 

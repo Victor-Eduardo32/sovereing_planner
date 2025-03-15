@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useTaskListComposable } from 'src/composables/useTaskList/useTaskListComposable';
-import { useTaskListStore } from 'src/stores/TaskListStore';
+import { useTaskListStore } from 'src/stores/modules/TaskListStore';
 import { Task, TaskList } from 'src/types/components/tasks/types';
 import { ref } from 'vue';
 
