@@ -2,4 +2,9 @@ import { Balance } from './types'
 
 export type BalanceDataTableProps = {
   balances: Balance[]
+  winWidth: number
+}
+
+export type FormBalanceProps = {
+  visible: boolean
 }

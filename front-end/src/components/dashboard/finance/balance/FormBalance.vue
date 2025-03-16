@@ -2,12 +2,12 @@
 import { useBalanceComposable } from 'src/composables/useBalance/useBalanceComposable';
 import { Currency } from 'src/enums/currency';
 import { useBalanceStore } from 'src/stores/modules/BalanceStore';
-import { FormSavingProps } from 'src/types/components/saving/props';
+import { FormBalanceProps } from 'src/types/components/balance/props';
 import { ref } from 'vue';
 
 const useBalance = useBalanceStore()
 
-const props = defineProps<FormSavingProps>();
+const props = defineProps<FormBalanceProps>();
 const emit = defineEmits(['close']);
 
 const { getCurrencyIcon } = useBalanceComposable()
@@ -57,7 +57,12 @@ void props;
             outlined
             v-model="name"
             placeholder="Enter balance name"
-          />
+            maxlength="50"
+          >
+            <template v-slot:append>
+              <span style="font-size: 15px;">{{ name.length }}/50</span>
+            </template>
+          </q-input>
         </div>
 
         <div class="q-mt-md">
