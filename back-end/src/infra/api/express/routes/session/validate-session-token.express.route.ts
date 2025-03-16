@@ -34,9 +34,9 @@ export class ValidateSessionTokenRoute implements Route {
 
                 const responseBody = this.present(output)
 
-                response.status(200).send(responseBody)
+                response.status(200).json(responseBody)
             } catch (error) {
-                response.status(401).send({ valid: false })
+                response.status(401).json({ valid: false })
                 next(error)
             }
         }   

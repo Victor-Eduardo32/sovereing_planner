@@ -47,7 +47,7 @@ export class AuthUserRoute implements Route {
                     sameSite: 'strict'
                 })
 
-                response.status(201).json(responseBody).send()
+                response.status(201).json(responseBody)
             } catch (error) {   
                 next(error)
             }

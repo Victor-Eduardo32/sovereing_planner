@@ -38,7 +38,7 @@ export class FindAllBalanceRoute implements Route {
     
                 const responseBody = this.present(output)
     
-                response.status(200).json(responseBody).send()
+                response.status(200).json(responseBody)
             } catch (error) {
                 next(error)
             }
