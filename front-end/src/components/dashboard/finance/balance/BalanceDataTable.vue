@@ -53,8 +53,13 @@ const deleteBalance = (id: number) => {
   emit('delete', id)
 }
 
+const isGrid = (): boolean => {
+  return props.winWidth <= 1023
+}
+
 watch(() => props.balances, (newBalances) => {
   rows.value = newBalances || []
+  console.log(props.winWidth)
 }, { immediate: true })
 </script>
 
@@ -63,6 +68,7 @@ watch(() => props.balances, (newBalances) => {
     <q-table
       :rows="rows"
       :columns="columns"
+      :grid="isGrid()"
       v-model:pagination="pagination"
       row-key="id"
       flat
@@ -93,10 +99,14 @@ watch(() => props.balances, (newBalances) => {
 <style lang="scss" scoped>
 .balance-table {
   border-radius: 2px;
-  box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
 
   :deep(td) {
     border: none;
+    word-break: normal;
+  }
+
+  @media(min-width: 1024px) {
+    box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
   }
 }
 

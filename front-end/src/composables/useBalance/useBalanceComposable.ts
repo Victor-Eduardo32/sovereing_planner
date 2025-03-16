@@ -18,5 +18,13 @@ export const useBalanceComposable = (): useBalanceType => {
     return ''
   }
 
-  return { getCurrencyIcon, getCurrencyPrefix }
+  const getNumberFormat = (amount: number, currency: string): string => {
+    const value: number = amount / 100
+
+    if(currency == Currency.BRL || currency == Currency.EUR) return value.toFixed(2).replace('.', ',')
+
+    return value.toFixed(2)
+  }
+
+  return { getCurrencyIcon, getCurrencyPrefix, getNumberFormat }
 }

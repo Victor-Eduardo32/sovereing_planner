@@ -4,7 +4,7 @@ import TitlePage from 'src/components/dashboard/TitlePage.vue';
 import FormBalance from 'src/components/dashboard/finance/balance/FormBalance.vue';
 import DeletePopup from 'src/components/dashboard/popups/DeletePopup.vue';
 import ErrorPopup from 'src/components/dashboard/popups/ErrorPopup.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { useBalanceStore } from 'src/stores/modules/BalanceStore';
 import { useNotifyComposable } from 'src/composables/useNotify/useNotifyComposable';
 
@@ -20,6 +20,7 @@ const add = ref<boolean>(false)
 const deleteTitle = ref<string>('')
 const deleteMessage = ref<string>('')
 const deletedId = ref<number>()
+const winWidth = ref<number>(window.innerWidth);
 
 const errorMessage = computed(() => {
   return useBalance.errorMessage
@@ -50,8 +51,20 @@ const cleanDeleteData = () => {
   deletedId.value = undefined
 }
 
+const verifyWindowWidth = async (): Promise<void> => {
+  winWidth.value = window.innerWidth
+}
+
 onMounted(async () => {
-  await useBalance.getAllBalances()
+  if(!useBalance.balances.length) {
+    await useBalance.getAllBalances()
+  }
+
+  window.addEventListener('resize', verifyWindowWidth);
+})
+
+onBeforeMount(() => {
+  window.removeEventListener('resize', verifyWindowWidth);
 })
 </script>
 
@@ -86,7 +99,7 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <balance-data-table :balances="balances" @delete="openDeletePopup" />
+          <balance-data-table :balances="balances" :win-width="winWidth" @delete="openDeletePopup" />
           <form-balance :visible="add" @close="add = false" />
           <delete-popup @delete-confirmation="deleteBalance" @close="closeDeletePopup" :message="deleteMessage" :title="deleteTitle" />
           <error-popup v-if="errorMessage.length > 0" :message="errorMessage" @close="useBalance.errorMessage = ''" />
