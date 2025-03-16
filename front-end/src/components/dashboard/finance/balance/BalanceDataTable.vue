@@ -102,7 +102,10 @@ watch(() => props.balances, (newBalances) => {
 
   :deep(td) {
     border: none;
-    word-break: normal;
+  }
+
+  :deep(.q-table__grid-item-value) {
+    word-wrap: break-word;
   }
 
   @media(min-width: 1024px) {
