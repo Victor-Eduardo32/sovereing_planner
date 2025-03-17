@@ -7,6 +7,7 @@ import ErrorPopup from 'src/components/dashboard/popups/ErrorPopup.vue';
 import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { useBalanceStore } from 'src/stores/modules/BalanceStore';
 import { useNotifyComposable } from 'src/composables/useNotify/useNotifyComposable';
+import { Balance } from 'src/types/components/balance/types';
 
 const useBalance = useBalanceStore()
 
@@ -25,6 +26,10 @@ const winWidth = ref<number>(window.innerWidth);
 const errorMessage = computed(() => {
   return useBalance.errorMessage
 });
+
+const createBalance = async (balance: Balance) => {
+  await useBalance.addBalance(balance)
+}
 
 const openDeletePopup = (id: number) => {
     deleteTitle.value = 'Do you want to delete the balance?'
@@ -100,7 +105,7 @@ onBeforeMount(() => {
             </div>
           </div>
           <balance-data-table :balances="balances" :win-width="winWidth" @delete="openDeletePopup" />
-          <form-balance :visible="add" @close="add = false" />
+          <form-balance @create="createBalance" @close="add = false" :visible="add" />
           <delete-popup @delete-confirmation="deleteBalance" @close="closeDeletePopup" :message="deleteMessage" :title="deleteTitle" />
           <error-popup v-if="errorMessage.length > 0" :message="errorMessage" @close="useBalance.errorMessage = ''" />
         </div>

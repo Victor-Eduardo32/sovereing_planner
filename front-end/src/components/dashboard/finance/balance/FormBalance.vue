@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import { useBalanceComposable } from 'src/composables/useBalance/useBalanceComposable';
 import { Currency } from 'src/enums/currency';
-import { useBalanceStore } from 'src/stores/modules/BalanceStore';
 import { FormBalanceProps } from 'src/types/components/balance/props';
 import { ref } from 'vue';
 
-const useBalance = useBalanceStore()
-
 const props = defineProps<FormBalanceProps>();
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'create']);
 
 const { getCurrencyIcon } = useBalanceComposable()
 
@@ -20,13 +17,14 @@ const verifyFormData = (): boolean => {
 }
 
 const createBalance = async () => {
-  await useBalance.addBalance({
+  const data = {
     name: name.value,
     currency: currency.value
-  })
+  }
 
   name.value = ''
   currency.value = Currency.BRL
+  emit('create', data)
   emit('close')
 }
 
