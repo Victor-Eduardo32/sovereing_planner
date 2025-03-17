@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpMethod, Route } from "../route";
-import { CreateBalanceOutputDto, CreateBalanceUseCase } from "../../../../../application/usecases/balance/create-balance.usecase";
+import { CreateBalanceInputDto, CreateBalanceOutputDto, CreateBalanceUseCase } from "../../../../../application/usecases/balance/create-balance.usecase";
 import { getUserIdFromHeaders } from "../../../../../utils/requestHelpers";
 import { Balance } from "@prisma/client";
 
@@ -34,7 +34,13 @@ export class CreateBalanceRoute implements Route {
                 const user_id = getUserIdFromHeaders(request.headers)
                 const { name, currency } = request.body
 
-                const output = await this.createBalanceUseCase.execute({ user_id, name, currency })
+                const input: CreateBalanceInputDto = {
+                    user_id: user_id,
+                    name: name,
+                    currency: currency
+                }
+
+                const output = await this.createBalanceUseCase.execute(input)
 
                 const responseBody = this.present(output)
 

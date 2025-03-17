@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { DeleteBalanceUseCase } from "../../../../../application/usecases/balance/delete-balance.usecase";
+import { DeleteBalanceInputDto, DeleteBalanceUseCase } from "../../../../../application/usecases/balance/delete-balance.usecase";
 import { HttpMethod, Route } from "../route";
 
 export class DeleteBalanceRoute implements Route {
@@ -22,7 +22,11 @@ export class DeleteBalanceRoute implements Route {
             try {
                 const { id } = request.body
 
-                await this.deleteBalanceUseCase.execute({ id })
+                const input: DeleteBalanceInputDto = {
+                    id: id
+                }
+
+                await this.deleteBalanceUseCase.execute(input)
 
                 response.status(200).send('Balance deleted successfully!')
             } catch (error) {

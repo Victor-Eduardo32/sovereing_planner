@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { FindAllBalanceOutputDto, FindAllBalanceUseCase } from "../../../../../application/usecases/balance/find-all-balance.usecase";
+import { FindAllBalanceInputDto, FindAllBalanceOutputDto, FindAllBalanceUseCase } from "../../../../../application/usecases/balance/find-all-balance.usecase";
 import { HttpMethod, Route } from "../route";
 import { getUserIdFromHeaders } from "../../../../../utils/requestHelpers";
 
@@ -34,7 +34,11 @@ export class FindAllBalanceRoute implements Route {
             try {
                 const user_id = getUserIdFromHeaders(request.headers)
 
-                const output = await this.findAllBalanceUseCase.execute({ user_id })
+                const input: FindAllBalanceInputDto = {
+                    user_id: user_id
+                }
+
+                const output = await this.findAllBalanceUseCase.execute(input)
     
                 const responseBody = this.present(output)
     
