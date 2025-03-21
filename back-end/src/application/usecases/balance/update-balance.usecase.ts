@@ -1,21 +1,19 @@
 import { Balance } from "../../../domain/entities/balance";
 import { Currency } from "../../../domain/enums/currency";
 import { BalanceGateway } from "../../../domain/gateway/balance.gateway";
-import { BalanceDistinctCurrency } from "../../exceptions/balance-distinct-currency.exception.";
 import { UseCase } from "../usecase";
 import { FindBalanceByIdUseCase } from "./find-balance-by-id.usecase";
 
 export type UpdateBalanceInputDto = {
     id: number,
-    value: number,
-    currency: string,
+    value: bigint,
     type: boolean
 }
 
 export type UpdateBalanceOutputDto = {
-    id?: number,
+    id: number,
     name: string,
-    amount: number,
+    amount: bigint,
     currency: Currency,
     created_at: Date,
     updated_at: Date
@@ -31,17 +29,11 @@ export class UpdateBalanceUseCase implements UseCase<UpdateBalanceInputDto, Upda
         return new UpdateBalanceUseCase(balanceGateway, findBalanceByIdUseCase)
     }
 
-    public async execute({ id, value, currency, type }: UpdateBalanceInputDto): Promise<UpdateBalanceOutputDto> {
+    public async execute({ id, value, type }: UpdateBalanceInputDto): Promise<UpdateBalanceOutputDto> {
         try {
             const update_at = new Date()
 
             const aBalance = await this.findBalanceByIdUseCase.execute({ id })
-
-            if(currency !== aBalance.currency) {
-                const balanceDistinctCurrency = new BalanceDistinctCurrency()
-                console.log(balanceDistinctCurrency)
-                throw balanceDistinctCurrency
-            }
 
             const newBalanceAmount = type ? aBalance.amount + value : aBalance.amount - value
 
@@ -58,7 +50,7 @@ export class UpdateBalanceUseCase implements UseCase<UpdateBalanceInputDto, Upda
 
     private presentOutput(balance: Balance): UpdateBalanceOutputDto {
         const output = {
-            id: balance.id,
+            id: balance.id!,
             name: balance.name,
             amount: balance.amount,
             currency: balance.currency,

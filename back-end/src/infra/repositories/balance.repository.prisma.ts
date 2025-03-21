@@ -31,6 +31,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
         try {
             const prismaBalances = await this.prismaClient.balance.findMany({
                 where: { user_id },
+                orderBy: { id: 'asc' },
             });
 
             return prismaBalances.map((balance) => this.toDomainEntity(balance));
@@ -53,7 +54,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
         }
     }
 
-    public async update(id: number, amount: number, updated_at: Date): Promise<Balance> {
+    public async update(id: number, amount: bigint, updated_at: Date): Promise<Balance> {
         try {
             const prismaBalance = await this.prismaClient.balance.update({
                 where: { id },
@@ -83,7 +84,7 @@ export class BalanceRepositoryPrisma implements BalanceGateway {
             id: prismaBalance.id,
             user_id: prismaBalance.user_id,
             name: prismaBalance.name,
-            amount: Number(prismaBalance.amount),
+            amount: prismaBalance.amount,
             currency: prismaBalance.currency as Currency,
             created_at: prismaBalance.created_at,
             updated_at: prismaBalance.updated_at,

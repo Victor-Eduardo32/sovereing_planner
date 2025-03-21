@@ -8,7 +8,7 @@ export class Balance {
         return new Balance({
             user_id,
             name,
-            amount: 0, 
+            amount: BigInt(0), 
             currency,
             created_at: new Date(),
             updated_at: new Date()

@@ -9,7 +9,7 @@ export type FindBalanceByIdInputDto = {
 export type FindBalanceByIdOutputDto = {
     id: number,
     name: string,
-    amount: number
+    amount: bigint
     currency: string,
     created_at: Date
     updated_at: Date

@@ -7,7 +7,7 @@ export type FindAllBalanceResponseDto = {
     balances: {
         id: number,
         name: string,
-        amount: number
+        amount: string,
         currency: string,
         created_at: Date
         updated_at: Date
@@ -63,7 +63,7 @@ export class FindAllBalanceRoute implements Route {
                 return {
                     id: balance.id,
                     name: balance.name,
-                    amount: balance.amount,
+                    amount: balance.amount.toString(),
                     currency: balance.currency,
                     created_at: balance.created_at,
                     updated_at: balance.updated_at

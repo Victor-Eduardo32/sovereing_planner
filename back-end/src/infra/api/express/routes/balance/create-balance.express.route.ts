@@ -7,7 +7,7 @@ import { Balance } from "@prisma/client";
 export type CreateBalanceResponseDto = {
     id: number,
     name: string,
-    amount: number
+    amount: string,
     currency: string,
     created_at: Date
     updated_at: Date
@@ -63,7 +63,7 @@ export class CreateBalanceRoute implements Route {
         const response = {
             id: input.id,
             name: input.name,
-            amount: input.amount,
+            amount: input.amount.toString(),
             currency: input.currency,
             created_at: input.created_at,
             updated_at: input.updated_at
