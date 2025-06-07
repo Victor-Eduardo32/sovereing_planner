@@ -99,6 +99,19 @@ model Balance {
   currency Currency
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
+  saving Saving[]
 
   @@map("balances")
+}
+
+model Saving {
+  id Int @id @default(autoincrement())
+  balance_id Int
+  balance Balance @relation(fields: [balance_id], references: [id], onDelete: Cascade)
+  description String
+  value BigInt
+  date DateTime
+  created_at DateTime @default(now())
+
+  @@map("savings")
 }
