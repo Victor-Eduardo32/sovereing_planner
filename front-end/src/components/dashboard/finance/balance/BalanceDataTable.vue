@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 
 const props = defineProps<BalanceDataTableProps>()
 
-const { getCurrencyPrefix } = useBalanceComposable()
+const { getCurrencyPrefix, getNumberFormat } = useBalanceComposable()
 
 const emit = defineEmits(['delete'])
 
@@ -59,7 +59,6 @@ const isGrid = (): boolean => {
 
 watch(() => props.balances, (newBalances) => {
   rows.value = newBalances || []
-  console.log(props.winWidth)
 }, { immediate: true })
 </script>
 
@@ -78,7 +77,7 @@ watch(() => props.balances, (newBalances) => {
     >
       <template v-slot:body-cell-amount="props">
         <q-td>
-          {{ getCurrencyPrefix(props.row.currency) + props.value }}
+          {{ getCurrencyPrefix(props.row.currency) + getNumberFormat(props.value, props.row.currency) }}
         </q-td>
       </template>
       <template v-slot:body-cell-actions="props">
