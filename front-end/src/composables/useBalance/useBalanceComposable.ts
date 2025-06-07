@@ -26,5 +26,11 @@ export const useBalanceComposable = (): useBalanceType => {
     return value.toFixed(2)
   }
 
-  return { getCurrencyIcon, getCurrencyPrefix, getNumberFormat }
+  const getNumberMask = (currency: string): string => {
+    if(currency == Currency.BRL || currency == Currency.EUR) return '#,##'
+
+    return '#.##'
+  }
+
+  return { getCurrencyIcon, getCurrencyPrefix, getNumberFormat, getNumberMask }
 }

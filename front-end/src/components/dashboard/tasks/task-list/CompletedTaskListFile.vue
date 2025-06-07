@@ -5,8 +5,7 @@ import { formatDateUs } from 'src/utils/DateFormat';
 
 const props = defineProps<CompletedTaskFileProps>();
 const ended_at = computed(() => {
-  const endedAtDate = new Date(props.completedTaskList.ended_at!);
-  return props.completedTaskList.ended_at ? formatDateUs(endedAtDate) : ''
+  return props.completedTaskList.ended_at ? formatDateUs(props.completedTaskList.ended_at) : ''
 })
 
 </script>

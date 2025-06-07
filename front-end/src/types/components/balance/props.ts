@@ -8,3 +8,9 @@ export type BalanceDataTableProps = {
 export type FormBalanceProps = {
   visible: boolean
 }
+
+export type SelectBalanceProps = {
+  visible: boolean
+  balances: Balance[]
+  selectedBalance: Balance
+}
