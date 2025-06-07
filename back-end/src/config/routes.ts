@@ -5,6 +5,8 @@ import { DeleteBalanceRoute } from "../infra/api/express/routes/balance/delete-b
 import { FindAllBalanceRoute } from "../infra/api/express/routes/balance/find-all-balance.express.route";
 import { CreateCompletedTaskListRoute } from "../infra/api/express/routes/completed-task-list/create-completed-task-list.express.route";
 import { FindAllCompletedTaskListRoute } from "../infra/api/express/routes/completed-task-list/find-all-task-list.express.route";
+import { CreateSavingRoute } from "../infra/api/express/routes/saving/create-saving.express.route";
+import { FindSavingByBalanceIdRoute } from "../infra/api/express/routes/saving/find-saving-by-balance-id.express.route";
 import { RefreshSessionTokenRoute } from "../infra/api/express/routes/session/refresh-session-token.express.route";
 import { ValidateSessionTokenRoute } from "../infra/api/express/routes/session/validate-session-token.express.route";
 import { CreateTaskListRoute } from "../infra/api/express/routes/task-list/create-task-list.express.route";
@@ -36,6 +38,9 @@ export const initializeRoutes = (useCases: any) => {
     const findAllBalanceRoute = FindAllBalanceRoute.create(useCases.findAllBalanceUseCase);
     const deleteBalanceRoute = DeleteBalanceRoute.create(useCases.deleteBalanceUseCase);
 
+    const createSavingRoute = CreateSavingRoute.create(useCases.createSavingUseCase, useCases.updateBalanceUseCase);
+    const findSavingByBalanceIdRoute = FindSavingByBalanceIdRoute.create(useCases.findSavingByBalanceIdUseCase);
+
     return [
         createUserRoute,
         authUserRoute,
@@ -51,6 +56,8 @@ export const initializeRoutes = (useCases: any) => {
         findAllCompletedTaskListRoute,
         createBalanceRoute,
         findAllBalanceRoute,
-        deleteBalanceRoute
+        deleteBalanceRoute,
+        createSavingRoute,
+        findSavingByBalanceIdRoute
     ];
 }

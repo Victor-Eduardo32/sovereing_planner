@@ -1,6 +1,7 @@
 import { BalanceRepositoryPrisma } from "../infra/repositories/balance.repository.prisma"
 import { CompletedTaskListRepositoryPrisma } from "../infra/repositories/completed-task-list.repository.prisma"
 import { CompletedTaskRepositoryPrisma } from "../infra/repositories/completed-task.repository.prisma"
+import { SavingRepositoryPrisma } from "../infra/repositories/saving.repository.prisma"
 import { SessionRepositoryPrisma } from "../infra/repositories/session.repository.prisma"
 import { TaskListRepositoryPrisma } from "../infra/repositories/task-list.repository.prisma"
 import { TaskRepositoryPrisma } from "../infra/repositories/task.repository.prisma"
@@ -15,6 +16,7 @@ export const initializeRepositories = () => {
     const completedTaskRepository = CompletedTaskRepositoryPrisma.create(prisma);
     const completedTaskListRepository = CompletedTaskListRepositoryPrisma.create(prisma);
     const balanceRepository = BalanceRepositoryPrisma.create(prisma);
+    const savingRepository = SavingRepositoryPrisma.create(prisma);
 
     return {
         userRepository,
@@ -23,6 +25,7 @@ export const initializeRepositories = () => {
         taskListRepository,
         completedTaskRepository,
         completedTaskListRepository,
-        balanceRepository
+        balanceRepository,
+        savingRepository
     };
 }

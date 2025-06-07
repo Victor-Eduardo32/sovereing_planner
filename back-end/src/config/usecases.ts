@@ -3,10 +3,14 @@ import { LogoutUserUseCase } from "../application/usecases/auth/logout-user.usec
 import { CreateBalanceUseCase } from "../application/usecases/balance/create-balance.usecase"
 import { DeleteBalanceUseCase } from "../application/usecases/balance/delete-balance.usecase"
 import { FindAllBalanceUseCase } from "../application/usecases/balance/find-all-balance.usecase"
+import { FindBalanceByIdUseCase } from "../application/usecases/balance/find-balance-by-id.usecase"
+import { UpdateBalanceUseCase } from "../application/usecases/balance/update-balance.usecase"
 import { CreateCompletedTaskListUseCase } from "../application/usecases/completed-task-list/create-completed-task-list.usecase"
 import { FindAllCompletedTaskListUseCase } from "../application/usecases/completed-task-list/find-all-completed-task-list.usecase"
 import { CreateCompletedTaskUseCase } from "../application/usecases/completed-task/create-completed-task.usecase"
 import { FindAllCompletedTaskUseCase } from "../application/usecases/completed-task/find-all-completed-task.usecase"
+import { CreateSavingUseCase } from "../application/usecases/saving/create-saving.usecase"
+import { FindSavingByBalanceIdUseCase } from "../application/usecases/saving/find-saving-by-balance-id.usecase"
 import { CreateSessionUseCase } from "../application/usecases/session/create-session.usecase"
 import { RefreshSessionTokenUseCase } from "../application/usecases/session/refresh-session-token.usecase"
 import { UpdateSessionDataUseCase } from "../application/usecases/session/update-session-data.usecase"
@@ -49,8 +53,13 @@ export const initializeUseCases = (repositories: any, services: any) => {
     const findAllCompletedTaskListUseCase = FindAllCompletedTaskListUseCase.create(repositories.completedTaskListRepository, findAllCompletedTaskUseCase);
 
     const createBalanceUseCase = CreateBalanceUseCase.create(repositories.balanceRepository);
+    const findBalanceByIdUseCase = FindBalanceByIdUseCase.create(repositories.balanceRepository);
     const findAllBalanceUseCase = FindAllBalanceUseCase.create(repositories.balanceRepository);
     const deleteBalanceUseCase = DeleteBalanceUseCase.create(repositories.balanceRepository);
+    const updateBalanceUseCase = UpdateBalanceUseCase.create(repositories.balanceRepository, findBalanceByIdUseCase);
+
+    const createSavingUseCase = CreateSavingUseCase.create(repositories.savingRepository);
+    const findSavingByBalanceIdUseCase = FindSavingByBalanceIdUseCase.create(repositories.savingRepository);
 
     return {
         createUserUseCase,
@@ -74,7 +83,11 @@ export const initializeUseCases = (repositories: any, services: any) => {
         createCompletedTaskListUseCase,
         findAllCompletedTaskListUseCase,
         createBalanceUseCase,
+        findBalanceByIdUseCase,
         findAllBalanceUseCase,
-        deleteBalanceUseCase
+        deleteBalanceUseCase,
+        updateBalanceUseCase,
+        createSavingUseCase,
+        findSavingByBalanceIdUseCase
     };
 }
