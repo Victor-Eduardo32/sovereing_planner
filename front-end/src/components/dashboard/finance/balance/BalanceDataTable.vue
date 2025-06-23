@@ -80,8 +80,9 @@ watch(() => props.balances, (newBalances) => {
           {{ getCurrencyPrefix(props.row.currency) + getNumberFormat(props.value, props.row.currency) }}
         </q-td>
       </template>
+
       <template v-slot:body-cell-actions="props">
-        <q-td align="center" style="width: 100px;">
+        <q-td align="center">
           <q-btn
             flat
             round
@@ -91,6 +92,26 @@ watch(() => props.balances, (newBalances) => {
           />
         </q-td>
       </template>
+
+      <template v-slot:item="props">
+        <div class="item q-mb-sm" style="width: 100%;">
+          <div class="cell">
+            <span class="title">Name</span>
+            <span class="content">{{ props.row.name }}</span></div>
+          <div class="cell" style="margin-top: 8px;">
+            <span class="title">Currency</span>
+            <span class="content">{{ props.row.currency }}</span></div>
+          <div class="cell" style="margin-top: 8px;">
+            <span class="title">Amount</span>
+            <span class="content">{{ getCurrencyPrefix(props.row.currency) + getNumberFormat(props.row.amount, props.row.currency) }}</span>
+          </div>
+          <div class="cell" style="margin-top: 8px;">
+            <span class="title">Actions</span>
+            <q-btn class="delete-btn" icon-right="delete_outline" label="Delete" @click="deleteBalance(props.row.id)" />
+          </div>
+        </div>
+      </template>
+
     </q-table>
   </div>
 </template>
@@ -103,8 +124,47 @@ watch(() => props.balances, (newBalances) => {
     border: none;
   }
 
-  :deep(.q-table__grid-item-value) {
-    word-wrap: break-word;
+  :deep(.q-table__grid-content) {
+    display: flex;
+    flex-direction: column;
+
+    .item {
+      vertical-align: top;
+      padding: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background-color: #FFF;
+      border-radius: 3px;
+
+      .cell {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          opacity: 0.54;
+          font-weight: 500;
+          font-size: 12px;
+        }
+
+        .content {
+          word-wrap: break-word;
+        }
+
+        .delete-btn {
+          background: #ee2424;
+          width: 100px;
+          height: 30px;
+          font-size: 12px;
+          margin: 5px 0 0;
+
+          i {
+            margin-left: 2px;
+            padding-bottom: 3px;
+            font-size: 20px;
+          }
+        }
+      }
+    }
+
   }
 
   @media(min-width: 1024px) {

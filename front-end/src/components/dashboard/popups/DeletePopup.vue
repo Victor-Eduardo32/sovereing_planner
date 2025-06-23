@@ -84,6 +84,10 @@ const onDelete = () => {
   width: 170px;
   margin-right: 10px;
   font-weight: 500;
+
+  @media(max-width: 1024px) {
+    margin-right: 0 !important;
+  }
 }
 
 .delete-btn {
@@ -93,6 +97,11 @@ const onDelete = () => {
   width: 170px;
   margin-left: 10px;
   font-weight: 4500;
+
+  @media(max-width: 1024px) {
+    margin-left: 0 !important;
+    margin-top: 10px;
+  }
 }
 
 </style>
