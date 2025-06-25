@@ -3,7 +3,7 @@ import SavingDataTable from 'src/components/dashboard/finance/saving/SavingDataT
 import TitlePage from 'src/components/dashboard/TitlePage.vue';
 import FormSaving from 'src/components/dashboard/finance/saving/FormSaving.vue';
 import SelectBalance from 'src/components/dashboard/finance/SelectBalance.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onBeforeMount, ref } from 'vue';
 import { useBalanceStore } from 'src/stores/modules/BalanceStore';
 import { Balance } from 'src/types/components/balance/types';
 import { useBalanceComposable } from 'src/composables/useBalance/useBalanceComposable';
@@ -28,6 +28,7 @@ const savings = computed(() => {
 const add = ref<boolean>(false)
 const change = ref<boolean>(false)
 const search = ref<string>('')
+const winWidth = ref<number>(window.innerWidth)
 
 const filterSavings = computed(() => {
   const searchTerm = search.value.toLowerCase()
@@ -55,6 +56,10 @@ const onSearch = (filter: string) => {
   search.value = filter
 }
 
+const verifyWindowWidth = async (): Promise<void> => {
+  winWidth.value = window.innerWidth
+}
+
 onMounted(async () => {
   if(!useBalance.balances.length) {
     await useBalance.getAllBalances()
@@ -62,6 +67,11 @@ onMounted(async () => {
 
   balance.value = useBalance.balances[0]
   await useSaving.getSavingByBalanceId(balance.value.id!)
+  window.addEventListener('resize', verifyWindowWidth);
+})
+
+onBeforeMount(() => {
+  window.removeEventListener('resize', verifyWindowWidth);
 })
 </script>
 
@@ -80,9 +90,8 @@ onMounted(async () => {
           />
           <div
             class="bar-add flex justify-between items-center bg-white q-px-md q-mb-lg"
-            style="height: 65px"
           >
-            <div class="flex items-center">
+            <div class="data flex items-center">
               <h6 class="title-bar q-my-none text-bold">Balance Amount:</h6>
               <span v-if="balance" class="q-ml-sm" style="font-size: 17px; margin-top: 4px;">
                 {{ balance.name + ' - ' + getCurrencyPrefix(balance.currency) + getNumberFormat(balance.amount!, balance.currency)}}
@@ -111,6 +120,7 @@ onMounted(async () => {
           </div>
           <saving-data-table
             @search="onSearch"
+            :win-width="winWidth"
             :savings="search.length ? filterSavings : savings"
             :currency="balance.currency ? balance.currency : 'BRL'"
           />
@@ -138,6 +148,7 @@ onMounted(async () => {
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
+  height: 65px;
 
   :deep(.q-icon) {
     margin-right: 5px;
@@ -146,6 +157,15 @@ onMounted(async () => {
   :deep(.q-btn) {
     i {
       margin-right: 1px;
+    }
+  }
+
+  @media(max-width: 1024px) {
+    justify-content: center;
+    height: 130px;
+
+    .data {
+      justify-content: center;
     }
   }
 }

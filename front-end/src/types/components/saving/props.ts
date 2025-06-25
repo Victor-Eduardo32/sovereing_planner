@@ -7,5 +7,6 @@ export type FormSavingProps = {
 
 export type SavingDataTableProps = {
   savings: Saving[]
-  currency: string
+  currency: string,
+  winWidth: number
 }

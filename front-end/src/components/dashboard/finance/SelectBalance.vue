@@ -45,7 +45,7 @@ watch(() => props.balances, (newBalances) => {
               :disable="balance.id == selectedBalance.id"
               @click="selectBalance(balance.id!)"
             >
-              <q-item-section style="flex: 2; padding-right: 3px;">
+              <q-item-section style="display: block; flex: 2; padding-right: 3px; ; word-wrap: break-word;">
                 {{ balance.name }}
               </q-item-section>
               <q-item-section style="flex: 1;">

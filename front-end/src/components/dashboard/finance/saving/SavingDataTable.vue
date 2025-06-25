@@ -7,7 +7,7 @@ import { formatDateUs } from 'src/utils/DateFormat';
 
 const props = defineProps<SavingDataTableProps>()
 
-const emit = defineEmits(['search']);
+const emit = defineEmits(['search', 'delete']);
 
 const rows = ref<Saving[]>([]);
 
@@ -37,6 +37,14 @@ const columns = ref([
     align: 'left' as const,
     sortable: true,
   },
+  {
+    name: 'actions',
+    label: 'Actions',
+    field: 'actions',
+    align: 'center' as const,
+    sortable: false,
+    style: 'width: 100px;'
+  },
 ]);
 
 const pagination = ref({
@@ -61,6 +69,14 @@ const searchSaving = () => {
   emit('search', search.value)
 }
 
+const deleteSaving = (id: number) => {
+  emit('delete', id)
+}
+
+const isGrid = (): boolean => {
+  return props.winWidth <= 1023
+}
+
 watch(
   () => props.savings,
   (newSavings) => {
@@ -83,6 +99,7 @@ watch(
   <q-table
     :rows="visibleRows"
     :columns="columns"
+    :grid="isGrid()"
     row-key="id"
     bordered
     square
@@ -98,12 +115,23 @@ watch(
     </template>
     <template v-slot:body-cell-value="props">
       <q-td style="color: #10B981;">
-        {{ getCurrencyPrefix(currency) + getNumberFormat(props.value, currency) }}
+        {{ '+' + getCurrencyPrefix(currency) + getNumberFormat(props.value, currency) }}
+      </q-td>
+    </template>
+    <template v-slot:body-cell-actions="props">
+      <q-td align="center" style="width: 100px;">
+        <q-btn
+          flat
+          round
+          icon="delete_outline"
+          class="cursor-pointer"
+          @click="deleteSaving(props.key)"
+        />
       </q-td>
     </template>
 
     <template v-slot:pagination="scope">
-      <div class="flex justify-between" style="width: 100%;">
+      <div class="tab-bottom flex justify-between" style="width: 100%;">
         <span class="showing-range">{{ range }}</span>
         <q-pagination
           v-model="pagination.page"
@@ -143,13 +171,38 @@ watch(
         />
       </div>
     </template>
+
+    <template v-slot:item="props">
+      <div class="item q-mb-sm" style="width: 100%;">
+        <div class="cell">
+          <span class="title">Description</span>
+          <span class="content">{{ props.row.description }}</span></div>
+        <div class="cell" style="margin-top: 8px;">
+          <span class="title">Date</span>
+          <span class="content">{{ formatDateUs(props.row.date) }}</span></div>
+        <div class="cell" style="margin-top: 8px;">
+          <span class="title">Value</span>
+          <span class="content" style="color: #10B981;">{{ '+' + getCurrencyPrefix(currency) + getNumberFormat(props.row.value, currency)  }}</span>
+        </div>
+        <div class="cell" style="margin-top: 8px;">
+          <span class="title">Actions</span>
+          <q-btn class="delete-btn" icon-right="delete_outline" label="Delete" @click="deleteSaving(props.row.id)" />
+        </div>
+      </div>
+    </template>
   </q-table>
 </template>
 
 <style lang="scss" scoped>
 .saving-table {
-  box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
   border-radius: 3px;
+
+  :deep(.q-table__top) {
+    @media(max-width: 1024px) {
+      justify-content: center;
+      flex-direction: column;
+    }
+  }
 
   :deep(.q-table__bottom .q-table__control) {
     width: 100%;
@@ -211,11 +264,69 @@ watch(
         border-bottom-right-radius: 4px;
       }
     }
+
+
+    @media(max-width: 1024px) {
+      width: 225px;
+    }
+  }
+
+  :deep(.q-table__grid-content) {
+    display: flex;
+    flex-direction: column;
+
+    .item {
+      vertical-align: top;
+      padding: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background-color: #FFF;
+      border-radius: 3px;
+
+      .cell {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          opacity: 0.54;
+          font-weight: 500;
+          font-size: 12px;
+        }
+
+        .content {
+          word-wrap: break-word;
+        }
+
+        .delete-btn {
+          background: #ee2424;
+          color: #FFF;
+          width: 100px;
+          height: 30px;
+          font-size: 12px;
+          margin: 5px 0 0;
+
+          i {
+            margin-left: 2px;
+            padding-bottom: 3px;
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .tab-bottom {
+    @media(max-width: 1024px) {
+      justify-content: center;
+    }
   }
 
   .showing-range {
     color: #64748B;
     font-size: 14px;
+  }
+
+  @media(min-width: 1024px) {
+    box-shadow: rgba(0, 0, 0, 0.1) 2px 5px 10px 0;
   }
 }
 </style>
