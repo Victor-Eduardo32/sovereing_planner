@@ -3,17 +3,21 @@ import SavingDataTable from 'src/components/dashboard/finance/saving/SavingDataT
 import TitlePage from 'src/components/dashboard/TitlePage.vue';
 import FormSaving from 'src/components/dashboard/finance/saving/FormSaving.vue';
 import SelectBalance from 'src/components/dashboard/finance/SelectBalance.vue';
+import DeletePopup from 'src/components/dashboard/popups/DeletePopup.vue';
+import ErrorPopup from 'src/components/dashboard/popups/ErrorPopup.vue';
 import { computed, onMounted, onBeforeMount, ref } from 'vue';
 import { useBalanceStore } from 'src/stores/modules/BalanceStore';
 import { Balance } from 'src/types/components/balance/types';
 import { useBalanceComposable } from 'src/composables/useBalance/useBalanceComposable';
 import { Saving } from 'src/types/components/saving/types';
 import { useSavingStore } from 'src/stores/modules/SavingStore';
+import { useNotifyComposable } from 'src/composables/useNotify/useNotifyComposable';
 
 const useBalance = useBalanceStore()
 const useSaving = useSavingStore()
 
 const { getCurrencyPrefix, getNumberFormat } = useBalanceComposable()
+const { positiveNotify } = useNotifyComposable()
 
 const balance = ref<Balance>({} as Balance)
 
@@ -29,6 +33,13 @@ const add = ref<boolean>(false)
 const change = ref<boolean>(false)
 const search = ref<string>('')
 const winWidth = ref<number>(window.innerWidth)
+const deleteTitle = ref<string>('')
+const deleteMessage = ref<string>('')
+const deletedId = ref<number>()
+
+const errorMessage = computed(() => {
+  return useSaving.errorMessage
+});
 
 const filterSavings = computed(() => {
   const searchTerm = search.value.toLowerCase()
@@ -50,6 +61,31 @@ const createSaving = async (saving: Saving) => {
   } finally {
     balance.value.amount = Number(balance.value.amount!) + Number(saving.value)
   }
+}
+
+const openDeletePopup = (id: number) => {
+  deleteTitle.value = 'Do you want to delete the saving?'
+  deleteMessage.value = 'All data linked to it will also be deleted.'
+  deletedId.value = id
+}
+
+const closeDeletePopup = () => {
+  cleanDeleteData()
+}
+
+const deleteSaving = async () => {
+  try {
+    await useSaving.deleteSaving(deletedId.value!)
+  } finally {
+    await positiveNotify('The saving deleted successfuly.')
+    cleanDeleteData()
+  }
+}
+
+const cleanDeleteData = () => {
+  deleteTitle.value = ''
+  deleteMessage.value = ''
+  deletedId.value = undefined
 }
 
 const onSearch = (filter: string) => {
@@ -120,6 +156,7 @@ onBeforeMount(() => {
           </div>
           <saving-data-table
             @search="onSearch"
+            @delete="openDeletePopup"
             :win-width="winWidth"
             :savings="search.length ? filterSavings : savings"
             :currency="balance.currency ? balance.currency : 'BRL'"
@@ -137,6 +174,8 @@ onBeforeMount(() => {
             :balances="balances"
             :selected-balance="balance"
           />
+          <delete-popup @delete-confirmation="deleteSaving" @close="closeDeletePopup" :message="deleteMessage" :title="deleteTitle" />
+          <error-popup v-if="errorMessage.length > 0" :message="errorMessage" @close="useBalance.errorMessage = ''" />
         </div>
       </div>
     </q-scroll-area>

@@ -32,5 +32,22 @@ export const useSavingStore = defineStore('saving', () => {
     }
   }
 
-  return { savings, getSavingByBalanceId, addSaving, errorMessage }
+  const deleteSaving = async (savingId: number) => {
+    try {
+      await axios.delete('/saving', {
+        data: {
+          id: savingId
+        }
+      })
+
+      savings.value = savings.value.filter(saving => saving.id != savingId)
+
+      console.log(savings.value)
+      errorMessage.value = ''
+    } catch (error) {
+      errorMessage.value = 'Unexpected Error. Please, try again later.'
+    }
+  }
+
+  return { savings, getSavingByBalanceId, addSaving, deleteSaving, errorMessage }
 })

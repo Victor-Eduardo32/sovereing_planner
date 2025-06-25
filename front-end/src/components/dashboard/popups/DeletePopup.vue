@@ -28,7 +28,7 @@ const onDelete = () => {
     :backdrop-filter="'saturate(80%)'"
     @update:model-value="(value) => { if (!value) onClose(); }"
   >
-    <q-card style="width: 90%; border-radius: 8px;">
+    <q-card style="width: 95%; border-radius: 8px;">
       <q-card-section class="row justify-center items-center q-pb-none q-pt-xl text-h6">
         <div class="image-popup">
           <img
@@ -71,6 +71,10 @@ const onDelete = () => {
 
 .title {
   color: #292929;
+
+  @media(max-width: 1024px) {
+   font-size: 18px;
+  }
 }
 
 .message {
