@@ -10,6 +10,7 @@ import { FindAllCompletedTaskListUseCase } from "../application/usecases/complet
 import { CreateCompletedTaskUseCase } from "../application/usecases/completed-task/create-completed-task.usecase"
 import { FindAllCompletedTaskUseCase } from "../application/usecases/completed-task/find-all-completed-task.usecase"
 import { CreateSavingUseCase } from "../application/usecases/saving/create-saving.usecase"
+import { DeleteSavingUseCase } from "../application/usecases/saving/delete-saving.usecase"
 import { FindSavingByBalanceIdUseCase } from "../application/usecases/saving/find-saving-by-balance-id.usecase"
 import { CreateSessionUseCase } from "../application/usecases/session/create-session.usecase"
 import { RefreshSessionTokenUseCase } from "../application/usecases/session/refresh-session-token.usecase"
@@ -60,6 +61,7 @@ export const initializeUseCases = (repositories: any, services: any) => {
 
     const createSavingUseCase = CreateSavingUseCase.create(repositories.savingRepository);
     const findSavingByBalanceIdUseCase = FindSavingByBalanceIdUseCase.create(repositories.savingRepository);
+    const deleteSavingUseCase = DeleteSavingUseCase.create(repositories.savingRepository)
 
     return {
         createUserUseCase,
@@ -88,6 +90,7 @@ export const initializeUseCases = (repositories: any, services: any) => {
         deleteBalanceUseCase,
         updateBalanceUseCase,
         createSavingUseCase,
-        findSavingByBalanceIdUseCase
+        findSavingByBalanceIdUseCase,
+        deleteSavingUseCase
     };
 }
