@@ -9,9 +9,14 @@ import { CreateCompletedTaskListUseCase } from "../application/usecases/complete
 import { FindAllCompletedTaskListUseCase } from "../application/usecases/completed-task-list/find-all-completed-task-list.usecase"
 import { CreateCompletedTaskUseCase } from "../application/usecases/completed-task/create-completed-task.usecase"
 import { FindAllCompletedTaskUseCase } from "../application/usecases/completed-task/find-all-completed-task.usecase"
+import { CreateExpenseUseCase } from "../application/usecases/expense/create-expense.usecase"
+import { DeleteExpenseUseCase } from "../application/usecases/expense/delete-expense.usecase"
+import { FindExpenseByBalanceIdUseCase } from "../application/usecases/expense/find-expense-by-balance-id.usecase"
+import { FindExpenseByIdUseCase } from "../application/usecases/expense/find-expense-by-id.usecase"
 import { CreateSavingUseCase } from "../application/usecases/saving/create-saving.usecase"
 import { DeleteSavingUseCase } from "../application/usecases/saving/delete-saving.usecase"
 import { FindSavingByBalanceIdUseCase } from "../application/usecases/saving/find-saving-by-balance-id.usecase"
+import { FindSavingByIdUseCase } from "../application/usecases/saving/find-saving-by-id.usecase"
 import { CreateSessionUseCase } from "../application/usecases/session/create-session.usecase"
 import { RefreshSessionTokenUseCase } from "../application/usecases/session/refresh-session-token.usecase"
 import { UpdateSessionDataUseCase } from "../application/usecases/session/update-session-data.usecase"
@@ -60,8 +65,14 @@ export const initializeUseCases = (repositories: any, services: any) => {
     const updateBalanceUseCase = UpdateBalanceUseCase.create(repositories.balanceRepository, findBalanceByIdUseCase);
 
     const createSavingUseCase = CreateSavingUseCase.create(repositories.savingRepository);
+    const findSavingByIdUseCase = FindSavingByIdUseCase.create(repositories.savingRepository);
     const findSavingByBalanceIdUseCase = FindSavingByBalanceIdUseCase.create(repositories.savingRepository);
     const deleteSavingUseCase = DeleteSavingUseCase.create(repositories.savingRepository)
+
+    const createExpenseUseCase = CreateExpenseUseCase.create(repositories.expenseRepository);
+    const findExpenseByIdUseCase = FindExpenseByIdUseCase.create(repositories.expenseRepository);
+    const findExpenseByBalanceIdUseCase = FindExpenseByBalanceIdUseCase.create(repositories.expenseRepository);
+    const deleteExpenseUseCase = DeleteExpenseUseCase.create(repositories.expenseRepository)
 
     return {
         createUserUseCase,
@@ -90,7 +101,12 @@ export const initializeUseCases = (repositories: any, services: any) => {
         deleteBalanceUseCase,
         updateBalanceUseCase,
         createSavingUseCase,
+        findSavingByIdUseCase,
         findSavingByBalanceIdUseCase,
-        deleteSavingUseCase
+        deleteSavingUseCase,
+        createExpenseUseCase,
+        findExpenseByIdUseCase,
+        findExpenseByBalanceIdUseCase,
+        deleteExpenseUseCase
     };
 }

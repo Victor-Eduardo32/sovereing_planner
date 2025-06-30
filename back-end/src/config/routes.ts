@@ -5,6 +5,9 @@ import { DeleteBalanceRoute } from "../infra/api/express/routes/balance/delete-b
 import { FindAllBalanceRoute } from "../infra/api/express/routes/balance/find-all-balance.express.route";
 import { CreateCompletedTaskListRoute } from "../infra/api/express/routes/completed-task-list/create-completed-task-list.express.route";
 import { FindAllCompletedTaskListRoute } from "../infra/api/express/routes/completed-task-list/find-all-task-list.express.route";
+import { CreateExpenseRoute } from "../infra/api/express/routes/expense/create-expense.express.route";
+import { DeleteExpenseRoute } from "../infra/api/express/routes/expense/delete-expense.express.route";
+import { FindExpenseByBalanceIdRoute } from "../infra/api/express/routes/expense/find-expense-by-balance-id.express.route";
 import { CreateSavingRoute } from "../infra/api/express/routes/saving/create-saving.express.route";
 import { DeleteSavingRoute } from "../infra/api/express/routes/saving/delete-saving.express.route";
 import { FindSavingByBalanceIdRoute } from "../infra/api/express/routes/saving/find-saving-by-balance-id.express.route";
@@ -41,7 +44,11 @@ export const initializeRoutes = (useCases: any) => {
 
     const createSavingRoute = CreateSavingRoute.create(useCases.createSavingUseCase, useCases.updateBalanceUseCase);
     const findSavingByBalanceIdRoute = FindSavingByBalanceIdRoute.create(useCases.findSavingByBalanceIdUseCase);
-    const deleteSavingRoute = DeleteSavingRoute.create(useCases.deleteSavingUseCase);
+    const deleteSavingRoute = DeleteSavingRoute.create(useCases.deleteSavingUseCase, useCases.findSavingByIdUseCase, useCases.updateBalanceUseCase);
+
+    const createExpenseRoute = CreateExpenseRoute.create(useCases.createExpenseUseCase, useCases.updateBalanceUseCase);
+    const findExpenseByBalanceIdRoute = FindExpenseByBalanceIdRoute.create(useCases.findExpenseByBalanceIdUseCase);
+    const deleteExpenseRoute = DeleteExpenseRoute.create(useCases.deleteExpenseUseCase, useCases.findExpenseByIdUseCase,useCases.updateBalanceUseCase);
 
     return [
         createUserRoute,
@@ -61,6 +68,9 @@ export const initializeRoutes = (useCases: any) => {
         deleteBalanceRoute,
         createSavingRoute,
         findSavingByBalanceIdRoute,
-        deleteSavingRoute
+        deleteSavingRoute,
+        createExpenseRoute,
+        findExpenseByBalanceIdRoute,
+        deleteExpenseRoute
     ];
 }
