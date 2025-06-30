@@ -35,7 +35,7 @@ const search = ref<string>('')
 const winWidth = ref<number>(window.innerWidth)
 const deleteTitle = ref<string>('')
 const deleteMessage = ref<string>('')
-const deletedId = ref<number>()
+const deletedSaving = ref<Saving>()
 
 const errorMessage = computed(() => {
   return useSaving.errorMessage
@@ -63,10 +63,10 @@ const createSaving = async (saving: Saving) => {
   }
 }
 
-const openDeletePopup = (id: number) => {
+const openDeletePopup = (saving: Saving) => {
   deleteTitle.value = 'Do you want to delete the saving?'
   deleteMessage.value = 'All data linked to it will also be deleted.'
-  deletedId.value = id
+  deletedSaving.value = saving
 }
 
 const closeDeletePopup = () => {
@@ -75,9 +75,11 @@ const closeDeletePopup = () => {
 
 const deleteSaving = async () => {
   try {
-    await useSaving.deleteSaving(deletedId.value!)
+    console.log(deletedSaving.value)
+    await useSaving.deleteSaving(deletedSaving.value!.id!)
   } finally {
     await positiveNotify('The saving deleted successfuly.')
+    balance.value.amount = Number(balance.value.amount!) - Number(deletedSaving.value?.value)
     cleanDeleteData()
   }
 }
@@ -85,7 +87,7 @@ const deleteSaving = async () => {
 const cleanDeleteData = () => {
   deleteTitle.value = ''
   deleteMessage.value = ''
-  deletedId.value = undefined
+  deletedSaving.value = undefined
 }
 
 const onSearch = (filter: string) => {

@@ -69,8 +69,8 @@ const searchSaving = () => {
   emit('search', search.value)
 }
 
-const deleteSaving = (id: number) => {
-  emit('delete', id)
+const deleteSaving = (saving: Saving) => {
+  emit('delete', saving)
 }
 
 const isGrid = (): boolean => {
@@ -125,7 +125,7 @@ watch(
           round
           icon="delete_outline"
           class="cursor-pointer"
-          @click="deleteSaving(props.key)"
+          @click="deleteSaving(props.row)"
         />
       </q-td>
     </template>
@@ -186,7 +186,7 @@ watch(
         </div>
         <div class="cell" style="margin-top: 8px;">
           <span class="title">Actions</span>
-          <q-btn class="delete-btn" icon-right="delete_outline" label="Delete" @click="deleteSaving(props.row.id)" />
+          <q-btn class="delete-btn" icon-right="delete_outline" label="Delete" @click="deleteSaving(props.row)" />
         </div>
       </div>
     </template>
