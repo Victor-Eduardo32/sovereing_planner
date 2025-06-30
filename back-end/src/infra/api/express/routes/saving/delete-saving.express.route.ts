@@ -1,19 +1,25 @@
 import { Request, Response, NextFunction } from "express";
 import { DeleteSavingInputDto, DeleteSavingUseCase } from "../../../../../application/usecases/saving/delete-saving.usecase";
 import { HttpMethod, Route } from "../route";
+import { UpdateBalanceInputDto, UpdateBalanceUseCase } from "../../../../../application/usecases/balance/update-balance.usecase";
+import { FindSavingByIdUseCase } from "../../../../../application/usecases/saving/find-saving-by-id.usecase";
 
 export class DeleteSavingRoute implements Route {
     private constructor(
         private readonly path: string,
         private readonly method: HttpMethod,
-        private readonly deleteSavingUseCase: DeleteSavingUseCase
+        private readonly deleteSavingUseCase: DeleteSavingUseCase,
+        private findSavingByIdUseCase: FindSavingByIdUseCase,
+        private readonly updateBalanceUseCase: UpdateBalanceUseCase
     ){}
 
-    public static create(deleteSavingUseCase: DeleteSavingUseCase) {
+    public static create(deleteSavingUseCase: DeleteSavingUseCase, findSavingByIdUseCase: FindSavingByIdUseCase, updateBalanceUseCase: UpdateBalanceUseCase) {
         return new DeleteSavingRoute(
             '/saving',
             HttpMethod.DELETE,
-            deleteSavingUseCase
+            deleteSavingUseCase,
+            findSavingByIdUseCase,
+            updateBalanceUseCase,
         )
     }
 
@@ -25,6 +31,16 @@ export class DeleteSavingRoute implements Route {
                 const input: DeleteSavingInputDto = {
                     id: id
                 }
+
+                const saving = await this.findSavingByIdUseCase.execute({ id });
+
+                const inputBalance: UpdateBalanceInputDto = {
+                    id: saving.balance_id,
+                    value: saving.value as bigint,
+                    type: false
+                }
+
+                await this.updateBalanceUseCase.execute(inputBalance)
 
                 await this.deleteSavingUseCase.execute(input)
 
