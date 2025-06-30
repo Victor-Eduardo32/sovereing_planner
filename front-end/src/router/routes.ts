@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: 'finance/expenses',
-        component: () => import('pages/dashboard/finance/Expenses.vue')
+        component: () => import('pages/dashboard/finance/ExpensesPage.vue')
       },
       {
         path: 'finance/balances',
