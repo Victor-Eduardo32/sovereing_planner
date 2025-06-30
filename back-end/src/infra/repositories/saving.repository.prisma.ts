@@ -9,6 +9,23 @@ export class SavingRepositoryPrisma implements SavingGateway {
         return new SavingRepositoryPrisma(prismaClient)
     }
 
+    public async findById(id: number): Promise<Saving> {
+        try {
+            const prismaSaving = await this.prismaClient.saving.findUnique({
+                where: { id },
+            });
+
+            if (!prismaSaving) {
+                throw new Error("Saving not found in balance repository prisma.");
+            }
+
+            return this.toDomainEntity(prismaSaving);
+        } catch (error) {
+            console.error("Error in findById:", error);
+            throw new Error("Error on saving repository prisma.");
+        }
+    }
+
     public async findAllByBalanceId(balance_id: number): Promise<Saving[]> {
         const prismaSavings = await this.prismaClient.saving.findMany({
             where: { balance_id }
