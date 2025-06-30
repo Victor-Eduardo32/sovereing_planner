@@ -42,7 +42,6 @@ export const useSavingStore = defineStore('saving', () => {
 
       savings.value = savings.value.filter(saving => saving.id != savingId)
 
-      console.log(savings.value)
       errorMessage.value = ''
     } catch (error) {
       errorMessage.value = 'Unexpected Error. Please, try again later.'
